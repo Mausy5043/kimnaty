@@ -1,0 +1,35 @@
+
+# Created by https://www.gitignore.io/api/python,pycharm
+# Edit at https://www.gitignore.io/?templates=python,pycharm
+
+### PyCharm ###
+.idea/
+
+### Visual Studio ###
+.vscode/
+
+.local/
+
+### Jupyter ###
+.ipynb_checkpoints/
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# pyenv
+.python-version
+
+### Apple muck ###
+.DS_Store
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
