@@ -1,0 +1,10 @@
+# This service is for trending data from the past year(s)
+
+[Unit]
+Description=trending data from past year (service)
+Wants=kimnaty.trend.year.timer
+
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/home/pi/kimnaty/bin/pastyear.sh -

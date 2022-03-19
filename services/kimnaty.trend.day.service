@@ -1,0 +1,10 @@
+# This service is for trending data from the past days
+
+[Unit]
+Description=trending data from past days (service)
+Wants=kimnaty.trend.day.timer
+
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/home/pi/kimnaty/bin/pastday.sh -

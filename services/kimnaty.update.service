@@ -1,0 +1,13 @@
+# This service is for updating the repository clone
+
+[Unit]
+Description=kimnaty update service
+After=multi-user.target
+Wants=multi-user.target
+Wants=kimnaty.update.timer
+
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/home/pi/kimnaty/update.sh --systemd
+TimeoutSec=900
