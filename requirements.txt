@@ -1,0 +1,8 @@
+Flask
+hanging_threads
+lywsd02
+matplotlib
+numpy
+pandas
+scipy
+uwsgi
