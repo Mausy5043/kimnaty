@@ -151,7 +151,7 @@ def get_data(mac):
     return success, [mac, temperature, humidity, voltage]
 
 
-def do_add_to_database(result, fdatabase, sql_cmd):
+def do_add_to_database(results, fdatabase, sql_cmd):
     """Commit the results to the database."""
     # Get the time and date in human-readable form and UN*X-epoch...
     conn = None
@@ -159,32 +159,33 @@ def do_add_to_database(result, fdatabase, sql_cmd):
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
-    results = (out_date.strftime(dt_format),
-               out_epoch,
-               result[0],
-               result[1],
-               result[2],
-               result[3]
-               )
-    if DEBUG:
-        print(f"   @: {out_date.strftime(dt_format)}")
-        print(f"    : {results}")
+    for data in results:
+        result = (out_date.strftime(dt_format),
+                  out_epoch,
+                  data[0],
+                  data[1],
+                  data[2],
+                  data[3]
+                  )
+        if DEBUG:
+            print(f"   @: {out_date.strftime(dt_format)}")
+            print(f"    : {results}")
 
-    err_flag = True
-    while err_flag:
-        try:
-            conn = create_db_connection(fdatabase)
-            cursor = conn.cursor()
-            cursor.execute(sql_cmd, results)
-            cursor.close()
-            conn.commit()
-            conn.close()
-            err_flag = False
-        except sqlite3.OperationalError:
-            if cursor:
+        err_flag = True
+        while err_flag:
+            try:
+                conn = create_db_connection(fdatabase)
+                cursor = conn.cursor()
+                cursor.execute(sql_cmd, results)
                 cursor.close()
-            if conn:
+                conn.commit()
                 conn.close()
+                err_flag = False
+            except sqlite3.OperationalError:
+                if cursor:
+                    cursor.close()
+                if conn:
+                    conn.close()
 
 
 def get_mac_list(src_file):
