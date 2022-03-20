@@ -168,14 +168,14 @@ def do_add_to_database(results, fdatabase, sql_cmd):
                   )
         if DEBUG:
             print(f"   @: {out_date.strftime(dt_format)}")
-            print(f"    : {results}")
+            print(f"    : {result}")
 
         err_flag = True
         while err_flag:
             try:
                 conn = create_db_connection(fdatabase)
                 cursor = conn.cursor()
-                cursor.execute(sql_cmd, results)
+                cursor.execute(sql_cmd, result)
                 cursor.close()
                 conn.commit()
                 conn.close()
