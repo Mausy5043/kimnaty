@@ -104,8 +104,7 @@ def main():
                     print(f"Behind   : {pause_time - time.time():.1f}s")
                     print("................................")
         else:
-            # time.sleep(1.0)
-            time.sleep(report_time * 0.1)
+            time.sleep(1.0)
 
 
 def do_work(dev_list):
