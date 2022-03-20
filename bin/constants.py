@@ -35,7 +35,7 @@ KIMNATY = {'database': _DATABASE,
                           ") "
                           "VALUES (?, ?, ?, ?, ?, ?)",
            'sql_table': "data",
-           'report_time': 300,
+           'report_time': 60,
            'cycles': 1,
            'samplespercycle': 1
            }
