@@ -45,7 +45,7 @@ class Fles:
         db_con = sqlite3.connect(self.DATABASE)
         with db_con:
             db_cur = db_con.cursor()
-            db_cur.execute(f"SELECT {fields} FROM kimnaty \
+            db_cur.execute(f"SELECT {fields} FROM data \
                              WHERE sample_epoch = (SELECT MAX(sample_epoch) \
                                                    FROM kimnaty) \
                              ;")

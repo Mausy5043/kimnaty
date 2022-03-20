@@ -26,7 +26,7 @@ pushd "${HERE}" >/dev/null || exit 1
         echo "${db_full_path} vacuuming... "
         PURGE_EPOCH=$(echo "${CURRENT_EPOCH} - (3660 * 24 * 3600)" |bc)
         sqlite3 "${db_full_path}" \
-                "DELETE FROM kimnaty WHERE sample_epoch < ${PURGE_EPOCH};"
+                "DELETE FROM data WHERE sample_epoch < ${PURGE_EPOCH};"
     fi
 
     ./trend.py --months 0 &
