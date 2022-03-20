@@ -1,4 +1,4 @@
-from lywsd02 import Lywsd02Client
+from lywsd02 import Lywsd02Client  # noqa
 import struct
 import collections
 from datetime import datetime, timedelta
@@ -45,7 +45,7 @@ class Lywsd03mmcClient(Lywsd02Client):
         voltage /= 1000
 
         # Estimate the battery percentage remaining
-        battery = min(int(round((voltage - 2.1), 2) * 100), 100) # 3.1 or above --> 100% 2.1 --> 0 %
+        battery = min(int(round((voltage - 2.1), 2) * 100), 100)  # 3.1 or above --> 100% 2.1 --> 0 %
         self._data = Sensor3Data(temperature=temperature, humidity=humidity, battery=battery, voltage=voltage)
 
     @property
@@ -70,8 +70,7 @@ class Lywsd03mmcClient(Lywsd02Client):
             self._subscribe(UUID_HISTORY, self._process_history_data)
 
             while True:
-                if not self._peripheral.waitForNotifications(
-                        self._notification_timeout):
+                if not self._peripheral.waitForNotifications(self._notification_timeout):
                     break
 
                 # Find the last date we have data for, and check if it's for the current hour
@@ -107,7 +106,7 @@ class Lywsd03mmcClient(Lywsd02Client):
     @property
     def start_time(self):
         if not self._start_time:
-            start_time_delta = self.time[0] - datetime(1970,1,1) - timedelta(hours=self.tz_offset)
+            start_time_delta = self.time[0] - datetime(1970, 1, 1) - timedelta(hours=self.tz_offset)
             self._start_time = datetime.now() - start_time_delta
         return self._start_time
 
