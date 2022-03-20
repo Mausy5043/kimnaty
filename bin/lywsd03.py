@@ -16,7 +16,6 @@ for mac in args.mac:
         print(f'Temperature       : {data.temperature}°C')
         print(f'Humidity          : {data.humidity}%')
         print(f'Battery           : {data.battery}% ({data.voltage}V)')
-        print(f'Device start time : {client.start_time}')
         print()
     except Exception as e:
         print(e)
