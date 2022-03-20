@@ -96,7 +96,7 @@ def main():
             if pause_time > 0:
                 if DEBUG:
                     print(f"Waiting  : {pause_time - time.time():.1f}s")
-                time.sleep(pause_time)
+                time.sleep(abs(pause_time))  # FIXME: why does pause_time become (-)-ve?
                 if DEBUG:
                     print("................................")
             else:
