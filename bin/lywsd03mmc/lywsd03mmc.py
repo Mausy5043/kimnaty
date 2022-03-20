@@ -45,7 +45,9 @@ class Lywsd03mmcClient(Lywsd02Client):
         voltage /= 1000
 
         # Estimate the battery percentage remaining
-        battery = min(int(round((voltage - 2.1), 2) * 100), 100)  # 3.1 or above --> 100% 2.1 --> 0 %
+        # CR2024 maximum theoretical voltage = 3.400V
+        battery = round(((voltage - 2.1) / (3.4 - 2.1) * 100), 1)
+        # battery = min(int(round((voltage - 2.1), 2) * 100), 100)  # 3.1 or above --> 100% 2.1 --> 0 %
         self._data = Sensor3Data(temperature=temperature, humidity=humidity, battery=battery, voltage=voltage)
 
     @property
