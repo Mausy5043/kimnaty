@@ -91,17 +91,16 @@ def main():
             pause_time = (sample_time
                           - (time.time() - start_time)
                           - (start_time % sample_time)
-                          + time.time()
                           )
             if pause_time > 0:
                 if DEBUG:
-                    print(f"Waiting  : {pause_time - time.time():.1f}s")
-                time.sleep(abs(pause_time))  # FIXME: why does pause_time become (-)-ve?
+                    print(f"Waiting  : {pause_time:.1f}s")
+                time.sleep(pause_time)
                 if DEBUG:
                     print("................................")
             else:
                 if DEBUG:
-                    print(f"Behind   : {pause_time - time.time():.1f}s")
+                    print(f"Behind   : {pause_time:.1f}s")
                     print("................................")
         else:
             time.sleep(1.0)
@@ -109,16 +108,27 @@ def main():
 
 def do_work(dev_list):
     """Scan the devices to get current readings."""
-    block = list()
+    global DEBUG
+    data_list = list()
     retry_list = list()
-    # mac_list = [[mac, room_id], [..., ...], ...]
     for mac in dev_list:
         succes, data = get_data(mac[0])
         data[0] = mac[1]  # replace mac-address by room-id
         if succes:
-            block.append(data)
+            data_list.append(data)
+        else:
+            retry_list.append(mac)
 
-    return block
+    if retry_list:
+        if DEBUG:
+            print("Retrying failed connections in 15s...")
+        time.sleep(15.0)
+        for mac in retry_list:
+            succes, data = get_data(mac[0])
+            data[0] = mac[1]  # replace mac-address by room-id
+            if succes:
+                data_list.append(data)
+    return data_list
 
 
 def get_data(mac):
@@ -142,8 +152,7 @@ def get_data(mac):
         voltage = data.voltage
         success = True
     except Exception as e:
-        print("*** While talking to:")
-        print(f"    {mac}")
+        print("*** While talking to {mac}")
         print("*** This error occured:")
         print(f"    {e}")
 
