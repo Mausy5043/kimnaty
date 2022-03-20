@@ -68,7 +68,7 @@ def main():
     global MYAPP
     global MYROOT
     killer = ml.GracefulKiller()
-    start_monitoring(seconds_frozen=anti_freeze, test_interval=1357)
+    start_monitoring(seconds_frozen=anti_freeze, test_interval=136)
     fdatabase = constants.KIMNATY['database']
     sqlcmd = constants.KIMNATY['sql_command']
     report_time = int(constants.KIMNATY['report_time'])
