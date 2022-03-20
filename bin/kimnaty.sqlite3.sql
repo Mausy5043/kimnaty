@@ -13,8 +13,8 @@ CREATE TABLE data (
   voltage       real
   );
 
-CREATE INDEX idx_time ON aircon(sample_time);
-CREATE INDEX idx_epoch ON aircon(sample_epoch);
+CREATE INDEX idx_time ON data(sample_time);
+CREATE INDEX idx_epoch ON data(sample_epoch);
 
 CREATE TABLE rooms (
     room_id     text NOT NULL PRIMARY KEY,
