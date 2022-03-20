@@ -5,13 +5,16 @@ DROP TABLE IF EXISTS data;
 DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE data (
-  sample_time   datetime NOT NULL PRIMARY KEY,
+  sample_time   datetime NOT NULL,
   sample_epoch  integer,
   room_id       integer,
   temperature   real,
   humidity      real,
   voltage       real
   );
+
+CREATE INDEX idx_time ON aircon(sample_time);
+CREATE INDEX idx_epoch ON aircon(sample_epoch);
 
 CREATE TABLE rooms (
     room_id     text NOT NULL PRIMARY KEY,
@@ -36,5 +39,4 @@ INSERT INTO rooms VALUES('1.9', 'overloop');
 INSERT INTO rooms VALUES('2.0', 'zolder');
 INSERT INTO rooms VALUES('2.1', 'slaapkamer 4');
 
-# SQLite3 automatically creates a UNIQUE INDEX on the PRIMARY KEY in the background.
-# So, no index needed.
+
