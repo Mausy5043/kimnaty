@@ -18,10 +18,6 @@ if not os.path.isfile(_DATABASE):
     print("Database is missing.")
     sys.exit(1)
 
-BATTERY = {'database': _DATABASE,
-           'graph_file': ".local/graph.png"
-           }
-
 TREND = {'database': _DATABASE,
          'day_graph': '/tmp/kimnaty/site/img/kim_pastday.png',
          'month_graph': '/tmp/kimnaty/site/img/kim_pastmonth.png',
