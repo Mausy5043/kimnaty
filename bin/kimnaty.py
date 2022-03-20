@@ -85,7 +85,8 @@ def main():
                 print(f"Result   : {results}")
 
             # report samples
-            do_add_to_database(results, fdatabase, sqlcmd)
+            if results:
+                do_add_to_database(results, fdatabase, sqlcmd)
 
             pause_time = (sample_time
                           - (time.time() - start_time)
