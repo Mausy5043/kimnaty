@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 UUID_HISTORY = 'EBE0CCBC-7A0A-4B0C-8A1A-6FF2997DA3A6'  # Last idx 152          READ NOTIFY
 
 
-class Sensor3Data(collections.namedtuple('Sensor3DataBase', ['temperature', 'humidity', 'battery'])):
+class Sensor3Data(collections.namedtuple('Sensor3DataBase', ['temperature', 'humidity', 'battery', 'voltage'])):
     """
     Create a structure to store the data in, which includes battery data
     """
