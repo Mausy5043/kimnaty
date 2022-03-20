@@ -116,7 +116,7 @@ def do_work(dev_list):
         succes, data = get_data(mac[0])
         data[0] = mac[1]  # replace mac-address by room-id
         if succes:
-            block.append = data
+            block.append(data)
 
     return f"{block}"
 
@@ -188,6 +188,7 @@ def do_add_to_database(result, fdatabase, sql_cmd):
 
 def get_mac_list(src_file):
     return []
+
 
 def create_db_connection(database_file):
     """
