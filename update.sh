@@ -72,8 +72,8 @@ pushd "${HERE}" || exit 1
     sudo systemctl start kimnaty.trend.day.timer
     sudo systemctl start kimnaty.trend.month.timer
     sudo systemctl start kimnaty.trend.year.timer
-    sudo systemctl start kimnaty.fles.service &
-    sudo systemctl start kimnaty.kimnaty.service &
+    #sudo systemctl start kimnaty.fles.service &
+    #sudo systemctl start kimnaty.kimnaty.service &
     wait
 popd || exit
 
