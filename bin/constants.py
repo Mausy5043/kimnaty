@@ -34,13 +34,12 @@ TREND = {'database': _DATABASE,
 KIMNATY = {'database': _DATABASE,
            'sql_command': "INSERT INTO kimnaty ("
                           "sample_time, sample_epoch, "
-                          "T1in, T2in, powerin, "
-                          "T1out, T2out, powerout, "
-                          "tarif, swits"
+                          "room_id, "
+                          "T, RH, batV "
                           ") "
-                          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                          "VALUES (?, ?, ?, ?, ?, ?)",
            'sql_table': "kimnaty",
-           'report_time': 600,
+           'report_time': 300,
            'cycles': 1,
-           'samplespercycle': 58
+           'samplespercycle': 1
            }
