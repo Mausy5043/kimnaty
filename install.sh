@@ -104,7 +104,7 @@ pushd "${HERE}" || exit 1
     git config core.fileMode false
     # set the branch
     if [ ! -e "${HOME}/.${app_name}.branch" ]; then
-        echo "master" >"${HOME}/.${app_name}.branch"
+        echo "main" >"${HOME}/.${app_name}.branch"
     fi
     chmod -x ./services/*
 
