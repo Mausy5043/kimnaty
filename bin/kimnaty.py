@@ -119,7 +119,7 @@ def do_work(dev_list):
         if succes:
             block.append(data)
 
-    return f"{block}"
+    return block
 
 
 def get_data(mac):
