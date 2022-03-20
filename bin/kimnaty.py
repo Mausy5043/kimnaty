@@ -16,8 +16,9 @@ import argparse
 import datetime as dt
 import os
 import sqlite3
-import sys
+import re
 import time
+import threading
 import traceback
 
 import mausy5043libs.libsignals3 as ml  # noqa
@@ -74,6 +75,9 @@ def main():
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     list_of_devices = constants.DEVICES
 
+    # watchdogthread = threading.Thread(target=watchdog_thread)
+    # watchdogthread.start()
+
     test_db_connection(fdatabase)
 
     pause_time = time.time()
@@ -113,7 +117,7 @@ def do_work(dev_list):
     retry_list = list()
     for mac in dev_list:
         succes, data = get_data(mac[0])
-        data[0] = mac[1]  # replace mac-address by room-id
+        data[2] = mac[1]  # replace mac-address by room-id
         if succes:
             data_list.append(data)
         else:
@@ -125,14 +129,14 @@ def do_work(dev_list):
         time.sleep(15.0)
         for mac in retry_list:
             succes, data = get_data(mac[0])
-            data[0] = mac[1]  # replace mac-address by room-id
+            data[2] = mac[1]  # replace mac-address by room-id
             if succes:
                 data_list.append(data)
     return data_list
 
 
 def get_data(mac):
-    """Fetch a data from a device."""
+    """Fetch data from a device."""
     temperature = 0.0
     humidity = 0
     voltage = 0.0
@@ -156,7 +160,11 @@ def get_data(mac):
         print("*** This error occured:")
         print(f"    {e}")
 
-    return success, [mac, temperature, humidity, voltage]
+    dt_format = "%Y-%m-%d %H:%M:%S"
+    out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
+    out_epoch = int(out_date.timestamp())
+
+    return success, [out_date.strftime(dt_format), out_epoch, mac, temperature, humidity, voltage]
 
 
 def do_add_to_database(results, fdatabase, sql_cmd):
@@ -164,19 +172,15 @@ def do_add_to_database(results, fdatabase, sql_cmd):
     # Get the time and date in human-readable form and UN*X-epoch...
     conn = None
     cursor = None
-    dt_format = "%Y-%m-%d %H:%M:%S"
-    out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
-    out_epoch = int(out_date.timestamp())
     for data in results:
-        result = (out_date.strftime(dt_format),
-                  out_epoch,
-                  data[0],
+        result = (data[0],
                   data[1],
                   data[2],
-                  data[3]
+                  data[3],
+                  data[4],
+                  data[5]
                   )
         if DEBUG:
-            print(f"   @: {out_date.strftime(dt_format)}")
             print(f"    : {result}")
 
         err_flag = True
@@ -194,10 +198,6 @@ def do_add_to_database(results, fdatabase, sql_cmd):
                     cursor.close()
                 if conn:
                     conn.close()
-
-
-def get_mac_list(src_file):
-    return []
 
 
 def create_db_connection(database_file):
@@ -237,6 +237,37 @@ def test_db_connection(fdatabase):
         print("Unexpected SQLite3 error during test.")
         print(traceback.format_exc())
         raise
+
+
+# unconnectedTime = None
+# connected = True
+# pid = os.getpid()
+#
+#
+# def watchdog_thread():
+#     global unconnectedTime
+#     global connected
+#     global pid
+#     while True:
+#         print(f"watchdog_thread")
+#         print(f"unconnectedTime : {unconnectedTime}")
+#         print(f"connected : {connected}")
+#         print(f"pid : {pid}")
+#         now = int(time.time())
+#         if (unconnectedTime is not None) and ((now - unconnectedTime) > 60):
+#             # could also check connected is False, but this is more fault proof
+#             pstree = os.popen("pstree -p " + str(pid)).read()
+#             # we want to kill only bluepy from our own process tree,
+#             # because other python scripts have there own bluepy-helper process
+#             print(f"PSTree: {pstree}")
+#             try:
+#                 bluepypid = re.findall(r'bluepy-helper\((.*)\)', pstree)[0]  # Store the bluepypid, to kill it later
+#             except IndexError:  # Should not happen since we're now connected
+#                 print("Couldn't find pid of bluepy-helper")
+#             os.system(f"kill {bluepypid}")
+#             print(f"Killed bluepy with pid: {bluepypid}")
+#             unconnectedTime = now  # reset unconnectedTime to prevent multiple killings in a row
+#         time.sleep(5)
 
 
 if __name__ == "__main__":
