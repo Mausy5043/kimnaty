@@ -18,6 +18,7 @@ import os
 import re
 import sqlite3
 import syslog
+import sys
 import time
 import traceback
 
@@ -74,6 +75,7 @@ def main():
                        * int(constants.KIMNATY['cycles'])
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     data = []
+    sys.exit(0)
 
     test_db_connection(fdatabase)
 
