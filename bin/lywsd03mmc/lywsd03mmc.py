@@ -34,7 +34,7 @@ class Lywsd03mmcClient(Lywsd02Client):
     # Getting history data is very slow, so output progress updates
     enable_history_progress = True
 
-    def __init__(self, mac, notification_timeout=15.0):
+    def __init__(self, mac, notification_timeout=29.0):
         """
         Call the parent init with a bigger notification timeout
         :param mac: device's MAC
