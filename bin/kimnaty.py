@@ -75,9 +75,6 @@ def main():
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     list_of_devices = constants.DEVICES
 
-    # watchdogthread = threading.Thread(target=watchdog_thread)
-    # watchdogthread.start()
-
     test_db_connection(fdatabase)
 
     pause_time = time.time()
@@ -87,7 +84,6 @@ def main():
             results = do_work(list_of_devices)
             if DEBUG:
                 print(f"Result   : {results}")
-
             # report samples
             if results:
                 do_add_to_database(results, fdatabase, sqlcmd)
@@ -237,37 +233,6 @@ def test_db_connection(fdatabase):
         print("Unexpected SQLite3 error during test.")
         print(traceback.format_exc())
         raise
-
-
-# unconnectedTime = None
-# connected = True
-# pid = os.getpid()
-#
-#
-# def watchdog_thread():
-#     global unconnectedTime
-#     global connected
-#     global pid
-#     while True:
-#         print(f"watchdog_thread")
-#         print(f"unconnectedTime : {unconnectedTime}")
-#         print(f"connected : {connected}")
-#         print(f"pid : {pid}")
-#         now = int(time.time())
-#         if (unconnectedTime is not None) and ((now - unconnectedTime) > 60):
-#             # could also check connected is False, but this is more fault proof
-#             pstree = os.popen("pstree -p " + str(pid)).read()
-#             # we want to kill only bluepy from our own process tree,
-#             # because other python scripts have there own bluepy-helper process
-#             print(f"PSTree: {pstree}")
-#             try:
-#                 bluepypid = re.findall(r'bluepy-helper\((.*)\)', pstree)[0]  # Store the bluepypid, to kill it later
-#             except IndexError:  # Should not happen since we're now connected
-#                 print("Couldn't find pid of bluepy-helper")
-#             os.system(f"kill {bluepypid}")
-#             print(f"Killed bluepy with pid: {bluepypid}")
-#             unconnectedTime = now  # reset unconnectedTime to prevent multiple killings in a row
-#         time.sleep(5)
 
 
 if __name__ == "__main__":
