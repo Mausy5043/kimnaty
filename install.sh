@@ -120,6 +120,7 @@ pushd "${HERE}" || exit 1
     sudo systemctl enable kimnaty.update.timer &
 
     sudo systemctl enable kimnaty.fles.service &
+    sudo systemctl enable kimnaty.bluepy-helper-killer.service &
     sudo systemctl enable kimnaty.kimnaty.service &
     wait
 
@@ -128,6 +129,7 @@ pushd "${HERE}" || exit 1
     sudo systemctl start kimnaty.trend.day.timer
     sudo systemctl start kimnaty.trend.month.timer
     sudo systemctl start kimnaty.trend.year.timer
+    sudo systemctl start kimnaty.bluepy-helper-killer.service
     sudo systemctl start kimnaty.update.timer # this will also start the daemon!
 
 # services are started by the update script:

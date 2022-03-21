@@ -17,6 +17,7 @@ pushd "${HERE}" || exit 1
     ./stop.sh
 
     sudo systemctl disable kimnaty.fles.service
+    sudo systemctl disable kimnaty.bluepy-helper-killer.service
 
     sudo systemctl disable kimnaty.kimnaty.service
 

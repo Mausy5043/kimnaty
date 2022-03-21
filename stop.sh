@@ -10,6 +10,7 @@ pushd "${HERE}" || exit 1
     source ./bin/constants.sh
 
     sudo systemctl stop kimnaty.fles.service
+    sudo systemctl stop kimnaty.bluepy-helper-killer.service
 
     sudo systemctl stop kimnaty.kimnaty.service
 

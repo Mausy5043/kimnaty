@@ -1,0 +1,16 @@
+# This service is for killing bluepy-helper when it hangs
+
+[Unit]
+Description=bluepy-helper-killer service
+After=multi-user.target
+
+[Service]
+Type=simple
+User=pi
+ExecStartPre=/bin/sleep 20
+ExecStart=/home/pi/kimnaty/bin/bluepy-helper-killer
+RestartSec=360s
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
