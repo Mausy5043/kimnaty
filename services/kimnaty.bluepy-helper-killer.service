@@ -8,7 +8,7 @@ After=multi-user.target
 Type=simple
 User=pi
 ExecStartPre=/bin/sleep 20
-ExecStart=/home/pi/kimnaty/bin/bluepy-helper-killer
+ExecStart=/home/pi/kimnaty/bin/helper-killer
 RestartSec=360s
 Restart=on-failure
 
