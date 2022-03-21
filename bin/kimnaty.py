@@ -15,10 +15,8 @@ Store data from the devices in an sqlite3 database.
 import argparse
 import datetime as dt
 import os
-import sqlite3
-import re
+import sqlite3 as s3
 import time
-import threading
 import traceback
 
 import mausy5043libs.libsignals3 as ml  # noqa
@@ -189,7 +187,7 @@ def do_add_to_database(results, fdatabase, sql_cmd):
                 conn.commit()
                 conn.close()
                 err_flag = False
-            except sqlite3.OperationalError:
+            except s3.OperationalError:
                 if cursor:
                     cursor.close()
                 if conn:
@@ -205,9 +203,9 @@ def create_db_connection(database_file):
     if DEBUG:
         print(f"Connecting to: {database_file}")
     try:
-        consql = sqlite3.connect(database_file, timeout=9000)
+        consql = s3.connect(database_file, timeout=9000)
         return consql
-    except sqlite3.Error:
+    except s3.Error:
         print("Unexpected SQLite3 error when connecting to server.")
         print(traceback.format_exc())
         if consql:  # attempt to close connection to SQLite3 server
@@ -229,7 +227,7 @@ def test_db_connection(fdatabase):
         conn.commit()
         conn.close()
         print(f"Attached to SQLite3 server: {versql}")
-    except sqlite3.Error:
+    except s3.Error:
         print("Unexpected SQLite3 error during test.")
         print(traceback.format_exc())
         raise
