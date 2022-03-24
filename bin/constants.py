@@ -19,6 +19,7 @@ if not os.path.isfile(_DATABASE):
     sys.exit(1)
 
 TREND = {'database': _DATABASE,
+         'sql_table': "data",
          'day_graph': '/tmp/kimnaty/site/img/kim_pastday.png',
          'month_graph': '/tmp/kimnaty/site/img/kim_pastmonth.png',
          'year_graph': '/tmp/kimnaty/site/img/kim_pastyear.png',
