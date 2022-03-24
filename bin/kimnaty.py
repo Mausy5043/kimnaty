@@ -150,8 +150,8 @@ def get_data(mac):
         voltage = data.voltage
         success = True
     except Exception as e:
-        print(f"*** While talking to {mac}")
-        print("*** This error occured:")
+        err_date = dt.datetime.now()
+        print(f"*** While talking to {mac} this error occured on {err_date}:")
         print(f"    {e}")
 
     dt_format = "%Y-%m-%d %H:%M:%S"
