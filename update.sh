@@ -66,6 +66,8 @@ pushd "${HERE}" || exit 1
         bin/pastday.sh
         echo "Creating graphs [2]"
         bin/pastmonth.sh
+        echo "Creating graphs [2]"
+        bin/pastyear.sh
     fi
 
     echo "Please wait while services start..."
