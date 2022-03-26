@@ -121,26 +121,19 @@ def plot_graph(output_file, data_dict, plot_title):
     :return: None
     """
     global DEBUG
-    return
     # Set the bar width
     bar_width = 0.75
     # Set the color alpha
     ahpla = 0.7
     # positions of the left bar-boundaries
     for parameter in data_dict:
-
-        tick_pos = list(range(1, len(room_data) + 1))
         if DEBUG:
-            print(room_name)
-            print(room_data)
-
-            # Set the bar width
-            # bar_width = 0.75
+            print(parameter)
+        data_frame = data_dict[parameter]
         fig_x = 10
         fig_y = 2.5
         fig_fontsize = 6.5
         ahpla = 0.6
-
         """
         # ###############################
         # Create a line plot of temperatures
@@ -154,37 +147,22 @@ def plot_graph(output_file, data_dict, plot_title):
         # line_widths = [4, 1, 1, 1, 1]
         # alpha needs to be set separately
         # alphas = [ahpla / 2, ahpla, ahpla, ahpla, ahpla]
-        # for i, l in enumerate(ax1.lines):
-        #     plt.setp(l, alpha=alphas[i], linewidth=line_widths[i])
+        for i, l in enumerate(ax1.lines):
+            plt.setp(l, alpha=ahpla, linewidth=1)
         # ax1.set_ylabel("[degC]")
         ax1.legend(loc='upper left',
                    framealpha=0.2
                    )
-        # ax1.set_xlabel("Datetime")
+        ax1.set_xlabel("Datetime")
         ax1.grid(which='major',
                  axis='y',
                  color='k',
                  linestyle='--',
                  linewidth=0.5
                  )
-        plt.title(f'{plot_title}')
+        plt.title(f'{parameter} {plot_title}')
         # plt.tight_layout()
         plt.savefig(fname=f'{output_file}_{parameter}.png', format='png')
-
-        # Create the general plot and the bar
-        plt.rc("font", size=6.5)
-        dummy, ax1 = plt.subplots(1, figsize=(10, 3.5))
-    #
-    # ax1.axhline(y=0, color="k")
-    # ax1.axvline(x=0, color="k")
-    # # Set plot stuff
-    plt.xticks(tick_pos, data_lbls, rotation=-60)
-    plt.title(f"{parameter} {plot_title}")
-    plt.legend(loc="upper left", ncol=5, framealpha=0.2)
-    # # Fit every nicely
-    # plt.xlim([min(tick_pos) - bar_width, max(tick_pos) + bar_width])
-    plt.tight_layout()
-    plt.savefig(fname=f"{output_file}", format="png")
 
 
 def main():
