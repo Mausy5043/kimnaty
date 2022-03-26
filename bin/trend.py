@@ -216,5 +216,4 @@ if __name__ == "__main__":
         OPTION.months = 38
     if OPTION.debug:
         DEBUG = True
-    print(OPTION)
     main()
