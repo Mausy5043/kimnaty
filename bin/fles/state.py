@@ -19,47 +19,60 @@ def state():
     if flask.request.method == 'GET':
         pass
 
-    # day_img = "".join(["data:image/png;base64,",
-    #                    str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_pastday.png",
-    #                                              "rb"
-    #                                              ).read()))[2:-1]
-    #                    ])
-    # month_img = "".join(["data:image/png;base64,",
-    #                      str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_pastmonth.png",
-    #                                                "rb").read()))[2:-1]
-    #                      ])
-    # zappi_img = "".join(["data:image/png;base64,",
-    #                      str(base64.b64encode(open("/tmp/kamstrupd/site/img/zap_pastday.png",
-    #                                                "rb").read()))[2:-1]
-    #                      ])
-    # balance_img = "".join(["data:image/png;base64,",
-    #                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_gauge.png",
-    #                                                  "rb").read()))[2:-1]
-    #                        ])
-    # year_trend_img = "".join(["data:image/png;base64,",
-    #                           str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_pastyear.png",
-    #                                                     "rb").read()))[2:-1]
-    #                           ])
-    # year_sum_img = "".join(["data:image/png;base64,",
-    #                         str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_vs_year.png",
-    #                                                   "rb").read()))[2:-1]
-    #                         ])
-    # year_cmp_img = "".join(["data:image/png;base64,",
-    #                         str(base64.b64encode(open("/tmp/kamstrupd/site/img/kam_vs_month.png",
-    #                                                   "rb").read()))[2:-1]
-    #                         ])
-    # gld = KRAT.get_latest_data('volt_bat, load_ups, charge_bat')
+    hr_img_t = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_temperature.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    hr_img_h = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_humidity.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    hr_img_v = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_voltage.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    dy_img_t = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_temperature.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    dy_img_h = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_humidity.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    dy_img_v = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_voltage.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    mn_img_t = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_temperature.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    mn_img_h = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_humidity.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+    mn_img_v = "".join(["data:image/png;base64,",
+                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_voltage.png",
+                                                  "rb"
+                                                  ).read()))[2:-1]
+                        ])
+
     return flask.render_template('state.html',
-                                 t1_in="n/a",  # f"{gld[0]:.1f} \u00B0C",
-                                 t2_in="n/a",  # f"{gld[0]:.1f} \u00B0C",
-                                 t1_out="n/a",  # f"{gld[0]:.1f} \u00B0C",
-                                 t2_out="n/a"  # f"{gld[0]:.1f} \u00B0C",
+                                 hr_img_t=hr_img_t,
+                                 hr_img_h=hr_img_h,
+                                 hr_img_v=hr_img_v,
+                                 dy_img_t=dy_img_t,
+                                 dy_img_h=dy_img_h,
+                                 dy_img_v=dy_img_v,
+                                 mn_img_t=mn_img_t,
+                                 mn_img_h=mn_img_h,
+                                 mn_img_v=mn_img_v
                                  )
-    # day_img=day_img,
-    # month_img=month_img,
-    # zappi_img=zappi_img,
-    # balance_img=balance_img,
-    # year_trend_img=year_trend_img,
-    # year_sum_img=year_sum_img,
-    # year_cmp_img=year_cmp_img
-    # )
