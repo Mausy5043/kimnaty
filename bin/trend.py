@@ -69,6 +69,17 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     return data_dict
 
 
+def collate_data(data_dict):
+    """
+    Collate the trenddata for the parameters temperature,
+    :param data_dict: dict containing the parameters per room
+    :return: return thee dicts in a list: [temperature, humidity, voltage]
+    """
+    data_list = list()
+    # data_list = [df_temperature, df_humidity, df_voltage]
+    return data_list
+
+
 def remove_nans(frame, col_name, default):
     """remove NANs from a series"""
     for idx, tmpr in enumerate(frame[col_name]):
@@ -86,53 +97,24 @@ def plot_graph(output_file, data_dict, plot_title):
 
     :param output_file: (str) name of the trendgraph file
     :param data_dict: (dict) contains the data for the lines. Each location is a separate pandas Dataframe with a roomname
-                      {'df': Dataframe, 'room_name' str }
+                      {'df': Dataframe, 'name' str }
     :param plot_title: (str) title to be displayed above the plot
     :return: None
     """
     global DEBUG
-    if DEBUG:
-        print(data_dict)
-        print()
 
-    data_lbls = data_tuple[0]
-    import_lo = data_tuple[1]
-    import_hi = data_tuple[2]
-    opwekking = data_tuple[3]
-    export_lo = data_tuple[4]
-    export_hi = data_tuple[5]
-    imprt = lt.contract(import_lo, import_hi)
-    exprt = lt.contract(export_lo, export_hi)
-    own_usage = lt.distract(opwekking, exprt)
-    usage = lt.contract(own_usage, imprt)
-    btm_hi = lt.contract(import_lo, own_usage)
-    """
-    --- Start debugging:
-    np.set_printoptions(precision=3)
-    print("data_lbls: ", np.size(data_lbls), data_lbls[-5:])
-    print(" ")
-    print("opwekking: ", np.size(opwekking), opwekking[-5:])
-    print(" ")
-    print("export_hi: ", np.size(export_hi), export_hi[-5:])
-    print("export_lo: ", np.size(export_lo), export_lo[-5:])
-    print("exprt    : ", np.size(exprt), exprt[-5:])
-    print(" ")
-    print("import_hi: ", np.size(import_hi), import_hi[-5:])
-    print("import_lo: ", np.size(import_lo), import_lo[-5:])
-    print("imprt    : ", np.size(imprt), imprt[-5:])
-    print(" ")
-    print("own_usage: ", np.size(own_usage), own_usage[-5:])
-    print("usage    : ", np.size(usage), usage[-5:])
-    print(" ")
-    print("btm_hi   : ", np.size(btm_hi), btm_hi[-5:])
-    --- End debugging.
-    """
     # Set the bar width
     bar_width = 0.75
     # Set the color alpha
     ahpla = 0.7
     # positions of the left bar-boundaries
-    tick_pos = list(range(1, len(data_lbls) + 1))
+    for room_id in data_dict:
+        room_name = data_dict[room_id]['name']
+        room_data = data_dict[room_id]['df']
+        tick_pos = list(range(1, len(room_data) + 1))
+        if DEBUG:
+            print(room_name)
+            print(room_data)
 
     # Create the general plot and the bar
     plt.rc("font", size=6.5)
@@ -261,17 +243,17 @@ def main():
 
     if OPTION.hours:
         plot_graph(constants.TREND['day_graph'],
-                   fetch_data(hours_to_fetch=OPTION.hours, aggregation=1),
+                   collate_data(fetch_data(hours_to_fetch=OPTION.hours, aggregation=1)),
                    f"Energietrend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.days:
         plot_graph(constants.TREND['month_graph'],
-                   fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=60),
+                   collate_data(fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=60)),
                    f"Energietrend per uur afgelopen maand ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.months:
         plot_graph(constants.TREND['year_graph'],
-                   fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24),
+                   collate_data(fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24)),
                    f"Energietrend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
 
