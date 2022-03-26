@@ -3,6 +3,7 @@
 """Create trendbargraphs of the data for various periods."""
 
 import argparse
+import copy
 from datetime import datetime as dt
 import sqlite3 as s3
 import pandas as pd
@@ -32,8 +33,10 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     global TABLE
     global DEVICE_LIST
     global DEBUG
-    data_dict = dict()
     for device in DEVICE_LIST:
+        df_t = None
+        df_h = None
+        df_v = None
         room_id = device[1]
         where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
         where_condition += f" AND (room_id LIKE \'{room_id}\')"
@@ -60,22 +63,60 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         df = remove_nans(df, 'temperature', 20.0)
         df = remove_nans(df, 'humidity', 50)
         df = remove_nans(df, 'voltage', 1.800)
-        if DEBUG:
-            print(df)
-        data_dict[room_id] = dict()
-        data_dict[room_id]['df'] = df
-        # TODO: map room names onto room_id
-        data_dict[room_id]['name'] = f"room {room_id}"
+        df_t0 = copy.deepcopy(df)
+        df_t0 = df_t0.drop('humidity', axis=1)
+        df_t0 = df_t0.drop('voltage', axis=1)
+        df_t0.rename(columns={'temperature': room_id})
+        df_h0 = copy.deepcopy(df)
+        df_h0 = df_h0.drop('temperature', axis=1)
+        df_h0 = df_h0.drop('voltage', axis=1)
+        df_h0.rename(columns={'humidity': room_id})
+        df_v0 = copy.deepcopy(df)
+        df_v0 = df_v0.drop('temperature', axis=1)
+        df_v0 = df_v0.drop('humidity', axis=1)
+        df_v0.rename(columns={'voltage': room_id})
+        if not df_t:
+            df_t = df_t0
+        else:
+            df_t.merge(df_t0, left_index=True, right_index=True)
+        if not df_h:
+            df_h = df_h0
+        else:
+            df_h.merge(df_h0, left_index=True, right_index=True)
+        if not df_v:
+            df_v = df_v0
+        else:
+            df_v.merge(df_v0, left_index=True, right_index=True)
+    if DEBUG:
+        print(f"TEMPERATURE\n", df_t)
+        print(f"HUMIDITY\n", df_h)
+        print(f"VOLTAGE\n", df_v)
+    data_dict = {'temperature': df_t, 'humidity': df_h, 'voltage': df_v}
     return data_dict
 
 
 def collate_data(data_dict):
     """
-    Collate the trenddata for the parameters temperature,
+    Collate the trenddata for the parameters temperature, humidity and voltage
     :param data_dict: dict containing the parameters per room
     :return: return thee dicts in a list: [temperature, humidity, voltage]
     """
-    data_list = list()
+    collated_dict = {'temperature': pd.DataFrame,
+                     'humidity': pd.DataFrame,
+                     'voltage': pd.DataFrame
+                     }
+    collate_df = None
+    for room_id in data_dict:
+        if not collate_df:
+            for parameter in collated_dict:
+                collate_t = data_dict[room_id]['df'][parameter]
+
+        room_name = data_dict[room_id]['name']
+        room_data = data_dict[room_id]['df']
+        for parameter in collated_dict:
+            collated_dict[parameter].join(data_dict[room_id]['df'].df, how=outer)
+
+    # data_list = list()
     # data_list = [df_temperature, df_humidity, df_voltage]
     return data_list
 
@@ -109,8 +150,7 @@ def plot_graph(output_file, data_dict, plot_title):
     ahpla = 0.7
     # positions of the left bar-boundaries
     for room_id in data_dict:
-        room_name = data_dict[room_id]['name']
-        room_data = data_dict[room_id]['df']
+
         tick_pos = list(range(1, len(room_data) + 1))
         if DEBUG:
             print(room_name)
