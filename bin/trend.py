@@ -33,10 +33,10 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     global TABLE
     global DEVICE_LIST
     global DEBUG
+    df_t = None
+    df_h = None
+    df_v = None
     for device in DEVICE_LIST:
-        df_t = None
-        df_h = None
-        df_v = None
         room_id = device[1]
         where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
         where_condition += f" AND (room_id LIKE \'{room_id}\')"
@@ -58,35 +58,39 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         # resample to monotonic timeline
         df = df.resample(f'{aggregation}min').mean()
         df = df.interpolate(method='slinear')
-        df = df.reset_index(level=['sample_epoch'])
+        # df = df.reset_index(level=['sample_epoch'])
         # remove NaNs
-        df = remove_nans(df, 'temperature', 20.0)
-        df = remove_nans(df, 'humidity', 50)
-        df = remove_nans(df, 'voltage', 1.800)
+        # df = remove_nans(df, 'temperature', 20.0)
+        # df = remove_nans(df, 'humidity', 50)
+        # df = remove_nans(df, 'voltage', 1.800)
+
         df_t0 = copy.deepcopy(df)
         df_t0 = df_t0.drop('humidity', axis=1)
         df_t0 = df_t0.drop('voltage', axis=1)
-        df_t0.rename(columns={'temperature': room_id})
+        df_t0.rename(columns={'temperature': room_id}, inplace=True)
+        if df_t is None:
+            df_t = df_t0
+        else:
+            df_t = pd.merge(df_t, df_t0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
+
         df_h0 = copy.deepcopy(df)
         df_h0 = df_h0.drop('temperature', axis=1)
         df_h0 = df_h0.drop('voltage', axis=1)
-        df_h0.rename(columns={'humidity': room_id})
-        df_v0 = copy.deepcopy(df)
-        df_v0 = df_v0.drop('temperature', axis=1)
-        df_v0 = df_v0.drop('humidity', axis=1)
-        df_v0.rename(columns={'voltage': room_id})
-        if not df_t:
-            df_t = df_t0
-        else:
-            df_t.merge(df_t0, left_index=True, right_index=True)
+        df_h0.rename(columns={'humidity': room_id}, inplace=True)
         if not df_h:
             df_h = df_h0
         else:
-            df_h.merge(df_h0, left_index=True, right_index=True)
+            df_h = pd.merge(df_h, df_h0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
+
+        df_v0 = copy.deepcopy(df)
+        df_v0 = df_v0.drop('temperature', axis=1)
+        df_v0 = df_v0.drop('humidity', axis=1)
+        df_v0.rename(columns={'voltage': room_id}, inplace=True)
         if not df_v:
-            df_v = df_v0
+            df_v = df_v = df_v0
         else:
-            df_v.merge(df_v0, left_index=True, right_index=True)
+            df_v.join(df_v0)
+            df_v = pd.merge(df_v, df_v0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
     if DEBUG:
         print(f"TEMPERATURE\n", df_t)
         print(f"HUMIDITY\n", df_h)
@@ -117,7 +121,7 @@ def plot_graph(output_file, data_dict, plot_title):
     :return: None
     """
     global DEBUG
-
+    return
     # Set the bar width
     bar_width = 0.75
     # Set the color alpha
