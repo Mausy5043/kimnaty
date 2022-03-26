@@ -20,47 +20,47 @@ def state():
         pass
 
     hr_img_t = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_temperature.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_hours_temperature.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     hr_img_h = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_humidity.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_hours_humidity.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     hr_img_v = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_hours_voltage.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_hours_voltage.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     dy_img_t = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_temperature.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_days_temperature.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     dy_img_h = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_humidity.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_days_humidity.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     dy_img_v = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_days_voltage.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_days_voltage.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     mn_img_t = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_temperature.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_months_temperature.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     mn_img_h = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_humidity.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_months_humidity.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
     mn_img_v = "".join(["data:image/png;base64,",
-                        str(base64.b64encode(open("/tmp/kamstrupd/site/img/kim_months_voltage.png",
+                        str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_months_voltage.png",
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
