@@ -18,6 +18,7 @@ DATABASE = constants.TREND['database']
 TABLE = constants.TREND['sql_table']
 DEVICE_LIST = constants.DEVICES
 OPTION = ""
+DEBUG = False
 
 
 def fetch_data(hours_to_fetch=48, aggregation=1):
@@ -30,13 +31,17 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     global DATABASE
     global TABLE
     global DEVICE_LIST
+    global DEBUG
     data_dict = dict()
     where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
     for device in DEVICE_LIST:
         room_id = device[1]
         where_condition += f" AND (room_id LIKE \'{room_id}\')"
+        s3_query = f"SELECT * FROM {TABLE} WHERE {where_condition}"
+        if DEBUG:
+            print(s3_query)
         with s3.connect(DATABASE) as con:
-            df = pd.read_sql_query(f"SELECT * FROM {TABLE} WHERE {where_condition}",
+            df = pd.read_sql_query(s3_query,
                                    con,
                                    parse_dates='sample_time',
                                    index_col='sample_epoch'
@@ -53,6 +58,8 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         df = remove_nans(df, 'temperature', 20.0)
         df = remove_nans(df, 'humidity', 50)
         df = remove_nans(df, 'voltage', 1.800)
+        if DEBUG:
+            print(df)
         data_dict[room_id] = dict()
         data_dict[room_id]['df'] = df
         # TODO: map room names onto room_id
@@ -272,6 +279,11 @@ if __name__ == "__main__":
                         type=int,
                         help="number of months of data to use for the graph",
                         )
+    parser_group = parser.add_mutually_exclusive_group(required=False)
+    parser_group.add_argument("--debug",
+                              action="store_true",
+                              help="start in debugging mode"
+                              )
     OPTION = parser.parse_args()
     if OPTION.hours == 0:
         OPTION.hours = 50
@@ -279,4 +291,7 @@ if __name__ == "__main__":
         OPTION.days = 50
     if OPTION.months == 0:
         OPTION.months = 38
+    if OPTION.debug:
+        DEBUG = True
+    print(OPTION)
     main()
