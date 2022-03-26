@@ -143,10 +143,7 @@ def plot_graph(output_file, data_dict, plot_title):
         ax1 = data_frame.plot(kind='line',
                               figsize=(fig_x, fig_y)
                               )
-        # linewidths need to be set separately
-        # line_widths = [4, 1, 1, 1, 1]
-        # alpha needs to be set separately
-        # alphas = [ahpla / 2, ahpla, ahpla, ahpla, ahpla]
+        # linewidth and alpha need to be set separately
         for i, l in enumerate(ax1.lines):
             plt.setp(l, alpha=ahpla, linewidth=1)
         # ax1.set_ylabel("[degC]")
