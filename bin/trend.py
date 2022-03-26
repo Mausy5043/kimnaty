@@ -33,9 +33,9 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     global DEVICE_LIST
     global DEBUG
     data_dict = dict()
-    where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
     for device in DEVICE_LIST:
         room_id = device[1]
+        where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
         where_condition += f" AND (room_id LIKE \'{room_id}\')"
         s3_query = f"SELECT * FROM {TABLE} WHERE {where_condition}"
         if DEBUG:
