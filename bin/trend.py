@@ -77,7 +77,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         df_h0 = df_h0.drop('temperature', axis=1)
         df_h0 = df_h0.drop('voltage', axis=1)
         df_h0.rename(columns={'humidity': room_id}, inplace=True)
-        if df_h = None:
+        if df_h is None:
             df_h = df_h0
         else:
             df_h = pd.merge(df_h, df_h0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
