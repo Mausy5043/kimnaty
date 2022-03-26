@@ -46,6 +46,8 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
                                    parse_dates='sample_time',
                                    index_col='sample_epoch'
                                    )
+        # conserve memory; we dont need the room_id repeated in every row.
+        df = df.drop('room_id', 1)
         for c in df.columns:
             if c not in ['sample_time']:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
