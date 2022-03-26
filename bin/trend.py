@@ -95,32 +95,6 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     return data_dict
 
 
-def collate_data(data_dict):
-    """
-    Collate the trenddata for the parameters temperature, humidity and voltage
-    :param data_dict: dict containing the parameters per room
-    :return: return thee dicts in a list: [temperature, humidity, voltage]
-    """
-    collated_dict = {'temperature': pd.DataFrame,
-                     'humidity': pd.DataFrame,
-                     'voltage': pd.DataFrame
-                     }
-    collate_df = None
-    for room_id in data_dict:
-        if not collate_df:
-            for parameter in collated_dict:
-                collate_t = data_dict[room_id]['df'][parameter]
-
-        room_name = data_dict[room_id]['name']
-        room_data = data_dict[room_id]['df']
-        for parameter in collated_dict:
-            collated_dict[parameter].join(data_dict[room_id]['df'].df, how=outer)
-
-    # data_list = list()
-    # data_list = [df_temperature, df_humidity, df_voltage]
-    return data_list
-
-
 def remove_nans(frame, col_name, default):
     """remove NANs from a series"""
     for idx, tmpr in enumerate(frame[col_name]):
@@ -283,17 +257,17 @@ def main():
 
     if OPTION.hours:
         plot_graph(constants.TREND['day_graph'],
-                   collate_data(fetch_data(hours_to_fetch=OPTION.hours, aggregation=1)),
+                   fetch_data(hours_to_fetch=OPTION.hours, aggregation=1),
                    f"Energietrend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.days:
         plot_graph(constants.TREND['month_graph'],
-                   collate_data(fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=60)),
+                   fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=60),
                    f"Energietrend per uur afgelopen maand ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.months:
         plot_graph(constants.TREND['year_graph'],
-                   collate_data(fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24)),
+                   fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24),
                    f"Energietrend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
 
