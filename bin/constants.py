@@ -38,6 +38,5 @@ KIMNATY = {'database': _DATABASE,
            'samplespercycle': 1
            }
 
-DEVICES = [['A4:C1:38:99:AC:4D', '0.1.0'],
-           ['A4:C1:38:99:AC:4D', '0.1.1']
+DEVICES = [['A4:C1:38:99:AC:4D', '2.4', 'badkamer']
            ]
