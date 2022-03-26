@@ -47,7 +47,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
                                    index_col='sample_epoch'
                                    )
         # conserve memory; we dont need the room_id repeated in every row.
-        df = df.drop('room_id', 1)
+        df = df.drop('room_id', axis=1)
         for c in df.columns:
             if c not in ['sample_time']:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -80,9 +80,21 @@ def remove_nans(frame, col_name, default):
     return frame
 
 
-def plot_graph(output_file, data_dict, plot_title, show_data=0):
-    """...
+def plot_graph(output_file, data_dict, plot_title):
     """
+    Plot the data into a graph
+
+    :param output_file: (str) name of the trendgraph file
+    :param data_dict: (dict) contains the data for the lines. Each location is a separate pandas Dataframe with a roomname
+                      {'df': Dataframe, 'room_name' str }
+    :param plot_title: (str) title to be displayed above the plot
+    :return: None
+    """
+    global DEBUG
+    if DEBUG:
+        print(data_dict)
+        print()
+
     data_lbls = data_tuple[0]
     import_lo = data_tuple[1]
     import_hi = data_tuple[2]
