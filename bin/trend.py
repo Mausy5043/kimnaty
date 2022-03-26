@@ -127,128 +127,62 @@ def plot_graph(output_file, data_dict, plot_title):
     # Set the color alpha
     ahpla = 0.7
     # positions of the left bar-boundaries
-    for room_id in data_dict:
+    for parameter in data_dict:
 
         tick_pos = list(range(1, len(room_data) + 1))
         if DEBUG:
             print(room_name)
             print(room_data)
 
-    # Create the general plot and the bar
-    plt.rc("font", size=6.5)
-    dummy, ax1 = plt.subplots(1, figsize=(10, 3.5))
-    col_import = "red"
-    col_export = "blue"
-    col_usage = "green"
+            # Set the bar width
+            # bar_width = 0.75
+        fig_x = 10
+        fig_y = 2.5
+        fig_fontsize = 6.5
+        ahpla = 0.6
 
-    # Create a bar plot of import_lo
-    ax1.bar(tick_pos,
-            import_hi,
-            width=bar_width,
-            label="Inkoop (normaal)",
-            alpha=ahpla,
-            color=col_import,
-            align="center",
-            bottom=btm_hi,  # [sum(i) for i in zip(import_lo, own_usage)]
-            )
-    # Create a bar plot of import_hi
-    ax1.bar(tick_pos,
-            import_lo,
-            width=bar_width,
-            label="Inkoop (dal)",
-            alpha=ahpla * 0.5,
-            color=col_import,
-            align="center",
-            bottom=own_usage,
-            )
-    # Create a bar plot of own_usage
-    ax1.bar(tick_pos,
-            own_usage,
-            width=bar_width,
-            label="Eigen gebruik",
-            alpha=ahpla,
-            color=col_usage,
-            align="center",
-            )
-    if show_data == 1:
-        for i, v in enumerate(own_usage):
-            ax1.text(tick_pos[i],
-                     10,
-                     "{:7.3f}".format(v),
-                     {"ha": "center", "va": "bottom"},
-                     rotation=-90,
-                     )
-    if show_data == 2:
-        for i, v in enumerate(usage):
-            ax1.text(tick_pos[i],
-                     500,
-                     "{:4.0f}".format(v),
-                     {"ha": "center", "va": "bottom"},
-                     fontsize=12,
-                     )
-    # Exports hang below the y-axis
-    # Create a bar plot of export_lo
-    ax1.bar(tick_pos,
-            [-1 * i for i in export_lo],
-            width=bar_width,
-            label="Verkoop (dal)",
-            alpha=ahpla * 0.5,
-            color=col_export,
-            align="center",
-            )
-    # Create a bar plot of export_hi
-    ax1.bar(tick_pos,
-            [-1 * i for i in export_hi],
-            width=bar_width,
-            label="Verkoop (normaal)",
-            alpha=ahpla,
-            color=col_export,
-            align="center",
-            bottom=[-1 * i for i in export_lo],
-            )
-    if show_data == 1:
-        for i, v in enumerate(exprt):
-            ax1.text(tick_pos[i],
-                     -10,
-                     "{:7.3f}".format(v),
-                     {"ha": "center", "va": "top"},
-                     rotation=-90,
-                     )
-    if show_data == 2:
-        for i, v in enumerate(exprt):
-            ax1.text(tick_pos[i],
-                     -500,
-                     "{:4.0f}".format(v),
-                     {"ha": "center", "va": "top"},
-                     fontsize=12,
-                     )
+        """
+        # ###############################
+        # Create a line plot of temperatures
+        # ###############################
+        """
+        plt.rc('font', size=fig_fontsize)
+        ax1 = data_frame.plot(kind='line',
+                              figsize=(fig_x, fig_y)
+                              )
+        # linewidths need to be set separately
+        # line_widths = [4, 1, 1, 1, 1]
+        # alpha needs to be set separately
+        # alphas = [ahpla / 2, ahpla, ahpla, ahpla, ahpla]
+        # for i, l in enumerate(ax1.lines):
+        #     plt.setp(l, alpha=alphas[i], linewidth=line_widths[i])
+        # ax1.set_ylabel("[degC]")
+        ax1.legend(loc='upper left',
+                   framealpha=0.2
+                   )
+        # ax1.set_xlabel("Datetime")
+        ax1.grid(which='major',
+                 axis='y',
+                 color='k',
+                 linestyle='--',
+                 linewidth=0.5
+                 )
+        plt.title(f'{plot_title}')
+        # plt.tight_layout()
+        plt.savefig(fname=f'{output_file}_{parameter}.png', format='png')
 
-    # Set Axes stuff
-    ax1.set_ylabel("[kWh]")
-    if show_data == 0:
-        y_lo = -1 * (max(exprt) + 1)
-        y_hi = max(usage) + 1
-        if y_lo > -1.5:
-            y_lo = -1.5
-        if y_hi < 1.5:
-            y_hi = 1.5
-        ax1.set_ylim([y_lo, y_hi])
-
-    ax1.set_xlabel("Datetime")
-    ax1.grid(which="major",
-             axis="y",
-             color="k",
-             linestyle="--",
-             linewidth=0.5
-             )
-    ax1.axhline(y=0, color="k")
-    ax1.axvline(x=0, color="k")
-    # Set plot stuff
+        # Create the general plot and the bar
+        plt.rc("font", size=6.5)
+        dummy, ax1 = plt.subplots(1, figsize=(10, 3.5))
+    #
+    # ax1.axhline(y=0, color="k")
+    # ax1.axvline(x=0, color="k")
+    # # Set plot stuff
     plt.xticks(tick_pos, data_lbls, rotation=-60)
-    plt.title(f"{plot_title}")
+    plt.title(f"{parameter} {plot_title}")
     plt.legend(loc="upper left", ncol=5, framealpha=0.2)
-    # Fit every nicely
-    plt.xlim([min(tick_pos) - bar_width, max(tick_pos) + bar_width])
+    # # Fit every nicely
+    # plt.xlim([min(tick_pos) - bar_width, max(tick_pos) + bar_width])
     plt.tight_layout()
     plt.savefig(fname=f"{output_file}", format="png")
 
@@ -262,17 +196,17 @@ def main():
     if OPTION.hours:
         plot_graph(constants.TREND['day_graph'],
                    fetch_data(hours_to_fetch=OPTION.hours, aggregation=1),
-                   f"Energietrend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
+                   f" trend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.days:
         plot_graph(constants.TREND['month_graph'],
                    fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=60),
-                   f"Energietrend per uur afgelopen maand ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
+                   f" trend per uur afgelopen maand ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.months:
         plot_graph(constants.TREND['year_graph'],
                    fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24),
-                   f"Energietrend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
+                   f" trend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
 
 
