@@ -93,9 +93,8 @@ def main():
             if pause_time > 0:
                 if DEBUG:
                     print(f"Waiting  : {pause_time:.1f}s")
-                time.sleep(pause_time)
-                if DEBUG:
                     print("................................")
+                time.sleep(1.0)
             else:
                 if DEBUG:
                     print(f"Behind   : {pause_time:.1f}s")
