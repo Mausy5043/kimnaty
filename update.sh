@@ -69,9 +69,9 @@ pushd "${HERE}" || exit 1
     fi
 
     echo "Please wait while services start..."
-    sudo systemctl start kimnaty.trend.day.timer
-    sudo systemctl start kimnaty.trend.month.timer
-    sudo systemctl start kimnaty.trend.year.timer
+#    sudo systemctl start kimnaty.trend.day.timer
+#    sudo systemctl start kimnaty.trend.month.timer
+#    sudo systemctl start kimnaty.trend.year.timer
     #sudo systemctl start kimnaty.fles.service &
     # killer is normally not stopped.
     sudo systemctl restart kimnaty.bluepy-helper-killer.service &
