@@ -20,9 +20,9 @@ if not os.path.isfile(_DATABASE):
 
 TREND = {'database': _DATABASE,
          'sql_table': "data",
-         'day_graph': '/tmp/kimnaty/site/img/kim_pastday',
-         'month_graph': '/tmp/kimnaty/site/img/kim_pastmonth',
-         'year_graph': '/tmp/kimnaty/site/img/kim_pastyear'
+         'day_graph': '/tmp/kimnaty/site/img/kim_hours',
+         'month_graph': '/tmp/kimnaty/site/img/kim_days',
+         'year_graph': '/tmp/kimnaty/site/img/kim_months'
          }
 
 KIMNATY = {'database': _DATABASE,
