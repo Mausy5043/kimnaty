@@ -234,13 +234,6 @@ def do_add_to_database(results, fdatabase, sql_cmd):
     conn = None
     cursor = None
     for data in results:
-        # result = (data[0],
-        #           data[1],
-        #           data[2],
-        #           data[3],
-        #           data[4],
-        #           data[5]
-        #           )
         result = tuple(data)
         if DEBUG:
             print(f"    : {result}")
