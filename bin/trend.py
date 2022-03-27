@@ -3,7 +3,6 @@
 """Create trendbargraphs of the data for various periods."""
 
 import argparse
-import copy
 from datetime import datetime as dt
 import sqlite3 as s3
 import pandas as pd
@@ -12,8 +11,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import constants
-
-# import libtrend as lt
 
 DATABASE = constants.TREND['database']
 TABLE = constants.TREND['sql_table']
