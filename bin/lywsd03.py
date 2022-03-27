@@ -14,15 +14,12 @@ for mac in args.mac:
     except Exception as e:
         print(e)
 
-    while True:
-        try:
-            print(f'Fetching data from {mac}')
-            data = client.data
-            print(f'Temperature       : {data.temperature}°C')
-            print(f'Humidity          : {data.humidity}%')
-            print(f'Battery           : {data.battery}% ({data.voltage}V)')
-            print()
-        except Exception as e:
-            print(e)
-        print("sleeping...")
-        time.sleep(10)
+    try:
+        print(f'Fetching data from {mac}')
+        data = client.data
+        print(f'Temperature       : {data.temperature}°C')
+        print(f'Humidity          : {data.humidity}%')
+        print(f'Battery           : {data.battery}% ({data.voltage}V)')
+        print()
+    except Exception as e:
+        print(e)
