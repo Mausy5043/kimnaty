@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Common functions for Flask webUI"""
 
-import json
 import os
 import sys
 import sqlite3
-import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 import constants  # noqa

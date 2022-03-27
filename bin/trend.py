@@ -87,7 +87,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         df_v0 = df_v0.drop('humidity', axis=1)
         df_v0.rename(columns={'voltage': room_id}, inplace=True)
         if df_v is None:
-            df_v = df_v = df_v0
+            df_v = df_v0
         else:
             df_v.join(df_v0)
             df_v = pd.merge(df_v, df_v0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
@@ -115,17 +115,13 @@ def plot_graph(output_file, data_dict, plot_title):
     Plot the data into a graph
 
     :param output_file: (str) name of the trendgraph file
-    :param data_dict: (dict) contains the data for the lines. Each location is a separate pandas Dataframe with a roomname
-                      {'df': Dataframe, 'name' str }
+    :param data_dict: (dict) contains the data for the lines. Each paramter is a separate pandas Dataframe
+                      {'df': Dataframe}
     :param plot_title: (str) title to be displayed above the plot
     :return: None
     """
     global DEBUG
-    # Set the bar width
-    bar_width = 0.75
-    # Set the color alpha
-    ahpla = 0.7
-    # positions of the left bar-boundaries
+
     for parameter in data_dict:
         if DEBUG:
             print(parameter)
@@ -133,7 +129,7 @@ def plot_graph(output_file, data_dict, plot_title):
         fig_x = 10
         fig_y = 2.5
         fig_fontsize = 6.5
-        ahpla = 0.6
+        ahpla = 0.7
         """
         # ###############################
         # Create a line plot of temperatures
