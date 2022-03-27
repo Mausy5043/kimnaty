@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS data;
 CREATE TABLE data (
     sample_time   datetime NOT NULL,
     sample_epoch  integer NOT NULL,
-    sample_epoch  integer,
     room_id       integer,
     temperature   real,
     humidity      real,
