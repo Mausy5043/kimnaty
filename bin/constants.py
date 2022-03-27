@@ -40,8 +40,29 @@ KIMNATY = {'database': _DATABASE,
            'samplespercycle': 1
            }
 
+AC = {'database': _DATABASE,
+      'sql_command': "INSERT INTO aircon ("
+                     "sample_time, sample_epoch, "
+                     "room_id, "
+                     "ac_power, ac_mode,"
+                     "temperature_ac, temperature_target, temperature_outside, "
+                     "cmp_freq) "
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      'sql_table': "aircon",
+      }
+
 DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
            ]
+
+AIRCO = [{'name': 'airco0',
+          'ip': '192.168.2.30',
+          'device': None
+          },
+         {'name': 'airco1',
+          'ip': '192.168.2.31',
+          'device': None
+          }
+         ]
 
 _s3_query = f"SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
