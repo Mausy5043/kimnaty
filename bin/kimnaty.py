@@ -17,6 +17,7 @@ import mausy5043libs.libsignals3 as ml  # noqa
 
 import constants
 import lywsd03mmc
+import libdaikin
 
 # from hanging_threads import start_monitoring
 
@@ -61,6 +62,13 @@ def main():
     report_time = int(constants.KIMNATY['report_time'])
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     list_of_devices = constants.DEVICES
+    if DEBUG:
+        print(list_of_devices)
+    list_of_aircos = constants.AIRCO
+    for airco in list_of_aircos:
+        airco['device'] = libdaikin.Daikin(airco['ip'])
+    if DEBUG:
+        print(list_of_aircos)
 
     test_db_connection(fdatabase)
 

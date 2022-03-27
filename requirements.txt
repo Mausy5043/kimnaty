@@ -4,5 +4,6 @@ lywsd02
 matplotlib
 numpy
 pandas
+requests
 scipy
 uwsgi

@@ -43,6 +43,16 @@ KIMNATY = {'database': _DATABASE,
 DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
            ]
 
+AIRCO = [{'name': 'airco0',
+          'ip': '192.168.2.30',
+          'device': None
+          },
+         {'name': 'airco1',
+          'ip': '192.168.2.31',
+          'device': None
+          }
+         ]
+
 _s3_query = f"SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
     ROOMS = pd.read_sql_query(_s3_query,
