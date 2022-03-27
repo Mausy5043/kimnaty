@@ -52,23 +52,26 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         # resample to monotonic timeline
         df = df.resample(f'{aggregation}min').mean()
         df = df.interpolate(method='slinear')
-
+        try:
+            new_name = ROOMS[room_id]
+        except KeyError:
+            new_name = room_id
         df_t = collate(df_t, df,
                        columns_to_drop=['voltage', 'humidity'],
                        column_to_rename='temperature',
-                       new_name=ROOMS[room_id]
+                       new_name=new_name
                        )
 
         df_h = collate(df_h, df,
                        columns_to_drop=['temperature', 'voltage'],
                        column_to_rename='humidity',
-                       new_name=ROOMS[room_id]
+                       new_name=new_name
                        )
 
         df_v = collate(df_v, df,
                        columns_to_drop=['temperature', 'humidity'],
                        column_to_rename='voltage',
-                       new_name=ROOMS[room_id]
+                       new_name=new_name
                        )
 
     if DEBUG:
