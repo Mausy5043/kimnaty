@@ -76,12 +76,12 @@ def main():
     while not killer.kill_now:
         if time.time() > next_time:
             start_time = time.time()
-            results = do_work(list_of_devices)
+            rht_results = do_work_rht(list_of_devices)
             if DEBUG:
-                print(f"Result   : {results}")
+                print(f"Result   : {rht_results}")
             # report samples
-            if results:
-                do_add_to_database(results, fdatabase, sqlcmd)
+            if rht_results:
+                do_add_to_database(rht_results, fdatabase, sqlcmd)
 
             pause_time = (sample_time
                           - (time.time() - start_time)
@@ -101,12 +101,12 @@ def main():
             time.sleep(1.0)
 
 
-def do_work(dev_list):
+def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
     data_list = list()
     retry_list = list()
     for mac in dev_list:
-        succes, data = get_data(mac[0])
+        succes, data = get_rht_data(mac[0])
         data[2] = mac[1]  # replace mac-address by room-id
         if succes:
             data_list.append(data)
@@ -118,14 +118,14 @@ def do_work(dev_list):
             print("Retrying failed connections in 15s...")
         time.sleep(15.0)
         for mac in retry_list:
-            succes, data = get_data(mac[0])
+            succes, data = get_rht_data(mac[0])
             data[2] = mac[1]  # replace mac-address by room-id
             if succes:
                 data_list.append(data)
     return data_list
 
 
-def get_data(mac):
+def get_rht_data(mac):
     """Fetch data from a device."""
     temperature = 0.0
     humidity = 0
@@ -155,6 +155,69 @@ def get_data(mac):
     out_epoch = int(out_date.timestamp())
 
     return success, [out_date.strftime(dt_format), out_epoch, mac, temperature, humidity, voltage]
+
+
+def do_work_ac(dev_list):
+    """Scan the devices to get current readings."""
+    data_list = list()
+    retry_list = list()
+    for airco in dev_list:
+        succes, data = get_ac_data(airco)
+        if succes:
+            data_list.append(data)
+        else:
+            retry_list.append(airco)
+
+    if retry_list:
+        if DEBUG:
+            print("Retrying failed connections in 13s...")
+        time.sleep(13.0)
+        for airco in retry_list:
+            succes, data = get_ac_data(airco)
+            if succes:
+                data_list.append(data)
+    return data_list
+
+
+def get_ac_data(airco):
+    """Fetch data from an AC device."""
+    ac_pwr = ac_mode = ac_cmp = None
+    ac_t_in = ac_t_tgt = ac_t_out = None
+    success = False
+    try:
+        if DEBUG:
+            print(f"'Fetching data from {airco['name']}")
+        ac_pwr = airco['device'].power
+        ac_mode = airco['device'].mode
+        ac_cmp = airco['device'].compressor_frequency
+        ac_t_in = airco['device'].inside_temperature
+        ac_t_tgt = airco['device'].target_temperature
+        ac_t_out = airco['device'].outside_temperature
+        if DEBUG:
+            print(f"+----------------Room {airco['name']} Data----")
+            print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC "
+                  f"state = {ac_pwr}")
+            print(f"|             Target >>>> {ac_t_tgt:.2f} degC "
+                  f" mode = {ac_mode}")
+            print(f"|             Outside     {ac_t_out:.2f} degC")
+            print(f"| compressor: {ac_cmp:.0f} ")
+            print("+---------------------------------------------")
+        success = True
+    except Exception as e:
+        err_date = dt.datetime.now()
+        print(f"*** While talking to {airco['name']} this error occured on {err_date}:")
+        print(f"    {e}")
+
+    dt_format = "%Y-%m-%d %H:%M:%S"
+    out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
+    out_epoch = int(out_date.timestamp())
+
+    return success, [out_date.strftime(dt_format), out_epoch,
+                     {airco['name']},
+                     ac_pwr, ac_mode,
+                     ac_t_in, ac_t_tgt, ac_t_out,
+                     ac_cmp
+                     ]
 
 
 def do_add_to_database(results, fdatabase, sql_cmd):
