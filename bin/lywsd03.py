@@ -24,4 +24,5 @@ for mac in args.mac:
             print()
         except Exception as e:
             print(e)
+        print("sleeping...")
         time.sleep(10)
