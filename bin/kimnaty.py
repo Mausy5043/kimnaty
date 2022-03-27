@@ -83,10 +83,11 @@ def main():
             ac_results = do_work_ac(list_of_aircos)
             if DEBUG:
                 print(f"Result   : {ac_results}")
-            sys.exit(0)
             # report samples
             if rht_results:
                 do_add_to_database(rht_results, fdatabase, sqlcmd)
+            if ac_results:
+                do_add_to_database(ac_results, fdatabase, sqlcmd)
 
             pause_time = (sample_time
                           - (time.time() - start_time)
@@ -218,7 +219,7 @@ def get_ac_data(airco):
     out_epoch = int(out_date.timestamp())
 
     return success, [out_date.strftime(dt_format), out_epoch,
-                     {airco['name']},
+                     airco['name'],
                      ac_pwr, ac_mode,
                      ac_t_in, ac_t_tgt, ac_t_out,
                      ac_cmp
@@ -227,17 +228,17 @@ def get_ac_data(airco):
 
 def do_add_to_database(results, fdatabase, sql_cmd):
     """Commit the results to the database."""
-    # Get the time and date in human-readable form and UN*X-epoch...
     conn = None
     cursor = None
     for data in results:
-        result = (data[0],
-                  data[1],
-                  data[2],
-                  data[3],
-                  data[4],
-                  data[5]
-                  )
+        # result = (data[0],
+        #           data[1],
+        #           data[2],
+        #           data[3],
+        #           data[4],
+        #           data[5]
+        #           )
+        result = tuple(data)
         if DEBUG:
             print(f"    : {result}")
 

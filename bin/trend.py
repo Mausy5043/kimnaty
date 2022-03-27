@@ -145,7 +145,10 @@ def plot_graph(output_file, data_dict, plot_title):
                  )
         plt.title(f'{parameter} {plot_title}')
         # plt.tight_layout()
-        plt.savefig(fname=f'{output_file}_{parameter}.png', format='png')
+        plt.savefig(fname=f'{output_file}_{parameter}.png',
+                    format='png',
+                    # bbox_inches='tight'
+                    )
 
 
 def main():
