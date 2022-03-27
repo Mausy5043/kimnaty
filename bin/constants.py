@@ -20,12 +20,9 @@ if not os.path.isfile(_DATABASE):
 
 TREND = {'database': _DATABASE,
          'sql_table': "data",
-         'day_graph': '/tmp/kimnaty/site/img/kim_pastday.png',
-         'month_graph': '/tmp/kimnaty/site/img/kim_pastmonth.png',
-         'year_graph': '/tmp/kimnaty/site/img/kim_pastyear.png',
-         'vsyear_graph': '/tmp/kimnaty/site/img/kim_vs_year.png',
-         'yg_vs_month': '/tmp/kimnaty/site/img/kim_vs_month.png',
-         'yg_gauge': '/tmp/kimnaty/site/img/kim_gauge.png'
+         'day_graph': '/tmp/kimnaty/site/img/kim_hours',
+         'month_graph': '/tmp/kimnaty/site/img/kim_days',
+         'year_graph': '/tmp/kimnaty/site/img/kim_months'
          }
 
 KIMNATY = {'database': _DATABASE,
@@ -41,5 +38,7 @@ KIMNATY = {'database': _DATABASE,
            'samplespercycle': 1
            }
 
-DEVICES = [['A4:C1:38:99:AC:4D', '0.1.0']
+DEVICES = [['A4:C1:38:99:AC:4D', '0.1.0', 'woonkamer'],
+           ['A4:C1:38:99:AC:4D', '1.4', 'badkamer'],
+           ['A4:C1:38:99:AC:4D', '0.6', 'kweektafel']
            ]

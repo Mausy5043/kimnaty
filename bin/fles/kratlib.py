@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Common functions for Flask webUI"""
 
-import json
 import os
 import sys
 import sqlite3
-import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 import constants  # noqa
@@ -38,7 +36,6 @@ class Fles:
         self.CONFIG = f'{self.MYROOT}/.config/kimdata.json'
         self.req_state = dict()
         self.ctrl_state = dict()
-        self.load_state()
 
     def get_latest_data(self, fields):
         """Retrieve the most recent datapoints from the database."""

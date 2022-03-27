@@ -75,9 +75,9 @@ def main():
 
     test_db_connection(fdatabase)
 
-    pause_time = time.time()
+    next_time = time.time()
     while not killer.kill_now:
-        if time.time() > pause_time:
+        if time.time() > next_time:
             start_time = time.time()
             results = do_work(list_of_devices)
             if DEBUG:
@@ -90,12 +90,12 @@ def main():
                           - (time.time() - start_time)
                           - (start_time % sample_time)
                           )
+            next_time = time.time() + pause_time
             if pause_time > 0:
                 if DEBUG:
                     print(f"Waiting  : {pause_time:.1f}s")
-                time.sleep(pause_time)
-                if DEBUG:
                     print("................................")
+                time.sleep(1.0)
             else:
                 if DEBUG:
                     print(f"Behind   : {pause_time:.1f}s")

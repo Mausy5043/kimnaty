@@ -5,7 +5,7 @@
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
     <meta content="IE=edge" http-equiv="X-UA-Compatible">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>Stream Status</title>
+    <title>Room Status</title>
     <link href="{{ url_for('static', filename='favicon.ico') }}" rel="shortcut icon">
     <!-- Latest compiled and minified CSS -->
     <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -26,38 +26,40 @@
 
 <body>
 
-<div class="container">
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col">
-                <h3>{{ t1_in }}</h3>
-                T1 import [W]
-            </div>
-            <div class="col">
-                <h4>{{ t2_in }}</h4>
-                T2 import [W]
-            </div>
-            <div class="col">
-                <h3>{{ t1_out }}</h3>
-                T1 export [W]
-            </div>
-            <div class="col">
-                <h3>{{ t2_out }}</h3>
-                T2 export [W]
-            </div>
-        </div>
-    </div>
-</div>
+<!--<div class="container">-->
+<!--    <div class="jumbotron">-->
+<!--        <div class="row">-->
+<!--            <div class="col">-->
+<!--                <h3>{{ t1_in }}</h3>-->
+<!--                T1 import [W]-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <h4>{{ t2_in }}</h4>-->
+<!--                T2 import [W]-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <h3>{{ t1_out }}</h3>-->
+<!--                T1 export [W]-->
+<!--            </div>-->
+<!--            <div class="col">-->
+<!--                <h3>{{ t2_out }}</h3>-->
+<!--                T2 export [W]-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
 
 <div class="container">
     <div class="jumbotron">
-        <img class="img-fluid" src="{{ day_img }}">
-        <img class="img-fluid" src="{{ month_img }}">
-        <img class="img-fluid" src="{{ zappi_img }}">
-        <img class="img-fluid" src="{{ balance_img }}">
-        <img class="img-fluid" src="{{ year_trend_img }}">
-        <img class="img-fluid" src="{{ year_sum_img }}">
-        <img class="img-fluid" src="{{ year_cmp_img }}">
+        <img class="img-fluid" src="{{ hr_img_t }}">
+        <img class="img-fluid" src="{{ hr_img_h }}">
+        <img class="img-fluid" src="{{ hr_img_v }}">
+        <img class="img-fluid" src="{{ dy_img_t }}">
+        <img class="img-fluid" src="{{ dy_img_h }}">
+        <img class="img-fluid" src="{{ dy_img_v }}">
+        <img class="img-fluid" src="{{ mn_img_t }}">
+        <img class="img-fluid" src="{{ mn_img_h }}">
+        <img class="img-fluid" src="{{ mn_img_v }}">
     </div>
 </div>
 

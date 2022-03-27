@@ -66,14 +66,16 @@ pushd "${HERE}" || exit 1
         bin/pastday.sh
         echo "Creating graphs [2]"
         bin/pastmonth.sh
+        echo "Creating graphs [2]"
+        bin/pastyear.sh
     fi
 
     echo "Please wait while services start..."
     sudo systemctl start kimnaty.trend.day.timer
     sudo systemctl start kimnaty.trend.month.timer
     sudo systemctl start kimnaty.trend.year.timer
-    #sudo systemctl start kimnaty.fles.service &
-    # killer is normally not stopped.
+    sudo systemctl start kimnaty.fles.service &
+    # killer is normally not stopped, so need to restart it
     sudo systemctl restart kimnaty.bluepy-helper-killer.service &
     sudo systemctl start kimnaty.kimnaty.service &
     wait

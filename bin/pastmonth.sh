@@ -29,7 +29,7 @@ pushd "${HERE}" >/dev/null || exit 1
                 "DELETE FROM data WHERE sample_epoch < ${PURGE_EPOCH};"
     fi
 
-    ./trend.py --months 0 &
+    ./trend.py --days 0 &
     wait
 
 popd >/dev/null || exit
