@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Kill bluepy-helper if it has been active for longer than 300 seconds
+# Kill bluepy-helper if it has been active for longer than 90 seconds
 
 while true; do
     for PID in $(pgrep "bluepy-helper"); do
     # for PID in $(ps -ef | egrep "bluepy-helper" | grep -v grep | awk {'print $2'}); do
         RUNTIMESEC=$(ps -o etimes= -p "$PID")
-        if [ "$RUNTIMESEC" -gt 300 ]; then
+        if [ "$RUNTIMESEC" -gt 90 ]; then
                echo "** ** bluepy-helper has been running for ${RUNTIMESEC} seconds; killing ${PID}"
                kill -9 "${PID}"
         fi
     done
-    sleep 100
+    sleep 30
 done
