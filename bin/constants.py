@@ -40,24 +40,24 @@ KIMNATY = {'database': _DATABASE,
            'samplespercycle': 1
            }
 
-AC = {'database': _DATABASE,
-      'ip_airco': _IP_AIRCO,
-      'room_id': _ROOM_ID,
-      'sql_command': "INSERT INTO aircon ("
-                     "sample_time, sample_epoch, "
-                     "room_id, "
-                     "ac_power, ac_mode,"
-                     "temperature_ac, temperature_target, temperature_outside, "
-                     "cmp_freq) "
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      'sql_table': "aircon",
-      'report_time': 60,
-      'samplesperreport': 3,
-      'gracetime': 1,
-      'cycles': 3,
-      'samplespercycle': 5,
-      'scan_time': 58
-      }
+# AC = {'database': _DATABASE,
+#       'ip_airco': _IP_AIRCO,
+#       'room_id': _ROOM_ID,
+#       'sql_command': "INSERT INTO aircon ("
+#                      "sample_time, sample_epoch, "
+#                      "room_id, "
+#                      "ac_power, ac_mode,"
+#                      "temperature_ac, temperature_target, temperature_outside, "
+#                      "cmp_freq) "
+#                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+#       'sql_table': "aircon",
+#       'report_time': 60,
+#       'samplesperreport': 3,
+#       'gracetime': 1,
+#       'cycles': 3,
+#       'samplespercycle': 5,
+#       'scan_time': 58
+#       }
 
 DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
            ]

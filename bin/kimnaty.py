@@ -10,6 +10,7 @@ import argparse
 import datetime as dt
 import os
 import sqlite3 as s3
+import sys
 import time
 import traceback
 
@@ -79,6 +80,10 @@ def main():
             rht_results = do_work_rht(list_of_devices)
             if DEBUG:
                 print(f"Result   : {rht_results}")
+            ac_results = do_work_ac(list_of_aircos)
+            if DEBUG:
+                print(f"Result   : {ac_results}")
+            sys.exit(0)
             # report samples
             if rht_results:
                 do_add_to_database(rht_results, fdatabase, sqlcmd)
