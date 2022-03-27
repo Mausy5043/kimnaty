@@ -2,6 +2,8 @@
 
 import os
 import sys
+import pandas as pd
+import sqlite3 as s3
 
 _MYHOME = os.environ["HOME"]
 _DATABASE = '/srv/databases/kimnaty.sqlite3'
@@ -38,7 +40,17 @@ KIMNATY = {'database': _DATABASE,
            'samplespercycle': 1
            }
 
-DEVICES = [['A4:C1:38:99:AC:4D', '0.1.0', 'woonkamer'],
-           ['A4:C1:38:99:AC:4D', '1.4', 'badkamer'],
-           ['A4:C1:38:99:AC:4D', '0.6', 'kweektafel']
+DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
            ]
+
+_s3_query = f"SELECT * FROM rooms;"
+with s3.connect(_DATABASE) as _con:
+    ROOMS = pd.read_sql_query(_s3_query,
+                              _con,
+                              index_col='room_id'
+                              )
+try:
+    ROOMS = ROOMS.todict()['name']
+except KeyError:
+    print("*** KeyError when retrieving ROOMS")
+    print(ROOMS).to_dict()
