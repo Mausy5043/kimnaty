@@ -122,7 +122,7 @@ def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_na
         data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='left')
     return data_frame
 
-
+  
 def remove_nans(frame, col_name, default):
     """remove NANs from a series"""
     for idx, tmpr in enumerate(frame[col_name]):
