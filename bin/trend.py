@@ -64,47 +64,47 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         # df = remove_nans(df, 'humidity', 50)
         # df = remove_nans(df, 'voltage', 1.800)
 
-        df_t0 = copy.deepcopy(df)
-        df_t0 = df_t0.drop('humidity', axis=1)
-        df_t0 = df_t0.drop('voltage', axis=1)
-        df_t0.rename(columns={'temperature': room_id}, inplace=True)
-        if df_t is None:
-            df_t = df_t0
-        else:
-            df_t = pd.merge(df_t, df_t0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
+        # df_t0 = copy.deepcopy(df)
+        # df_t0 = df_t0.drop('humidity', axis=1)
+        # df_t0 = df_t0.drop('voltage', axis=1)
+        # df_t0.rename(columns={'temperature': room_id}, inplace=True)
+        # if df_t is None:
+        #     df_t = df_t0
+        # else:
+        #     df_t = pd.merge(df_t, df_t0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
 
-        # df_t = collate(df_t, df,
-        #                columns_to_drop=['voltage', 'humidity'],
-        #                column_to_rename='temperature', new_name=room_id
-        #                )
+        df_t = collate(df_t, df,
+                       columns_to_drop=['voltage', 'humidity'],
+                       column_to_rename='temperature', new_name=room_id
+                       )
 
-        df_h0 = copy.deepcopy(df)
-        df_h0 = df_h0.drop('temperature', axis=1)
-        df_h0 = df_h0.drop('voltage', axis=1)
-        df_h0.rename(columns={'humidity': room_id}, inplace=True)
-        if df_h is None:
-            df_h = df_h0
-        else:
-            df_h = pd.merge(df_h, df_h0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
+        # df_h0 = copy.deepcopy(df)
+        # df_h0 = df_h0.drop('temperature', axis=1)
+        # df_h0 = df_h0.drop('voltage', axis=1)
+        # df_h0.rename(columns={'humidity': room_id}, inplace=True)
+        # if df_h is None:
+        #     df_h = df_h0
+        # else:
+        #     df_h = pd.merge(df_h, df_h0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
 
-        # df_h = collate(df_h, df,
-        #                columns_to_drop=['temperature', 'voltage'],
-        #                column_to_rename='humidity', new_name=room_id
-        #                )
+        df_h = collate(df_h, df,
+                       columns_to_drop=['temperature', 'voltage'],
+                       column_to_rename='humidity', new_name=room_id
+                       )
 
-        df_v0 = copy.deepcopy(df)
-        df_v0 = df_v0.drop('temperature', axis=1)
-        df_v0 = df_v0.drop('humidity', axis=1)
-        df_v0.rename(columns={'voltage': room_id}, inplace=True)
-        if df_v is None:
-            df_v = df_v0
-        else:
-            df_v = pd.merge(df_v, df_v0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
+        # df_v0 = copy.deepcopy(df)
+        # df_v0 = df_v0.drop('temperature', axis=1)
+        # df_v0 = df_v0.drop('humidity', axis=1)
+        # df_v0.rename(columns={'voltage': room_id}, inplace=True)
+        # if df_v is None:
+        #     df_v = df_v0
+        # else:
+        #     df_v = pd.merge(df_v, df_v0, left_index=True, right_index=True, how='left')  # .fillna(20.0)
 
-        # df_v = collate(df_v, df,
-        #                columns_to_drop=['temperature', 'humidity'],
-        #                column_to_rename='voltage', new_name=room_id
-        #                )
+        df_v = collate(df_v, df,
+                       columns_to_drop=['temperature', 'humidity'],
+                       column_to_rename='voltage', new_name=room_id
+                       )
 
     if DEBUG:
         print(f"TEMPERATURE\n", df_t)
@@ -117,12 +117,12 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
 def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_name='room_id'):
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1)
-    data_frame.rename(columns={f'{column_to_rename}': name}, inplace=True)
+    data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
     if prev_df is not None:
         data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='left')
     return data_frame
 
-  
+
 def remove_nans(frame, col_name, default):
     """remove NANs from a series"""
     for idx, tmpr in enumerate(frame[col_name]):
