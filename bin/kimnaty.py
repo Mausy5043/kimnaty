@@ -78,15 +78,17 @@ def main():
     while not killer.kill_now:
         if time.time() > next_time:
             start_time = time.time()
+            # RH/T
             rht_results = do_work_rht(list_of_devices)
             if DEBUG:
                 print(f"Result   : {rht_results}")
+            if rht_results:
+                do_add_to_database(rht_results, fdatabase, sqlcmd_rht)
+            # AC
             ac_results = do_work_ac(list_of_aircos)
             if DEBUG:
                 print(f"Result   : {ac_results}")
             # report samples
-            if rht_results:
-                do_add_to_database(rht_results, fdatabase, sqlcmd_rht)
             if ac_results:
                 do_add_to_database(ac_results, fdatabase, sqlcmd_ac)
 
