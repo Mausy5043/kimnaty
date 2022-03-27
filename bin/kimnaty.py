@@ -59,7 +59,8 @@ def main():
     killer = ml.GracefulKiller()
     # start_monitoring(seconds_frozen=anti_freeze, test_interval=136)
     fdatabase = constants.KIMNATY['database']
-    sqlcmd = constants.KIMNATY['sql_command']
+    sqlcmd_rht = constants.KIMNATY['sql_command']
+    sqlcmd_ac = constants.AC['sql_command']
     report_time = int(constants.KIMNATY['report_time'])
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     list_of_devices = constants.DEVICES
@@ -85,9 +86,9 @@ def main():
                 print(f"Result   : {ac_results}")
             # report samples
             if rht_results:
-                do_add_to_database(rht_results, fdatabase, sqlcmd)
+                do_add_to_database(rht_results, fdatabase, sqlcmd_rht)
             if ac_results:
-                do_add_to_database(ac_results, fdatabase, sqlcmd)
+                do_add_to_database(ac_results, fdatabase, sqlcmd_ac)
 
             pause_time = (sample_time
                           - (time.time() - start_time)
