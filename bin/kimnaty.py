@@ -198,20 +198,20 @@ def get_ac_data(airco):
         ac_t_in = airco['device'].inside_temperature
         ac_t_tgt = airco['device'].target_temperature
         ac_t_out = airco['device'].outside_temperature
-        if DEBUG:
-            print(f"+----------------Room {airco['name']} Data----")
-            print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC "
-                  f"state = {ac_pwr}")
-            print(f"|             Target >>>> {ac_t_tgt:.2f} degC "
-                  f" mode = {ac_mode}")
-            print(f"|             Outside     {ac_t_out:.2f} degC")
-            print(f"| compressor: {ac_cmp:.0f} ")
-            print("+---------------------------------------------")
         success = True
     except Exception as e:
         err_date = dt.datetime.now()
         print(f"*** While talking to {airco['name']} this error occured on {err_date}:")
         print(f"    {e}")
+    if DEBUG:
+        print(f"+----------------Room {airco['name']} Data----")
+        print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC "
+              f"state = {ac_pwr}")
+        print(f"|             Target >>>> {ac_t_tgt:.2f} degC "
+              f" mode = {ac_mode}")
+        print(f"|             Outside     {ac_t_out:.2f} degC")
+        print(f"| compressor: {ac_cmp:.0f} ")
+        print("+---------------------------------------------")
 
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
