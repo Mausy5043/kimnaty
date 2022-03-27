@@ -192,12 +192,12 @@ def get_ac_data(airco):
     try:
         if DEBUG:
             print(f"'Fetching data from {airco['name']}")
-        ac_pwr = airco['device'].power
-        ac_mode = airco['device'].mode
-        ac_cmp = airco['device'].compressor_frequency
-        ac_t_in = airco['device'].inside_temperature
-        ac_t_tgt = airco['device'].target_temperature
-        ac_t_out = airco['device'].outside_temperature
+        ac_pwr = int(airco['device'].power)
+        ac_mode = int(airco['device'].mode)
+        ac_cmp = float(airco['device'].compressor_frequency)
+        ac_t_in = float(airco['device'].inside_temperature)
+        ac_t_tgt = float(airco['device'].target_temperature)
+        ac_t_out = float(airco['device'].outside_temperature)
         success = True
     except Exception as e:
         err_date = dt.datetime.now()
