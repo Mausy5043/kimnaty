@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 
-#
-# parser = argparse.ArgumentParser()
-# parser.add_argument('mac', help='MAC address of LYWSD03 device', nargs='+')
-# args = parser.parse_args()
-
-
 """
 Communicate with the LYWSD03MMC devices.
 
@@ -24,9 +18,9 @@ import mausy5043libs.libsignals3 as ml  # noqa
 import constants
 import lywsd03mmc
 
-from hanging_threads import start_monitoring
+# from hanging_threads import start_monitoring
 
-anti_freeze = constants.KIMNATY['report_time'] * 2
+# anti_freeze = constants.KIMNATY['report_time'] * 2
 
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
@@ -50,8 +44,6 @@ MYAPP = HERE[-3]
 MYROOT = "/".join(HERE[0:-3])
 # host_name :
 NODE = os.uname()[1]
-
-
 # example values:
 # HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
 # MYID: 'kimnaty.py
@@ -62,11 +54,8 @@ NODE = os.uname()[1]
 
 def main():
     """Execute main loop."""
-    global DEBUG
-    global MYAPP
-    global MYROOT
     killer = ml.GracefulKiller()
-    start_monitoring(seconds_frozen=anti_freeze, test_interval=136)
+    # start_monitoring(seconds_frozen=anti_freeze, test_interval=136)
     fdatabase = constants.KIMNATY['database']
     sqlcmd = constants.KIMNATY['sql_command']
     report_time = int(constants.KIMNATY['report_time'])
@@ -106,7 +95,6 @@ def main():
 
 def do_work(dev_list):
     """Scan the devices to get current readings."""
-    global DEBUG
     data_list = list()
     retry_list = list()
     for mac in dev_list:
