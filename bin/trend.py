@@ -29,10 +29,6 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
-    global DATABASE
-    global TABLE
-    global DEVICE_LIST
-    global DEBUG
     df_t = None
     df_h = None
     df_v = None
@@ -144,8 +140,6 @@ def plot_graph(output_file, data_dict, plot_title):
     :param plot_title: (str) title to be displayed above the plot
     :return: None
     """
-    global DEBUG
-
     for parameter in data_dict:
         if DEBUG:
             print(parameter)
@@ -186,8 +180,6 @@ def main():
     """
     This is the main loop
     """
-    global OPTION
-
     if OPTION.hours:
         plot_graph(constants.TREND['day_graph'],
                    fetch_data(hours_to_fetch=OPTION.hours, aggregation=1),
