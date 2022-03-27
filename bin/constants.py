@@ -50,7 +50,7 @@ with s3.connect(_DATABASE) as _con:
                               index_col='room_id'
                               )
 try:
-    ROOMS = ROOMS.todict()['name']
+    ROOMS = ROOMS.to_dict()['name']
 except KeyError:
     print("*** KeyError when retrieving ROOMS")
-    print(ROOMS).to_dict()
+    print(ROOMS.to_dict())
