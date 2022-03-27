@@ -40,6 +40,5 @@ KIMNATY = {'database': _DATABASE,
 
 DEVICES = [['A4:C1:38:99:AC:4D', '0.1.0', 'woonkamer'],
            ['A4:C1:38:99:AC:4D', '1.4', 'badkamer'],
-           ['A4:C1:38:99:AC:4D', '0.5', 'kweektafel'],
-
+           ['A4:C1:38:99:AC:4D', '0.6', 'kweektafel']
            ]
