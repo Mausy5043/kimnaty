@@ -40,13 +40,15 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
+    df_cmp = None
+    df_t = None
     if DEBUG:
         print("*** fetching AC ***")
     for airco in AIRCO_LIST:
         airco_id = airco['name']
         where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))" \
                           f" AND (room_id LIKE \'{airco_id}\')"
-        s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"
+        s3_query = f"SELECT * FROM {TABLE_AC} WHERE {where_condition}"
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
@@ -55,8 +57,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                                    parse_dates='sample_time',
                                    index_col='sample_epoch'
                                    )
-        # conserve memory; we dont need the room_id repeated in every row.
-        df = df.drop('room_id', axis=1)
+        # conserve memory; we dont need the these.
+        df = df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1)
         for c in df.columns:
             if c not in ['sample_time']:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -64,8 +66,14 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
         # resample to monotonic timeline
         df = df.resample(f'{aggregation}min').mean()
         df = df.interpolate(method='slinear')
+        df_cmp = collate(df_cmp, df,
+                         columns_to_drop=['temperature_ac', 'temperature_target', 'temperature_outside'],
+                         column_to_rename='cmp_freq',
+                         new_name=airco_id
+                         )
         if DEBUG:
             print(df)
+            print(df_cmp)
 
     ac_data_dict = dict()
     return ac_data_dict
