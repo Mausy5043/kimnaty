@@ -73,7 +73,10 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                          )
         if DEBUG:
             print(df)
-            print(df_cmp)
+
+    df_cmp['cmp_freq'] = df_cmp[['airco0', 'airco1']].apply(np.max, axis=1)
+    if DEBUG:
+        print(df_cmp)
 
     ac_data_dict = dict()
     return ac_data_dict
