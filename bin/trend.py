@@ -13,9 +13,11 @@ import numpy as np
 import constants
 
 DATABASE = constants.TREND['database']
-TABLE = constants.TREND['sql_table']
+TABLE_RHT = constants.TREND['sql_table_rht']
+TABLE_AC = constants.TREND['sql_table_ac']
 ROOMS = constants.ROOMS
 DEVICE_LIST = constants.DEVICES
+AIRCO_LIST = constants.AIRCO
 OPTION = ""
 DEBUG = False
 
@@ -27,14 +29,12 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
-    df_t = None
-    df_h = None
-    df_v = None
+    df_t = df_h = df_v = None
     for device in DEVICE_LIST:
         room_id = device[1]
-        where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))"
-        where_condition += f" AND (room_id LIKE \'{room_id}\')"
-        s3_query = f"SELECT * FROM {TABLE} WHERE {where_condition}"
+        where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))" \
+                          f" AND (room_id LIKE \'{room_id}\')"
+        s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
@@ -132,7 +132,7 @@ def plot_graph(output_file, data_dict, plot_title):
         # linewidth and alpha need to be set separately
         for i, l in enumerate(ax1.lines):
             plt.setp(l, alpha=ahpla, linewidth=1)
-        # ax1.set_ylabel("[degC]")
+        ax1.set_ylabel(parameter)
         ax1.legend(loc='upper left',
                    framealpha=0.2
                    )
@@ -144,7 +144,7 @@ def plot_graph(output_file, data_dict, plot_title):
                  linewidth=0.5
                  )
         plt.title(f'{parameter} {plot_title}')
-        # plt.tight_layout()
+        plt.tight_layout()
         plt.savefig(fname=f'{output_file}_{parameter}.png',
                     format='png',
                     # bbox_inches='tight'
@@ -157,7 +157,7 @@ def main():
     """
     if OPTION.hours:
         plot_graph(constants.TREND['day_graph'],
-                   fetch_data(hours_to_fetch=OPTION.hours, aggregation=1),
+                   fetch_data(hours_to_fetch=OPTION.hours, aggregation=5),
                    f" trend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.days:
@@ -167,7 +167,7 @@ def main():
                    )
     if OPTION.months:
         plot_graph(constants.TREND['year_graph'],
-                   fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 24),
+                   fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=60 * 6),
                    f" trend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
 
@@ -196,9 +196,9 @@ if __name__ == "__main__":
                               )
     OPTION = parser.parse_args()
     if OPTION.hours == 0:
-        OPTION.hours = 50
+        OPTION.hours = 80
     if OPTION.days == 0:
-        OPTION.days = 50
+        OPTION.days = 80
     if OPTION.months == 0:
         OPTION.months = 38
     if OPTION.debug:
