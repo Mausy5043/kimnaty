@@ -40,9 +40,32 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
+    if DEBUG:
+        print("*** fetching AC ***")
     for airco in AIRCO_LIST:
+        airco_id = airco['name']
+        where_condition = f" (sample_time >= datetime(\'now\', \'-{hours_to_fetch + 1} hours\'))" \
+                          f" AND (room_id LIKE \'{airco_id}\')"
+        s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"
         if DEBUG:
-            print(airco)
+            print(s3_query)
+        with s3.connect(DATABASE) as con:
+            df = pd.read_sql_query(s3_query,
+                                   con,
+                                   parse_dates='sample_time',
+                                   index_col='sample_epoch'
+                                   )
+        # conserve memory; we dont need the room_id repeated in every row.
+        df = df.drop('room_id', axis=1)
+        for c in df.columns:
+            if c not in ['sample_time']:
+                df[c] = pd.to_numeric(df[c], errors='coerce')
+        df.index = pd.to_datetime(df.index, unit='s').tz_localize("UTC").tz_convert("Europe/Amsterdam")
+        # resample to monotonic timeline
+        df = df.resample(f'{aggregation}min').mean()
+        df = df.interpolate(method='slinear')
+        if DEBUG:
+            print(df)
 
     ac_data_dict = dict()
     return ac_data_dict
@@ -55,6 +78,8 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
+    if DEBUG:
+        print("*** fetching RHT ***")
     df_t = df_h = df_v = None
     for device in DEVICE_LIST:
         room_id = device[1]
@@ -138,6 +163,8 @@ def plot_graph(output_file, data_dict, plot_title):
     :param plot_title: (str) title to be displayed above the plot
     :return: None
     """
+    if DEBUG:
+        print("*** plotting ***")
     for parameter in data_dict:
         if DEBUG:
             print(parameter)
