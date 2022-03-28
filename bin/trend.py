@@ -71,10 +71,35 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                          column_to_rename='cmp_freq',
                          new_name=airco_id
                          )
+        if df_t is None:
+            df = collate(None, df,
+                         column_to_drop=['cmp_freq'],
+                         column_to_rename='temperature_ac',
+                         new_name=airco_id
+                         )
+            df_t = collate(df_t, df,
+                           column_to_drop=[],
+                           column_to_rename='temperature_tgt',
+                           new_name=f'{airco_id}_tgt'
+                           )
+        else:
+            df = collate(None, df,
+                         column_to_drop=['cmp_freq', 'temperature_outside'],
+                         column_to_rename='temperature_ac',
+                         new_name=airco_id
+                         )
+            df_t = collate(df_t, df,
+                           column_to_drop=[],
+                           column_to_rename='temperature_tgt',
+                           new_name=f'{airco_id}_tgt'
+                           )
+
         if DEBUG:
             print(df)
 
+    # create a new column containing the max value of both aircos, then remove the airco_ columns
     df_cmp['cmp_freq'] = df_cmp[['airco0', 'airco1']].apply(np.max, axis=1)
+    df_cmp = df_cmp.drop(['airco0', 'airco1'], axis=1)
     if DEBUG:
         print(df_cmp)
 
@@ -145,9 +170,12 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
 
 
 def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_name='room_id'):
+    # drop the 'columns_to_drop'
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1)
+    # rename the 'column_to_rename'
     data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
+    # collate both dataframes
     if prev_df is not None:
         data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='left')
     return data_frame
