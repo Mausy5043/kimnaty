@@ -225,7 +225,7 @@ def plot_graph(output_file, data_dict, plot_title):
                               )
         # linewidth and alpha need to be set separately
         for i, l in enumerate(ax1.lines):
-            plt.setp(l, alpha=ahpla, linewidth=1)
+            plt.setp(l, alpha=ahpla, linewidth=1, linestyle=' ')
         ax1.set_ylabel(parameter)
         ax1.legend(loc='upper left',
                    framealpha=0.2
