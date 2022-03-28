@@ -95,7 +95,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                            )
 
         if DEBUG:
-            print(df)
+            print(df_t)
 
     # create a new column containing the max value of both aircos, then remove the airco_ columns
     df_cmp['cmp_freq'] = df_cmp[['airco0', 'airco1']].apply(np.max, axis=1)
