@@ -79,7 +79,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                          )
             df_t = collate(df_t, df,
                            columns_to_drop=[],
-                           column_to_rename='temperature_tgt',
+                           column_to_rename='temperature_target',
                            new_name=f'{airco_id}_tgt'
                            )
         else:
@@ -90,7 +90,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                          )
             df_t = collate(df_t, df,
                            columns_to_drop=[],
-                           column_to_rename='temperature_tgt',
+                           column_to_rename='temperature_target',
                            new_name=f'{airco_id}_tgt'
                            )
 
