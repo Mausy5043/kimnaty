@@ -209,9 +209,9 @@ def plot_graph(output_file, data_dict, plot_title):
         if DEBUG:
             print(parameter)
         data_frame = data_dict[parameter]
-        fig_x = 10
-        fig_y = 2.5
-        fig_fontsize = 6.5
+        fig_x = 20
+        fig_y = 5
+        fig_fontsize = 13
         ahpla = 0.7
         """
         # ###############################
