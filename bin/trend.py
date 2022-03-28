@@ -23,6 +23,32 @@ DEBUG = False
 
 
 def fetch_data(hours_to_fetch=48, aggregation=1):
+    data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
+    data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
+    data_dict = dict()
+    for d in data_dict_rht:
+        data_dict[d] = data_dict_rht[d]
+    for d in data_dict_ac:
+        data_dict[d] = data_dict_ac[d]
+    return data_dict
+
+
+def fetch_data_ac(hours_to_fetch=48, aggregation=1):
+    """
+    Query the database to fetch the requested data
+    :param hours_to_fetch:      (int) number of hours of data to fetch
+    :param aggregation:         (int) number of minutes to aggregate per datapoint
+    :return:
+    """
+    for airco in AIRCO_LIST:
+        if DEBUG:
+            print(airco)
+
+    ac_data_dict = dict()
+    return ac_data_dict
+
+
+def fetch_data_rht(hours_to_fetch=48, aggregation=1):
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -78,8 +104,8 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
         print(f"TEMPERATURE\n", df_t)
         print(f"HUMIDITY\n", df_h)
         print(f"VOLTAGE\n", df_v)
-    data_dict = {'temperature': df_t, 'humidity': df_h, 'voltage': df_v}
-    return data_dict
+    rht_data_dict = {'temperature': df_t, 'humidity': df_h, 'voltage': df_v}
+    return rht_data_dict
 
 
 def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_name='room_id'):
