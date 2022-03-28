@@ -94,6 +94,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                            new_name=f'{airco_id}_tgt'
                            )
 
+        df_t.rename(columns={'temperature_outside': 'T(out)'}, inplace=True)
         if DEBUG:
             print(df_t)
 
