@@ -220,6 +220,7 @@ def plot_graph(output_file, data_dict, plot_title):
         """
         plt.rc('font', size=fig_fontsize)
         ax1 = data_frame.plot(kind='line',
+                              marker='.',
                               figsize=(fig_x, fig_y)
                               )
         # linewidth and alpha need to be set separately
