@@ -94,17 +94,17 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                            new_name=f'{airco_id}_tgt'
                            )
 
-        df_t.rename(columns={'temperature_outside': 'T(out)'}, inplace=True)
-        if DEBUG:
-            print(df_t)
-
     # create a new column containing the max value of both aircos, then remove the airco_ columns
     df_cmp['cmp_freq'] = df_cmp[['airco0', 'airco1']].apply(np.max, axis=1)
     df_cmp = df_cmp.drop(['airco0', 'airco1'], axis=1)
     if DEBUG:
         print(df_cmp)
+    # rename the column to something shorter
+    df_t.rename(columns={'temperature_outside': 'T(out)'}, inplace=True)
+    if DEBUG:
+        print(df_t)
 
-    ac_data_dict = dict()
+    ac_data_dict = {'temperature_ac': df_t, 'compressor': df_cmp}
     return ac_data_dict
 
 
