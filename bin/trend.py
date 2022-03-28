@@ -73,23 +73,23 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                          )
         if df_t is None:
             df = collate(None, df,
-                         column_to_drop=['cmp_freq'],
+                         columns_to_drop=['cmp_freq'],
                          column_to_rename='temperature_ac',
                          new_name=airco_id
                          )
             df_t = collate(df_t, df,
-                           column_to_drop=[],
+                           columns_to_drop=[],
                            column_to_rename='temperature_tgt',
                            new_name=f'{airco_id}_tgt'
                            )
         else:
             df = collate(None, df,
-                         column_to_drop=['cmp_freq', 'temperature_outside'],
+                         columns_to_drop=['cmp_freq', 'temperature_outside'],
                          column_to_rename='temperature_ac',
                          new_name=airco_id
                          )
             df_t = collate(df_t, df,
-                           column_to_drop=[],
+                           columns_to_drop=[],
                            column_to_rename='temperature_tgt',
                            new_name=f'{airco_id}_tgt'
                            )
