@@ -29,7 +29,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     # move outside temperature from Daikin to the table with the other temperature sensors
     for d in data_dict_ac:
         if 'T(out)' in data_dict_ac[d]:
-            data_dict_rht['temperature']['T(out)'] = data_dict_ac[d]['T(out)'].values
+            data_dict_rht['temperature']['T(out)'] = data_dict_ac[d]['T(out)']
             data_dict_ac[d] = data_dict_ac[d].drop(['T(out)'], axis=1)
     for d in data_dict_rht:
         data_dict[d] = data_dict_rht[d]
