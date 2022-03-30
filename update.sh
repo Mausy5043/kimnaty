@@ -66,7 +66,7 @@ pushd "${HERE}" || exit 1
         bin/pastday.sh
         echo "Creating graphs [2]"
         bin/pastmonth.sh
-        echo "Creating graphs [2]"
+        echo "Creating graphs [3]"
         bin/pastyear.sh
     fi
 
