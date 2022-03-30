@@ -62,10 +62,6 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                                    parse_dates='sample_time',
                                    index_col='sample_epoch'
                                    )
-        # remove temperature target values for samples when the AC is turned off.
-        df.loc[df.ac_power == 0, 'temperature_target'] = np.nan
-        # conserve memory; we dont need the these.
-        df = df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1)
         for c in df.columns:
             if c not in ['sample_time']:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -73,6 +69,10 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
         # resample to monotonic timeline
         df = df.resample(f'{aggregation}min').mean()
         df = df.interpolate(method='slinear')
+        # remove temperature target values for samples when the AC is turned off.
+        df.loc[df.ac_power == 0, 'temperature_target'] = np.nan
+        # conserve memory; we dont need the these.
+        df = df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1)
         df_cmp = collate(df_cmp, df,
                          columns_to_drop=['temperature_ac', 'temperature_target', 'temperature_outside'],
                          column_to_rename='cmp_freq',
