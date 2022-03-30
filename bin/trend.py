@@ -29,6 +29,12 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     for d in data_dict_rht:
         data_dict[d] = data_dict_rht[d]
     for d in data_dict_ac:
+        if "T(out)" in d:
+            p = d['T(out)']
+
+            d = d.drop(['T(out)'], axis=1)
+
+    for d in data_dict_ac:
         data_dict[d] = data_dict_ac[d]
     return data_dict
 
@@ -57,6 +63,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                                    parse_dates='sample_time',
                                    index_col='sample_epoch'
                                    )
+        # remove temperature target values for samples when the AC is turned off.
+        df.loc[df.ac_power == 0, 'temperature_target'] = np.nan
         # conserve memory; we dont need the these.
         df = df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1)
         for c in df.columns:
