@@ -5,7 +5,7 @@ Description=regularly trending data from past month (timer)
 
 [Timer]
 OnCalendar=*-*-* *:06
-RandomizedDelaySec=10m
+RandomizedDelaySec=2m
 
 [Install]
 WantedBy=timers.target

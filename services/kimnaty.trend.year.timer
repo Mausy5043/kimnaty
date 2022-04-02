@@ -4,8 +4,8 @@
 Description=daily trending data from past year (timer)
 
 [Timer]
-OnCalendar=*-*-* 01:00
-RandomizedDelaySec=10m
+OnCalendar=*-*-* 01:01
+RandomizedDelaySec=2m
 
 [Install]
 WantedBy=timers.target
