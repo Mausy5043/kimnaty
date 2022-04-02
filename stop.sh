@@ -7,6 +7,7 @@ HERE=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd)
 
 pushd "${HERE}" || exit 1
     # shellcheck disable=SC1091
+    echo "Stopping KIMNATY..."
     source ./bin/constants.sh
 
     sudo systemctl stop kimnaty.fles.service
@@ -18,4 +19,5 @@ pushd "${HERE}" || exit 1
     sudo systemctl stop kimnaty.trend.month.timer
     sudo systemctl stop kimnaty.trend.year.timer
     sudo systemctl stop kimnaty.update.timer
+    echo "KIMNATY stopped"
 popd || exit
