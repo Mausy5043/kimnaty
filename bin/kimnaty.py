@@ -142,6 +142,7 @@ def get_rht_data(mac):
     humidity = 0
     voltage = 0.0
     success = False
+    t0 = time.time()
     try:
         client = lywsd03mmc.Lywsd03mmcClient(mac)
         if DEBUG:
@@ -151,6 +152,7 @@ def get_rht_data(mac):
             print(f'Temperature       : {data.temperature}°C')
             print(f'Humidity          : {data.humidity}%')
             print(f'Battery           : {data.battery}% ({data.voltage}V)')
+            print(f"{time.time() - t0:.2f} seconds")
             print('')
         temperature = data.temperature
         humidity = data.humidity
@@ -196,8 +198,10 @@ def get_ac_data(airco):
     ac_pwr = ac_mode = ac_cmp = None
     ac_t_in = ac_t_tgt = ac_t_out = None
     success = False
+    t0 = time.time()
     try:
-        mf.syslog_trace(f"'Fetching data from {airco['name']}", False, DEBUG)
+        if DEBUG:
+            print(f"'Fetching data from {airco['name']}")
         ac_pwr = int(airco['device'].power)
         ac_mode = int(airco['device'].mode)
         ac_cmp = float(airco['device'].compressor_frequency)
@@ -220,6 +224,7 @@ def get_ac_data(airco):
         print(f"|             Outside     {ac_t_out:.2f} degC")
         print(f"| compressor: {ac_cmp:.0f} ")
         print("+---------------------------------------------")
+        print(f"{time.time() - t0:.2f} seconds")
 
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
