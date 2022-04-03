@@ -242,6 +242,7 @@ def do_add_to_database(results, fdatabase, sql_cmd):
     """Commit the results to the database."""
     conn = None
     cursor = None
+    t0 = time.time()
     for data in results:
         result = tuple(data)
         if DEBUG:
@@ -262,6 +263,8 @@ def do_add_to_database(results, fdatabase, sql_cmd):
                     cursor.close()
                 if conn:
                     conn.close()
+    if DEBUG:
+        print(f"{time.time() - t0:.2f} seconds\n")
 
 
 def create_db_connection(database_file):
