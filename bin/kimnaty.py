@@ -201,7 +201,7 @@ def get_ac_data(airco):
     t0 = time.time()
     try:
         if DEBUG:
-            print(f"'Fetching data from {airco['name']}")
+            print(f"Fetching data from {airco['name']}")
         ac_pwr = int(airco['device'].power)
         ac_mode = int(airco['device'].mode)
         ac_cmp = float(airco['device'].compressor_frequency)
@@ -224,7 +224,7 @@ def get_ac_data(airco):
         print(f"|             Outside     {ac_t_out:.2f} degC")
         print(f"| compressor: {ac_cmp:.0f} ")
         print("+---------------------------------------------")
-        print(f"{time.time() - t0:.2f} seconds")
+        print(f"{time.time() - t0:.2f} seconds\n")
 
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
