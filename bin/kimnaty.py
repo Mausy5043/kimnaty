@@ -10,18 +10,18 @@ import argparse
 import datetime as dt
 import os
 import sqlite3 as s3
-import sys
+import syslog
 import time
 import traceback
 
+import mausy5043funcs.fileops3 as mf  # noqa
 import mausy5043libs.libsignals3 as ml  # noqa
 
 import constants
-import lywsd03mmc
 import libdaikin
+import lywsd03mmc
 
 # from hanging_threads import start_monitoring
-
 # anti_freeze = constants.KIMNATY['report_time'] * 2
 
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
@@ -46,6 +46,8 @@ MYAPP = HERE[-3]
 MYROOT = "/".join(HERE[0:-3])
 # host_name :
 NODE = os.uname()[1]
+
+
 # example values:
 # HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
 # MYID: 'kimnaty.py
@@ -156,8 +158,9 @@ def get_rht_data(mac):
         success = True
     except Exception as e:
         err_date = dt.datetime.now()
-        print(f"*** While talking to {mac} this error occured on {err_date}:")
-        print(f"    {e}")
+        mf.syslog_trace(f"*** While talking to {mac} this error occured on {err_date}:", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
 
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
@@ -194,8 +197,7 @@ def get_ac_data(airco):
     ac_t_in = ac_t_tgt = ac_t_out = None
     success = False
     try:
-        if DEBUG:
-            print(f"'Fetching data from {airco['name']}")
+        mf.syslog_trace(f"'Fetching data from {airco['name']}", False, DEBUG)
         ac_pwr = int(airco['device'].power)
         ac_mode = int(airco['device'].mode)
         ac_cmp = float(airco['device'].compressor_frequency)
@@ -205,8 +207,10 @@ def get_ac_data(airco):
         success = True
     except Exception as e:
         err_date = dt.datetime.now()
-        print(f"*** While talking to {airco['name']} this error occured on {err_date}:")
-        print(f"    {e}")
+        mf.syslog_trace(f"*** While talking to {airco['name']} this error occured on {err_date}:", syslog.LOG_CRIT,
+                        DEBUG)
+        mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
     if DEBUG:
         print(f"+----------------Room {airco['name']} Data----")
         print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC "
@@ -267,11 +271,11 @@ def create_db_connection(database_file):
         consql = s3.connect(database_file, timeout=9000)
         return consql
     except s3.Error:
-        print("Unexpected SQLite3 error when connecting to server.")
-        print(traceback.format_exc())
+        mf.syslog_trace("Unexpected SQLite3 error when connecting to server.", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
         if consql:  # attempt to close connection to SQLite3 server
             consql.close()
-            print(" ** Closed SQLite3 connection. **")
+            mf.syslog_trace(" ** Closed SQLite3 connection. **", syslog.LOG_CRIT, DEBUG)
         raise
 
 
@@ -287,17 +291,19 @@ def test_db_connection(fdatabase):
         cursor.close()
         conn.commit()
         conn.close()
-        print(f"Attached to SQLite3 server: {versql}")
+        syslog.syslog(syslog.LOG_INFO, f"Attached to SQLite3 server: {versql}")
     except s3.Error:
-        print("Unexpected SQLite3 error during test.")
+        mf.syslog_trace("Unexpected SQLite3 error during test.", syslog.LOG_CRIT, DEBUG)
         print(traceback.format_exc())
         raise
 
 
 if __name__ == "__main__":
+    # initialise logging
+    syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     if OPTION.debug:
         DEBUG = True
-        print("Debug-mode started.")
+        mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
         print("Use <Ctrl>+C to stop.")
         main()
 
