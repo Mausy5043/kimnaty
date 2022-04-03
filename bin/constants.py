@@ -47,7 +47,11 @@ AIRCO = [{'name': 'airco0',
 # Also the two aircos are read. Reading those takes on average 1 sec/AC. Here too, we allow for 1 misread.
 sample_time_per_device = 12.0
 sample_time_per_ac = 1.0
-report_time = (sample_time_per_device * (len(DEVICES) + 2)) + (sample_time_per_ac * (len(AIRCO) + 1))
+# Set a minimum pause time between scans
+pause_time = 30.0
+report_time = (sample_time_per_device * (len(DEVICES) + 2)) \
+              + (sample_time_per_ac * (len(AIRCO) + 1)) \
+              + pause_time
 # The minimum report_time is 60 seconds, to prevent unrealistic scantimes, high loads and battery drain.
 if report_time < 60.0:
     report_time = 60.0
@@ -75,8 +79,6 @@ AC = {'database': _DATABASE,
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       'sql_table': "aircon",
       }
-
-
 
 _s3_query = f"SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
