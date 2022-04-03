@@ -28,6 +28,30 @@ TREND = {'database': _DATABASE,
          'year_graph': '/tmp/kimnaty/site/img/kim_months'
          }
 
+DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
+           ]
+
+AIRCO = [{'name': 'airco0',
+          'ip': '192.168.2.30',
+          'device': None
+          },
+         {'name': 'airco1',
+          'ip': '192.168.2.31',
+          'device': None
+          }
+         ]
+
+# Reading a LYWSD03 sensor takes 11.5 sec on average.
+# `KIMNATY['report_time']` is determined by the number of devices to be interogated * 12 sec/device
+# and allowing for 2 misreads every cycle.
+# Also the two aircos are read. Reading those takes on average 1 sec/AC. Here too, we allow for 1 misread.
+sample_time_per_device = 12.0
+sample_time_per_ac = 1.0
+report_time = (sample_time_per_device * (len(DEVICES) + 2)) + (sample_time_per_ac * (len(AIRCO) + 1))
+# The minimum report_time is 60 seconds, to prevent unrealistic scantimes, high loads and battery drain.
+if report_time < 60.0:
+    report_time = 60.0
+
 KIMNATY = {'database': _DATABASE,
            'sql_command': "INSERT INTO data ("
                           "sample_time, sample_epoch, "
@@ -36,7 +60,7 @@ KIMNATY = {'database': _DATABASE,
                           ") "
                           "VALUES (?, ?, ?, ?, ?, ?)",
            'sql_table': "data",
-           'report_time': 300,
+           'report_time': report_time,
            'cycles': 1,
            'samplespercycle': 1
            }
@@ -52,18 +76,7 @@ AC = {'database': _DATABASE,
       'sql_table': "aircon",
       }
 
-DEVICES = [['A4:C1:38:99:AC:4D', '0.6']
-           ]
 
-AIRCO = [{'name': 'airco0',
-          'ip': '192.168.2.30',
-          'device': None
-          },
-         {'name': 'airco1',
-          'ip': '192.168.2.31',
-          'device': None
-          }
-         ]
 
 _s3_query = f"SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
