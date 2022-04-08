@@ -147,6 +147,7 @@ def get_rht_data(mac):
     try:
         client = lywsd03mmc.Lywsd03mmcClient(mac)
         if DEBUG:
+            print("")
             print(f'Fetching data from {mac}')
         data = client.data
         if DEBUG:
