@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-import pandas as pd
 import sqlite3 as s3
+import sys
+
+import pandas as pd
 
 _MYHOME = os.environ["HOME"]
 _DATABASE = '/srv/databases/kimnaty.sqlite3'
@@ -28,14 +29,14 @@ TREND = {'database': _DATABASE,
          'year_graph': '/tmp/kimnaty/site/img/kim_months'
          }
 
-DEVICES = [['A4:C1:38:99:AC:4D', '0.6'],
-           ['A4:C1:38:A5:71:D0', '0.1.0'],
+DEVICES = [['A4:C1:38:A5:71:D0', '0.1.0'],
+           ['A4:C1:38:76:59:43', '0.5'],
+           ['A4:C1:38:99:AC:4D', '0.6'],
            ['A4:C1:38:6F:E7:CA', '1.1'],
            ['A4:C1:38:91:D9:47', '1.2'],
            ['A4:C1:38:50:D7:2D', '1.3'],
            ['A4:C1:38:59:9A:9B', '1.4'],
-           ['A4:C1:38:58:23:E1', '2.1'],
-           ['A4:C1:38:76:59:43', '0.5']
+           ['A4:C1:38:58:23:E1', '2.1']
            ]
 
 AIRCO = [{'name': 'airco0',
