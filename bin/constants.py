@@ -52,7 +52,7 @@ AIRCO = [{'name': 'airco0',
 # `KIMNATY['report_time']` is determined by the number of devices to be interogated * 12 sec/device
 # and allowing for 2 misreads every cycle.
 # Also the aircos are read. Reading those takes on average 1 sec/AC. Here too, we allow for 1 misread.
-_sample_time_per_device = 12.0
+_sample_time_per_device = 12.0 + 3.0
 _sample_time_per_ac = 1.0
 # Set a minimum pause time between scans
 _pause_time = 30.0
