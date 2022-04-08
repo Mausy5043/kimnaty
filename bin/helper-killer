@@ -6,7 +6,7 @@ while true; do
     for PID in $(pgrep "bluepy-helper"); do
     # for PID in $(ps -ef | egrep "bluepy-helper" | grep -v grep | awk {'print $2'}); do
         RUNTIMESEC=$(ps -o etimes= -p "$PID")
-        if [ "$RUNTIMESEC" -gt 90 ]; then
+        if [ "$RUNTIMESEC" -gt 30 ]; then
                echo "** ** bluepy-helper has been running for ${RUNTIMESEC} seconds; killing ${PID}"
                kill -9 "${PID}"
         fi
