@@ -151,6 +151,10 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
             new_name = ROOMS[room_id]
         except KeyError:
             new_name = room_id
+        try:
+            df = df.drop('sample_time', axis=1)
+        except:
+            pass
         df_t = collate(df_t, df,
                        columns_to_drop=['voltage', 'humidity'],
                        column_to_rename='temperature',
