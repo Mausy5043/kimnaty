@@ -123,7 +123,7 @@ def do_work_rht(dev_list):
             data_list.append(data)
         else:
             retry_list.append(mac)
-        time.sleep(3.0)  # relax on the BLE-chip
+        time.sleep(8.0)  # relax on the BLE-chip
 
     if retry_list:
         if DEBUG:
