@@ -159,8 +159,6 @@ def get_rht_data(mac):
             print(f'Temperature       : {data.temperature}°C')
             print(f'Humidity          : {data.humidity}%')
             print(f'Battery           : {data.battery}% ({data.voltage}V)')
-            print(f"{time.time() - t0:.2f} seconds")
-            print('')
         temperature = data.temperature
         humidity = data.humidity
         voltage = data.voltage
@@ -172,7 +170,9 @@ def get_rht_data(mac):
         # mf.syslog_trace(f"*** While talking to {mac} this error occured on {err_date}:", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
-
+    if DEBUG:
+        print(f"{time.time() - t0:.2f} seconds")
+        print('')
     dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
