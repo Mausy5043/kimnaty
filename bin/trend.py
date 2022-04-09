@@ -236,6 +236,7 @@ def plot_graph(output_file, data_dict, plot_title):
             plt.setp(l, alpha=ahpla, linewidth=1, linestyle=' ')
         ax1.set_ylabel(parameter)
         ax1.legend(loc='best',
+                   mode='expand',
                    framealpha=0.2
                    )
         ax1.set_xlabel("Datetime")
