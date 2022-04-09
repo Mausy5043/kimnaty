@@ -181,7 +181,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
 def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_name='room_id'):
     # drop the 'columns_to_drop'
     for col in columns_to_drop:
-        data_frame.drop(col, axis=1, inplace=True, errors='ignore')
+        data_frame = data_frame.drop(col, axis=1, errors='ignore')
     # rename the 'column_to_rename'
     data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
     # collate both dataframes
