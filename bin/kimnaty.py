@@ -67,6 +67,7 @@ def main():
     sample_time = report_time / int(constants.KIMNATY['samplespercycle'])
     list_of_devices = constants.DEVICES
     if DEBUG:
+        print(f"report_time : {report_time} s")
         print(list_of_devices)
     list_of_aircos = constants.AIRCO
     for airco in list_of_aircos:
@@ -93,6 +94,9 @@ def main():
             # report samples
             if ac_results:
                 do_add_to_database(ac_results, fdatabase, sqlcmd_ac)
+
+            if DEBUG:
+                print(f" >>> Time to get results: {time.time() - start_time}")
 
             pause_time = (sample_time
                           - (time.time() - start_time)
@@ -127,13 +131,14 @@ def do_work_rht(dev_list):
 
     if retry_list:
         if DEBUG:
-            print("Retrying failed connections in 15s...")
-        time.sleep(15.0)
+            print("Retrying failed connections in 20s...")
+        time.sleep(20.0)
         for mac in retry_list:
             succes, data = get_rht_data(mac[0])
             data[2] = mac[1]  # replace mac-address by room-id
             if succes:
                 data_list.append(data)
+            time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
@@ -162,7 +167,7 @@ def get_rht_data(mac):
         success = True
     except Exception as e:
         err_date = dt.datetime.now()
-        mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date}:", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date}", syslog.LOG_CRIT, DEBUG)
         pass
         # mf.syslog_trace(f"*** While talking to {mac} this error occured on {err_date}:", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
