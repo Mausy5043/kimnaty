@@ -54,11 +54,11 @@ AIRCO = [{'name': 'airco0',
 # and allowing for all to misread every cycle.
 # Also the aircos are read. Reading those takes on average 1 sec/AC. Here too, we allow for 1 misread.
 _sample_time_per_device = 12.0 + 8.0
-_sample_time_per_ac = 1.0
+_sample_time_per_ac = 5.0
 # Set a minimum pause time between scans
 _pause_time = 30.0
 _report_time = (_sample_time_per_device * (len(DEVICES) * 2)) \
-               + (_sample_time_per_ac * (len(AIRCO) + 1)) \
+               + (_sample_time_per_ac * (len(AIRCO))) \
                + _pause_time
 # The minimum report_time is 60 seconds, to prevent unrealistic scantimes, high loads and battery drain.
 if _report_time < 60.0:
