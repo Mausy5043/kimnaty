@@ -218,7 +218,7 @@ def plot_graph(output_file, data_dict, plot_title):
             print(parameter)
         data_frame = data_dict[parameter]
         fig_x = 20
-        fig_y = 5
+        fig_y = 7.5
         fig_fontsize = 13
         ahpla = 0.7
         """
@@ -235,8 +235,8 @@ def plot_graph(output_file, data_dict, plot_title):
         for i, l in enumerate(ax1.lines):
             plt.setp(l, alpha=ahpla, linewidth=1, linestyle=' ')
         ax1.set_ylabel(parameter)
-        ax1.legend(loc='best',
-                   mode='expand',
+        ax1.legend(loc='lower left',
+                   ncol=8,
                    framealpha=0.2
                    )
         ax1.set_xlabel("Datetime")
