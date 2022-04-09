@@ -30,7 +30,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     for d in data_dict_ac:
         if 'T(out)' in data_dict_ac[d]:
             data_dict_rht['temperature']['T(out)'] = data_dict_ac[d]['T(out)']
-            data_dict_ac[d] = data_dict_ac[d].drop(['T(out)'], axis=1)
+            data_dict_ac[d].drop(['T(out)'], axis=1, inplace=True, errors='ignore')
     for d in data_dict_rht:
         data_dict[d] = data_dict_rht[d]
     for d in data_dict_ac:
@@ -72,7 +72,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, 'temperature_target'] = np.nan
         # conserve memory; we dont need the these.
-        df = df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1)
+        df.drop(['ac_mode', 'ac_power', 'room_id'], axis=1, inplace=True, errors='ignore')
         df_cmp = collate(df_cmp, df,
                          columns_to_drop=['temperature_ac', 'temperature_target', 'temperature_outside'],
                          column_to_rename='cmp_freq',
@@ -103,7 +103,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
 
     # create a new column containing the max value of both aircos, then remove the airco_ columns
     df_cmp['cmp_freq'] = df_cmp[['airco0', 'airco1']].apply(np.max, axis=1)
-    df_cmp = df_cmp.drop(['airco0', 'airco1'], axis=1)
+    df_cmp.drop(['airco0', 'airco1'], axis=1, inplace=True, errors='ignore')
     if DEBUG:
         print(df_cmp)
     # rename the column to something shorter
@@ -139,7 +139,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
                                    index_col='sample_epoch'
                                    )
         # conserve memory; we dont need the room_id repeated in every row.
-        df = df.drop('room_id', axis=1)
+        df.drop('room_id', axis=1, inplace=True, errors='ignore')
         for c in df.columns:
             if c not in ['sample_time']:
                 df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -151,10 +151,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
             new_name = ROOMS[room_id]
         except KeyError:
             new_name = room_id
-        try:
-            df = df.drop('sample_time', axis=1)
-        except:
-            pass
+        df.drop('sample_time', axis=1, inplace=True, errors='ignore')
         df_t = collate(df_t, df,
                        columns_to_drop=['voltage', 'humidity'],
                        column_to_rename='temperature',
@@ -184,7 +181,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
 def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_name='room_id'):
     # drop the 'columns_to_drop'
     for col in columns_to_drop:
-        data_frame = data_frame.drop(col, axis=1)
+        data_frame.drop(col, axis=1, inplace=True, errors='ignore')
     # rename the 'column_to_rename'
     data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
     # collate both dataframes
