@@ -163,13 +163,16 @@ def get_rht_data(mac):
         humidity = data.humidity
         voltage = data.voltage
         success = True
+    except BrokenPipeError:
+        err_date = dt.datetime.now()
+        mf.syslog_trace(f"BrokenPipeError on {err_date}", syslog.LOG_CRIT, DEBUG)
+        pass
     except Exception as e:
         err_date = dt.datetime.now()
         mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date}", syslog.LOG_CRIT, DEBUG)
-        pass
-        # mf.syslog_trace(f"*** While talking to {mac} this error occured on {err_date}:", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
+        pass
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds")
         print('')
