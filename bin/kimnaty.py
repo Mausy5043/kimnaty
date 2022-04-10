@@ -170,7 +170,7 @@ def get_rht_data(mac):
     except Exception as e:
         err_date = dt.datetime.now()
         mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date}", syslog.LOG_CRIT, DEBUG)
-        # mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
         pass
     if DEBUG:
