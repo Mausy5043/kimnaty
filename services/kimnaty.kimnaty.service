@@ -9,7 +9,7 @@ Type=simple
 User=pi
 ExecStartPre=/bin/sleep 20
 ExecStart=/home/pi/kimnaty/bin/kimnaty.py --start
-RestartSec=360s
+RestartSec=40s
 Restart=on-failure
 
 [Install]
