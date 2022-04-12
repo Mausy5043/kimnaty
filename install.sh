@@ -85,7 +85,7 @@ python3 -m pip install --upgrade pip setuptools wheel
 pushd "${HERE}" || exit 1
     python3 -m pip install -r requirements.txt
     python3 -m pip uninstall -y bluepy
-    python3 -m pip install "git+https://github.com/Mausy5043/bluepy@kimnaty#egg=bluepy"
+    python3 -m pip install "git+https://github.com/Mausy5043/bluepy@master#egg=bluepy"
     echo
     echo -n "Installed: "
     python3 -m pip list | grep bluepy
