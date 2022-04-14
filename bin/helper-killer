@@ -8,13 +8,13 @@ while true; do
         if [ "$RUNTIMESEC" -gt 30 ]; then
             echo "** ** bluepy-helper has been running for ${RUNTIMESEC} seconds; killing ${PID}"
             kill -9 "${PID}"
-#            sleep 10
-#            # shellcheck disable=SC2009
-#            ZOMBIE_MOM=$(ps xal | grep -v "grep" | grep "defunct" | awk '{print $4}')
-#            if [ "$ZOMBIE_MOM" -gt 1 ]; then
-#                echo "** ** bluepy-helper was zombified. Need to kill parent ${ZOMBIE_MOM}."
-#                kill -9 "${ZOMBIE_MOM}"
-#            fi
+            sleep 10
+            # shellcheck disable=SC2009
+            ZOMBIE_MOM=$(ps xal | grep -v "grep" | grep "defunct" | awk '{print $4}')
+            if [ "$ZOMBIE_MOM" -gt 1 ]; then
+                echo "** ** bluepy-helper was zombified. Need to kill parent ${ZOMBIE_MOM}."
+                kill -9 "${ZOMBIE_MOM}"
+            fi
         fi
     done
     sleep 30
