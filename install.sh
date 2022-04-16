@@ -68,15 +68,14 @@ install_package "libtiff5"
 install_package "sqlite3"
 
 # required for hardware support (Bluetooth)
-sudo addgroup --gid 112 bluetooth
-sudo rm /etc/modprobe.d/dietpi-disable_bluetooth.conf
-sudo sed -i /^[[:blank:]]*dtoverlay=disable-bt/d /boot/config.txt
 install_package "pi-bluetooth"
 install_package "bluetooth"
 # install_package "pybluez"
 install_package "bluez"
 sudo addgroup --gid 112 bluetooth
 sudo usermod -aG bluetooth pi
+sudo rm /etc/modprobe.d/dietpi-disable_bluetooth.conf
+sudo sed -i /^[[:blank:]]*dtoverlay=disable-bt/d /boot/config.txt
 
 echo
 echo "*********************************************************"
@@ -109,7 +108,7 @@ pushd "${HERE}" || exit 1
     git config core.fileMode false
     # set the branch
     if [ ! -e "${HOME}/.${app_name}.branch" ]; then
-        echo "main" >"${HOME}/.${app_name}.branch"
+        echo "master" >"${HOME}/.${app_name}.branch"
     fi
     chmod -x ./services/*
 
