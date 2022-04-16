@@ -1,3 +1,7 @@
+#!/usr/bin/env sh
+
+
+# shellcheck disable=SC2034
 app_name="kimnaty"
 
 # determine controller's identity
