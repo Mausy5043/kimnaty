@@ -106,8 +106,11 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
     df_cmp.drop(['airco0', 'airco1'], axis=1, inplace=True, errors='ignore')
     if DEBUG:
         print(df_cmp)
-    # rename the column to something shorter
-    df_t.rename(columns={'temperature_outside': 'T(out)'}, inplace=True)
+    # rename the column to something shorter or drop it
+    if OPTION.outside:
+        df_t.rename(columns={'temperature_outside': 'T(out)'}, inplace=True)
+    else:
+        df_t.drop(['temperature_outside'], axis=1, inplace=True, errors='ignore')
     if DEBUG:
         print(df_t)
 
@@ -301,6 +304,10 @@ if __name__ == "__main__":
                         type=int,
                         help="number of months of data to use for the graph",
                         )
+    parser.add_argument("-o", "--outside",
+                        action="store_true",
+                        help="plot outside temperature"
+                        )
     parser_group = parser.add_mutually_exclusive_group(required=False)
     parser_group.add_argument("--debug",
                               action="store_true",
@@ -313,7 +320,10 @@ if __name__ == "__main__":
         OPTION.days = 80
     if OPTION.months == 0:
         OPTION.months = 38
+
     if OPTION.debug:
+        print(OPTION)
         DEBUG = True
         print("DEBUG-mode started")
+    sys
     main()
