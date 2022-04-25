@@ -325,5 +325,4 @@ if __name__ == "__main__":
         print(OPTION)
         DEBUG = True
         print("DEBUG-mode started")
-    sys
     main()
