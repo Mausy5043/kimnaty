@@ -221,9 +221,13 @@ def get_ac_data(airco):
         ac_t_tgt = float(airco['device'].target_temperature)
         ac_t_out = float(airco['device'].outside_temperature)
         success = True
+    except ValueError:
+        # When swithed in fan-mode the temperature target becomes '--'
+        ac_t_tgt = ac_t_in
+        pass
     except Exception as e:
         err_date = dt.datetime.now()
-        mf.syslog_trace(f"*** While talking to {airco['name']} this error occured on {err_date}:", syslog.LOG_CRIT,
+        mf.syslog_trace(f"*** While talking to {airco['name']} an error occured on {err_date}:", syslog.LOG_CRIT,
                         DEBUG)
         mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)

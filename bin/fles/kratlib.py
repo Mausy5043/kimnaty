@@ -2,8 +2,8 @@
 """Common functions for Flask webUI"""
 
 import os
-import sys
 import sqlite3
+import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
 import constants  # noqa
@@ -13,6 +13,9 @@ def initial_state():
     """
     Set the factory settings for the application.
     The settings are stored in a dictionary.
+
+    Returns:
+        An empty dict()
     """
     defstate = dict()
 
@@ -20,6 +23,10 @@ def initial_state():
 
 
 class Fles:
+    """
+    Class for a supporting object
+    """
+
     def __init__(self):
         # app info :
         # path to this file as a list of elements
@@ -34,8 +41,6 @@ class Fles:
 
         self.DATABASE = constants.KIMNATY['database']
         self.CONFIG = f'{self.MYROOT}/.config/kimdata.json'
-        self.req_state = dict()
-        self.ctrl_state = dict()
 
     def get_latest_data(self, fields):
         """Retrieve the most recent datapoints from the database."""

@@ -12,7 +12,12 @@ KRAT = kratlib.Fles()
 @app.route("/", methods=['GET', 'POST'])
 @app.route("/state", methods=['GET', 'POST'])
 def state():
-    global KRAT
+    """
+    Prepare images for display and render the website.
+
+    Returns:
+        A Flask rendered template.
+    """
     if flask.request.method == 'POST':
         pass
 
@@ -44,6 +49,7 @@ def state():
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
+    # DY
     dy_img_t = "".join(["data:image/png;base64,",
                         str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_days_temperature.png",
                                                   "rb"
@@ -69,6 +75,7 @@ def state():
                                                   "rb"
                                                   ).read()))[2:-1]
                         ])
+    # MN
     mn_img_t = "".join(["data:image/png;base64,",
                         str(base64.b64encode(open("/tmp/kimnaty/site/img/kim_months_temperature.png",
                                                   "rb"

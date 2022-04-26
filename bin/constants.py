@@ -99,3 +99,4 @@ try:
 except KeyError:
     print("*** KeyError when retrieving ROOMS")
     print(ROOMS.to_dict())
+
