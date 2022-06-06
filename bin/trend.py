@@ -155,6 +155,8 @@ def fetch_data_rht(hours_to_fetch=48, aggregation='10min'):
         except KeyError:
             new_name = room_id
         df.drop('sample_time', axis=1, inplace=True, errors='ignore')
+        # if DEBUG:
+        #     print(df)
         df_t = collate(df_t, df,
                        columns_to_drop=['voltage', 'humidity'],
                        column_to_rename='temperature',
@@ -187,6 +189,10 @@ def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_na
         data_frame = data_frame.drop(col, axis=1, errors='ignore')
     # rename the 'column_to_rename'
     data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
+    # if DEBUG:
+    #     print()
+    #     print(new_name)
+    #     print(data_frame)
     # collate both dataframes
     if prev_df is not None:
         data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='outer')

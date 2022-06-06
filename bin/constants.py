@@ -15,8 +15,10 @@ if not os.path.isfile(_DATABASE):
     _DATABASE = '/mnt/data/kimnaty.sqlite3'
 if not os.path.isfile(_DATABASE):
     _DATABASE = f'.local/kimnaty.sqlite3'
+    print("Searching for database in .local")
 if not os.path.isfile(_DATABASE):
     _DATABASE = f'{_MYHOME}/.sqlite3/kimnaty.sqlite3'
+    print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
     sys.exit(1)
