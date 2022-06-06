@@ -22,7 +22,7 @@ OPTION = ""
 DEBUG = False
 
 
-def fetch_data(hours_to_fetch=48, aggregation=1):
+def fetch_data(hours_to_fetch=48, aggregation='10min'):
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict = dict()
@@ -38,7 +38,7 @@ def fetch_data(hours_to_fetch=48, aggregation=1):
     return data_dict
 
 
-def fetch_data_ac(hours_to_fetch=48, aggregation=1):
+def fetch_data_ac(hours_to_fetch=48, aggregation='10min'):
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -67,7 +67,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
                 df[c] = pd.to_numeric(df[c], errors='coerce')
         df.index = pd.to_datetime(df.index, unit='s').tz_localize("UTC").tz_convert("Europe/Amsterdam")
         # resample to monotonic timeline
-        df = df.resample(f'{aggregation}min').mean()
+        df = df.resample(f'{aggregation}').mean()
         df = df.interpolate(method='slinear')
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, 'temperature_target'] = np.nan
@@ -118,7 +118,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation=1):
     return ac_data_dict
 
 
-def fetch_data_rht(hours_to_fetch=48, aggregation=1):
+def fetch_data_rht(hours_to_fetch=48, aggregation='10min'):
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -148,7 +148,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation=1):
                 df[c] = pd.to_numeric(df[c], errors='coerce')
         df.index = pd.to_datetime(df.index, unit='s').tz_localize("UTC").tz_convert("Europe/Amsterdam")
         # resample to monotonic timeline
-        df = df.resample(f'{aggregation}min').mean()
+        df = df.resample(f'{aggregation}').mean()
         df = df.interpolate(method='slinear')
         try:
             new_name = ROOMS[room_id]
@@ -189,7 +189,9 @@ def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename='', new_na
     data_frame.rename(columns={f'{column_to_rename}': new_name}, inplace=True)
     # collate both dataframes
     if prev_df is not None:
-        data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='left')
+        data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how='outer')
+    if DEBUG:
+        print(data_frame)
     return data_frame
 
 
@@ -262,25 +264,28 @@ def main():
     This is the main loop
     """
     if OPTION.hours:
-        aggr = int(float(OPTION.hours) * 60. / 480.)
-        if aggr < 1:
-            aggr = 1
+        # aggr = int(float(OPTION.hours) * 60. / 480.)
+        # if aggr < 1:
+        #     aggr = 1
+        aggr = '10min'
         plot_graph(constants.TREND['day_graph'],
                    fetch_data(hours_to_fetch=OPTION.hours, aggregation=aggr),
                    f" trend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.days:
-        aggr = int(float(OPTION.days) * 24. * 60. / 5760.)
-        if aggr < 1:
-            aggr = 1
+        # aggr = int(float(OPTION.days) * 24. * 60. / 5760.)
+        # if aggr < 1:
+        #     aggr = 30
+        aggr = 'H'
         plot_graph(constants.TREND['month_graph'],
                    fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=aggr),
                    f" trend per uur afgelopen maand ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
                    )
     if OPTION.months:
-        aggr = int(float(OPTION.months) * 30.5 * 24. * 60. / 9900.)
-        if aggr < 1:
-            aggr = 1
+        # aggr = int(float(OPTION.months) * 30.5 * 24. * 60. / 9900.)
+        # if aggr < 1:
+        #     aggr = 30
+        aggr = '6H'
         plot_graph(constants.TREND['year_graph'],
                    fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=aggr),
                    f" trend per dag afgelopen maanden ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
