@@ -273,7 +273,7 @@ def main():
         # aggr = int(float(OPTION.hours) * 60. / 480.)
         # if aggr < 1:
         #     aggr = 1
-        aggr = '10min'
+        aggr = '2min'
         plot_graph(constants.TREND['day_graph'],
                    fetch_data(hours_to_fetch=OPTION.hours, aggregation=aggr),
                    f" trend afgelopen dagen ({dt.now().strftime('%d-%m-%Y %H:%M:%S')})",
