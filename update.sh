@@ -32,6 +32,8 @@ pushd "${HERE}" || exit 1
     chmod -x ./services/*
 
     echo "Please wait while services stop..."
+    touch /tmp/kimnaty.fles
+    touch /tmp/kimnaty.kimnaty
     sudo systemctl stop kimnaty.fles.service &
     sudo systemctl stop kimnaty.kimnaty.service &
     sudo systemctl stop kimnaty.trend.day.timer &
@@ -80,5 +82,8 @@ pushd "${HERE}" || exit 1
     sudo systemctl start kimnaty.kimnaty.service &
     wait
 popd || exit
+
+touch /tmp/kimnaty.fles
+touch /tmp/kimnaty.kimnaty
 
 logger "Finished kimnaty update."
