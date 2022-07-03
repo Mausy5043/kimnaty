@@ -165,22 +165,22 @@ def get_rht_data(mac):
         success = True
     except BrokenPipeError:
         err_date = dt.datetime.now()
-        mf.syslog_trace(f"BrokenPipeError on {err_date}", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}", syslog.LOG_CRIT, DEBUG)
         pass
     except Exception as e:
         err_date = dt.datetime.now()
-        mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date}", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(f"*** While talking to {mac} an error occured on {err_date.strftime(constants.DT_FORMAT)}",
+                        syslog.LOG_CRIT, DEBUG)
         mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
         pass
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds")
         print('')
-    dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
-    return success, [out_date.strftime(dt_format), out_epoch, mac, temperature, humidity, voltage]
+    return success, [out_date.strftime(constants.DT_FORMAT), out_epoch, mac, temperature, humidity, voltage]
 
 
 def do_work_ac(dev_list):
@@ -227,8 +227,11 @@ def get_ac_data(airco):
         pass
     except Exception as e:
         err_date = dt.datetime.now()
-        mf.syslog_trace(f"*** While talking to {airco['name']} an error occured on {err_date}:", syslog.LOG_CRIT,
-                        DEBUG)
+        mf.syslog_trace(f"*** While talking to {airco['name']} an error occured "
+                        f"on {err_date.strftime(constants.DT_FORMAT)}:",
+                        syslog.LOG_CRIT,
+                        DEBUG
+                        )
         mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
     if DEBUG:
@@ -242,11 +245,10 @@ def get_ac_data(airco):
         print("+---------------------------------------------")
         print(f"{time.time() - t0:.2f} seconds\n")
 
-    dt_format = "%Y-%m-%d %H:%M:%S"
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
-    return success, [out_date.strftime(dt_format), out_epoch,
+    return success, [out_date.strftime(constants.DT_FORMAT), out_epoch,
                      airco['name'],
                      ac_pwr, ac_mode,
                      ac_t_in, ac_t_tgt, ac_t_out,

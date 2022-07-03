@@ -23,6 +23,8 @@ if not os.path.isfile(_DATABASE):
     print("Database is missing.")
     sys.exit(1)
 
+DT_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 TREND = {'database': _DATABASE,
          'sql_table_rht': "data",
          'sql_table_ac': "aircon",
