@@ -28,9 +28,8 @@ declare -a kimnaty_timers=("kimnaty.trend.day.timer"
         "kimnaty.trend.year.timer"
         "kimnaty.update.timer")
 # list of services provided
-declare -a kimnaty_services=("kimnaty.kimnaty.service"
-        "kimnaty.bluepy-helper-killer.service"
-        "kimnaty.fles.service")
+declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy-helper-killer.service")
+
 # Install python3 and develop packages
 # Support for matplotlib & numpy needs to be installed seperately
 # Support for serial port
@@ -39,7 +38,7 @@ declare -a kimnaty_apt_packages=("build-essential" "python3" "python3-dev" "pyth
         "libatlas-base-dev" "libxcb1" "libopenjp2-7" "libtiff5" "libglib2.0-dev"
         "pi-bluetooth" "bluetooth" "bluez"
         "sqlite3")
-# placeholders for trendgraphs to make Flask website work regardless of the state of the graphs.
+# placeholders for trendgraphs to make website work regardless of the state of the graphs.
 declare -a kimnaty_graphs=('kim_days_compressor.png'
         'kim_days_temperature.png'
         'kim_hours_humidity.png'
@@ -194,13 +193,16 @@ install_kimnaty() {
     action_timers enable
     action_services enable
 
+    # install a link to the website on /tmp/....
+    ln -s "${website_dir}" /var/www/state
+
     echo "Installation complete. To start the application use:"
     echo "   kimnaty --go"
 }
 
 # set-up the application
 boot_kimnaty() {
-    # make sure Flask tree exists
+    # make sure website filetree exists
     if [ ! -d "${website_image_dir}" ]; then
         mkdir -p "${website_image_dir}"
         chmod -R 755 "${website_dir}/.."
@@ -209,7 +211,7 @@ boot_kimnaty() {
     for GRPH in "${kimnaty_graphs[@]}"; do
         create_graphic "${GRPH}"
     done
-    cp "${constants_sh_dir}/../www/state.html" "${website_dir}"
+    cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
     cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
