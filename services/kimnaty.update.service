@@ -9,5 +9,5 @@ Wants=kimnaty.update.timer
 [Service]
 Type=oneshot
 User=pi
-ExecStart=/home/pi/kimnaty/update.sh --systemd
+ExecStart=/home/pi/kimnaty/kimnaty --systemd
 TimeoutSec=900
