@@ -17,6 +17,8 @@ host_name=$(hostname)
 database_filename="kimnaty.sqlite3"
 database_path="/srv/databases"
 db_full_path="${database_path}/${database_filename}"
+website_dir="/tmp/${app_name}/site"
+website_image_dir="${website_dir}/img"
 
 constants_sh_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 
@@ -199,14 +201,16 @@ install_kimnaty() {
 # set-up the application
 boot_kimnaty() {
     # make sure Flask tree exists
-    if [ ! -d "/tmp/${app_name}/site/img" ]; then
-        mkdir -p "/tmp/${app_name}/site/img"
-        chmod -R 755 "/tmp/${app_name}"
+    if [ ! -d "${website_image_dir}" ]; then
+        mkdir -p "${website_image_dir}"
+        chmod -R 755 "${website_dir}/.."
     fi
-    # allow Flask to work even if the graphics have not yet been created
+    # allow website to work even if the graphics have not yet been created
     for GRPH in "${kimnaty_graphs[@]}"; do
         create_graphic "${GRPH}"
     done
+    cp "${constants_sh_dir}/../www/state.html" "${website_dir}"
+    cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
 # perform systemctl actions on all timers
@@ -267,6 +271,6 @@ getfilefromserver() {
 create_graphic() {
     IMAGE="$1"
     if [ ! -f "${IMAGE}" ]; then
-        cp "${constants_sh_dir}/fles/static/empty.png" "${IMAGE}"
+        cp "${constants_sh_dir}/../www/empty.png" "${IMAGE}"
     fi
 }
