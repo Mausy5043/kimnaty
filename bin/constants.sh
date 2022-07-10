@@ -67,6 +67,8 @@ start_kimnaty() {
     fi
     action_timers start
     action_services start
+    cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
+    cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
 # stop the application
