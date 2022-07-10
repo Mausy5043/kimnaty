@@ -196,7 +196,7 @@ install_kimnaty() {
     action_services enable
 
     # install a link to the website on /tmp/....
-    ln -s "${website_dir}" /var/www/state
+    sudo ln -s "${website_dir}" /var/www/state
 
     echo "Installation complete. To start the application use:"
     echo "   kimnaty --go"
