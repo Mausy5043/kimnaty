@@ -10,4 +10,4 @@ Wants=kimnaty.update.timer
 Type=oneshot
 User=pi
 ExecStart=/home/pi/kimnaty/kimnaty --systemd
-TimeoutSec=900
+TimeoutStopSec=900
