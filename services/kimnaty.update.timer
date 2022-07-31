@@ -6,7 +6,7 @@ Description=daily kimnaty update
 Requires=kimnaty.update.service
 
 [Timer]
-OnCalendar=*-*-* 04:06
+OnCalendar=*-*-* 04:03
 RandomizedDelaySec=3m
 
 [Install]
