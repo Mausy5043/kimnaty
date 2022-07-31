@@ -25,6 +25,8 @@ if not os.path.isfile(_DATABASE):
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+# The paths defined here must match the paths defined in constants.sh
+# $website_dir  and  $website_image_dir
 TREND = {'database': _DATABASE,
          'sql_table_rht': "data",
          'sql_table_ac': "aircon",
@@ -36,11 +38,11 @@ TREND = {'database': _DATABASE,
 DEVICES = [['A4:C1:38:A5:71:D0', '0.1.0'],
            ['A4:C1:38:99:AC:4D', '0.5'],
            ['A4:C1:38:6F:E7:CA', '1.1'],
-           ['A4:C1:38:91:D9:47', '1.2'],
-           ['A4:C1:38:50:D7:2D', '1.3'],
+           ['A4:C1:38:50:D7:2D', '1.2'],
+           ['A4:C1:38:91:D9:47', '1.3'],
            ['A4:C1:38:59:9A:9B', '1.4'],
-           ['A4:C1:38:58:23:E1', '2.1'],
-           ['A4:C1:38:76:59:43', '2.2']
+           ['A4:C1:38:76:59:43', '2.1'],
+           ['A4:C1:38:58:23:E1', '2.2']
            ]
 
 AIRCO = [{'name': 'airco0',
