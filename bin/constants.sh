@@ -17,6 +17,8 @@ host_name=$(hostname)
 database_filename="kimnaty.sqlite3"
 database_path="/srv/databases"
 db_full_path="${database_path}/${database_filename}"
+website_dir="/tmp/${app_name}/site"
+website_image_dir="${website_dir}/img"
 
 constants_sh_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 
@@ -26,9 +28,8 @@ declare -a kimnaty_timers=("kimnaty.trend.day.timer"
         "kimnaty.trend.year.timer"
         "kimnaty.update.timer")
 # list of services provided
-declare -a kimnaty_services=("kimnaty.kimnaty.service"
-        "kimnaty.bluepy-helper-killer.service"
-        "kimnaty.fles.service")
+declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy-helper-killer.service")
+
 # Install python3 and develop packages
 # Support for matplotlib & numpy needs to be installed seperately
 # Support for serial port
@@ -37,7 +38,7 @@ declare -a kimnaty_apt_packages=("build-essential" "python3" "python3-dev" "pyth
         "libatlas-base-dev" "libxcb1" "libopenjp2-7" "libtiff5" "libglib2.0-dev"
         "pi-bluetooth" "bluetooth" "bluez"
         "sqlite3")
-# placeholders for trendgraphs to make Flask website work regardless of the state of the graphs.
+# placeholders for trendgraphs to make website work regardless of the state of the graphs.
 declare -a kimnaty_graphs=('kim_days_compressor.png'
         'kim_days_temperature.png'
         'kim_hours_humidity.png'
@@ -66,6 +67,8 @@ start_kimnaty() {
     fi
     action_timers start
     action_services start
+    cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
+    cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
 # stop the application
@@ -192,21 +195,26 @@ install_kimnaty() {
     action_timers enable
     action_services enable
 
+    # install a link to the website on /tmp/....
+    sudo ln -s "${website_dir}" /var/www/state
+
     echo "Installation complete. To start the application use:"
     echo "   kimnaty --go"
 }
 
 # set-up the application
 boot_kimnaty() {
-    # make sure Flask tree exists
-    if [ ! -d "/tmp/${app_name}/site/img" ]; then
-        mkdir -p "/tmp/${app_name}/site/img"
-        chmod -R 755 "/tmp/${app_name}"
+    # make sure website filetree exists
+    if [ ! -d "${website_image_dir}" ]; then
+        mkdir -p "${website_image_dir}"
+        chmod -R 755 "${website_dir}/.."
     fi
-    # allow Flask to work even if the graphics have not yet been created
+    # allow website to work even if the graphics have not yet been created
     for GRPH in "${kimnaty_graphs[@]}"; do
         create_graphic "${GRPH}"
     done
+    cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
+    cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
 # perform systemctl actions on all timers
@@ -267,6 +275,6 @@ getfilefromserver() {
 create_graphic() {
     IMAGE="$1"
     if [ ! -f "${IMAGE}" ]; then
-        cp "${constants_sh_dir}/fles/static/empty.png" "${IMAGE}"
+        cp "${constants_sh_dir}/../www/empty.png" "${IMAGE}"
     fi
 }
