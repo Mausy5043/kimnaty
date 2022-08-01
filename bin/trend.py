@@ -328,7 +328,7 @@ if __name__ == "__main__":
     if OPTION.hours == 0:
         OPTION.hours = 30
     if OPTION.days == 0:
-        OPTION.days = 80
+        OPTION.days = 38
     if OPTION.months == 0:
         OPTION.months = 38
 
