@@ -326,7 +326,7 @@ if __name__ == "__main__":
                               )
     OPTION = parser.parse_args()
     if OPTION.hours == 0:
-        OPTION.hours = 30
+        OPTION.hours = 60
     if OPTION.days == 0:
         OPTION.days = 38
     if OPTION.months == 0:
