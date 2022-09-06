@@ -211,7 +211,7 @@ boot_kimnaty() {
     fi
     # allow website to work even if the graphics have not yet been created
     for GRPH in "${kimnaty_graphs[@]}"; do
-        create_graphic "${GRPH}"
+        create_graphic "${website_image_dir}/${GRPH}"
     done
     cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
     cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
