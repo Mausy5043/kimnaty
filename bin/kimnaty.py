@@ -340,6 +340,9 @@ def set_led(dev, colour):
 if __name__ == "__main__":
     # initialise logging
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
+    # set-up LEDs
+    for device in constants.DEVICES:
+        set_led(device[1], 'red')
     if OPTION.debug:
         DEBUG = True
         mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
@@ -347,8 +350,6 @@ if __name__ == "__main__":
         main()
 
     if OPTION.start:
-        for device in constants.DEVICES:
-            set_led(device[1], 'red')
         main()
 
     print("And it's goodnight from him")
