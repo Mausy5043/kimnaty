@@ -8,6 +8,7 @@ import pandas as pd
 
 _MYHOME = os.environ["HOME"]
 _DATABASE = '/srv/databases/kimnaty.sqlite3'
+_WEBSITE = '/tmp/kimnaty/site'
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = '/srv/data/kimnaty.sqlite3'
@@ -30,9 +31,10 @@ DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 TREND = {'database': _DATABASE,
          'sql_table_rht': "data",
          'sql_table_ac': "aircon",
-         'day_graph': '/tmp/kimnaty/site/img/kim_hours',
-         'month_graph': '/tmp/kimnaty/site/img/kim_days',
-         'year_graph': '/tmp/kimnaty/site/img/kim_months'
+         'website': _WEBSITE,
+         'day_graph': f'{_WEBSITE}/img/kim_hours',
+         'month_graph': f'{_WEBSITE}/img/kim_days',
+         'year_graph': f'{_WEBSITE}/img/kim_months'
          }
 
 DEVICES = [['A4:C1:38:A5:71:D0', '0.1.0'],

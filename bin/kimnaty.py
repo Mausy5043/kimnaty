@@ -9,6 +9,7 @@ Store data from the devices in an sqlite3 database.
 import argparse
 import datetime as dt
 import os
+import shutil
 import sqlite3 as s3
 import syslog
 import time
@@ -44,6 +45,7 @@ MYID = HERE[-1]
 # app_name :
 MYAPP = HERE[-3]
 MYROOT = "/".join(HERE[0:-3])
+APPROOT = "/".join(HERE[0:-2])
 # host_name :
 NODE = os.uname()[1]
 
@@ -124,8 +126,10 @@ def do_work_rht(dev_list):
         succes, data = get_rht_data(mac[0])
         data[2] = mac[1]  # replace mac-address by room-id
         if succes:
+            set_led(mac[1], 'green')
             data_list.append(data)
         else:
+            set_led(mac[1], 'red')
             retry_list.append(mac)
         time.sleep(8.0)  # relax on the BLE-chip
 
@@ -137,6 +141,7 @@ def do_work_rht(dev_list):
             succes, data = get_rht_data(mac[0])
             data[2] = mac[1]  # replace mac-address by room-id
             if succes:
+                set_led(mac[1], 'green')
                 data_list.append(data)
             time.sleep(8.0)  # relax on the BLE-chip
     return data_list
@@ -324,6 +329,12 @@ def test_db_connection(fdatabase):
         raise
 
 
+def set_led(dev, colour):
+    in_dirfile = f'{APPROOT}/www/{colour}.png'
+    out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
+    shutil.copy(f'{in_dirfile}', out_dirfile)
+
+
 if __name__ == "__main__":
     # initialise logging
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
@@ -334,6 +345,8 @@ if __name__ == "__main__":
         main()
 
     if OPTION.start:
+        for device in constants.DEVICES:
+            set_led(device[1], 'red')
         main()
 
     print("And it's goodnight from him")
