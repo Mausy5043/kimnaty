@@ -129,7 +129,7 @@ def do_work_rht(dev_list):
             set_led(mac[1], 'green')
             data_list.append(data)
         else:
-            set_led(mac[1], 'red')
+            set_led(mac[1], 'orange')
             retry_list.append(mac)
         time.sleep(8.0)  # relax on the BLE-chip
 
@@ -143,6 +143,8 @@ def do_work_rht(dev_list):
             if succes:
                 set_led(mac[1], 'green')
                 data_list.append(data)
+            else:
+                set_led(mac[1], 'red')
             time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
@@ -342,7 +344,7 @@ if __name__ == "__main__":
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     # set-up LEDs
     for device in constants.DEVICES:
-        set_led(device[1], 'red')
+        set_led(device[1], 'orange')
     if OPTION.debug:
         DEBUG = True
         mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
