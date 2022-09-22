@@ -1,0 +1,86 @@
+
+digraph graphname {
+  graph [
+    labelloc = t
+    label="kimnaty options and execution paths"
+    fontname = "Helvetica,Arial,sans-serif"
+    fontsize = 30
+    layout = dot
+    rankdir = LR
+    newrank = true
+    ]
+    install [style=filled color=lightyellow shape=box]
+    uninstall [style=filled color=lightyellow shape=box]
+    stop [style=filled color=lightyellow shape=box]
+    go [style=filled color=lightyellow shape=box]
+    boot [style=filled color=lightyellow shape=box]
+    restart [style=filled color=lightyellow shape=box]
+    systemd [style=filled color=lightyellow shape=box]
+    "graph" [style=filled color=lightyellow shape=box]
+    update [style=filled color=lightyellow shape=box]
+
+    pastday [shape=component]
+    pastmonth [shape=component]
+    pastyear [shape=component]
+    timers [shape=Mcircle]
+    services [shape=Msquare]
+
+
+    kimnaty -> install;
+    kimnaty -> uninstall;
+    kimnaty -> stop;
+    kimnaty -> go;
+    kimnaty -> boot;
+    kimnaty -> restart;
+    kimnaty -> "systemd";
+    kimnaty -> "graph";
+    kimnaty -> update;
+
+    install -> install_kimnaty
+    install_kimnaty -> action_apt_install
+    install_kimnaty -> action_timers [label=enable color=green]
+    install_kimnaty -> action_services [label=enable color=green]
+
+    uninstall -> unstall_kimnaty
+    unstall_kimnaty -> stop_kimnaty
+    unstall_kimnaty -> action_timers [label=disable color=blue]
+    unstall_kimnaty -> action_services [label=disable color=blue]
+    unstall_kimnaty -> action_timers [label=rm color=red fontcolor=red]
+    unstall_kimnaty -> action_services [label=rm color=red fontcolor=red]
+
+    stop -> stop_kimnaty
+    stop_kimnaty -> action_timers [label=stop]
+    stop_kimnaty -> action_services [label=stop]
+
+    go -> start_kimnaty [label=nograph]
+    start_kimnaty -> boot_kimnaty
+    start_kimnaty -> graph_kimnaty [color=purple style=dotted]
+    start_kimnaty -> action_timers [label=start]
+    start_kimnaty -> action_services [label=start]
+
+    boot -> boot_kimnaty
+    boot_kimnaty -> create_graphic
+
+    restart -> restart_kimnaty [color=red label="nograph"]
+    restart_kimnaty -> stop_kimnaty
+    restart_kimnaty -> update_kimnaty
+    restart_kimnaty -> start_kimnaty [color=red label="nograph"]
+    restart_kimnaty -> start_kimnaty [color=green label="graph"]
+
+    systemd -> restart_kimnaty [color=green label="graph"]
+
+    "graph" -> graph_kimnaty
+    graph_kimnaty -> pastday
+    graph_kimnaty -> pastmonth
+    graph_kimnaty -> pastyear
+
+    update -> update_kimnaty
+
+    action_timers -> timers
+    action_services -> services
+    timers -> services
+    services -> pastday
+    services -> pastmonth
+    services -> pastyear
+
+}
