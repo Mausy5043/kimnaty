@@ -37,7 +37,7 @@ TREND = {'database': _DATABASE,
          'year_graph': f'{_WEBSITE}/img/kim_months'
          }
 
-DEVICES = [['A4:C1:38:A5:71:D0', '0.1.0'],
+DEVICES = [['A4:C1:38:A5:71:D0', '0.1'],
            ['A4:C1:38:99:AC:4D', '0.5'],
            ['A4:C1:38:6F:E7:CA', '1.1'],
            ['A4:C1:38:50:D7:2D', '1.2'],

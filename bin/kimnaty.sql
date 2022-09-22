@@ -27,7 +27,7 @@ CREATE TABLE rooms (
 -- Prefill the table with roomnames
 -- Groundfloor
 INSERT INTO rooms VALUES('0.0', 'hal');
-INSERT INTO rooms VALUES('0.1.0', 'woonkamer voor');
+INSERT INTO rooms VALUES('0.1', 'woonkamer voor');
 INSERT INTO rooms VALUES('0.1.1', 'woonkamer achter');
 INSERT INTO rooms VALUES('0.2', 'keuken');
 INSERT INTO rooms VALUES('0.5', 'schuur');
