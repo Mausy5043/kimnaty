@@ -229,8 +229,10 @@ def get_ac_data(airco):
         ac_t_tgt = float(airco['device'].target_temperature)
         success = True
     except ValueError:
-        # When swithed in fan-mode the temperature target becomes '--'
+        # When switched to fan-mode the temperature target becomes '--'
+        # When switched to drying mode the temperature target becomes 'M'
         ac_t_tgt = ac_t_in
+        success = True
         pass
     except Exception as e:
         err_date = dt.datetime.now()
