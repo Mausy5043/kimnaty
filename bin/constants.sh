@@ -171,14 +171,12 @@ install_kimnaty() {
     echo
     echo "Uninstalling common python functions..."
     python3 -m pip uninstall -y bluepy
-    python3 -m pip uninstall -y mausy5043-common-python
     echo
     echo "Installing common python functions..."
     python3 -m pip install "git+https://github.com/Mausy5043/bluepy@master#egg=bluepy"
     echo
     echo -n "Installed: "
     python3 -m pip list | grep bluepy
-    python3 -m pip install "git+https://github.com/Mausy5043/mausy5043-common-python.git@${commonlibbranch}#egg=mausy5043-common-python"
 
     if [ -f "${db_full_path}" ]; then
         echo "Found existing database."
