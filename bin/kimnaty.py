@@ -15,8 +15,8 @@ import syslog
 import time
 import traceback
 
-import mausy5043funcs.fileops3 as mf  # noqa
-import mausy5043libs.libsignals3 as ml  # noqa
+import mausy5043_common.funfile as mf
+import mausy5043_common.libsignals as ml
 
 import constants
 import libdaikin
