@@ -2,6 +2,10 @@
 
 """Create trendbargraphs of the data for various periods."""
 
+import warnings
+
+warnings.simplefilter(action='ignore', category=FutureWarning)
+
 import argparse
 from datetime import datetime as dt
 import sqlite3 as s3
