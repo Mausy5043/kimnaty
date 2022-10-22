@@ -11,6 +11,8 @@ User=pi
 ExecStart=/home/pi/kimnaty/bin/kimnaty.py --start
 RestartSec=360s
 Restart=on-failure
+# Be patient:
+TimeoutStopSec=900
 
 [Install]
 WantedBy=multi-user.target

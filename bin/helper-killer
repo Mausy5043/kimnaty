@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Kill bluepy-helper if it has been active for longer than 90 seconds
+# Kill bluepy-helper if it has been active for longer than 30 seconds
 
 while true; do
     for PID in $(pgrep "bluepy-helper"); do
