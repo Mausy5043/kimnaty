@@ -7,9 +7,9 @@ After=multi-user.target
 [Service]
 Type=simple
 User=pi
-ExecStartPre=/bin/sleep 20
+# ExecStartPre=/bin/sleep 20
 ExecStart=/home/pi/kimnaty/bin/kimnaty.py --start
-RestartSec=40s
+RestartSec=360s
 Restart=on-failure
 
 [Install]
