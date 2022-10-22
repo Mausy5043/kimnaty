@@ -57,6 +57,7 @@ declare -a kimnaty_graphs=('kim_days_compressor.png'
 
 # start the application
 start_kimnaty() {
+    echo "*** kimnaty >>>>>>: start $1 $2"
     GRAPH=$2
     ROOT_DEAR=$1
     echo "Starting ${app_name} on $(date)"
@@ -67,12 +68,14 @@ start_kimnaty() {
     fi
     action_timers start
     action_services start
-    cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
-    cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
+    # already done in boot_kimnaty
+    # cp "${constants_sh_dir}/../www/index.html" "${website_dir}"
+    # cp "${constants_sh_dir}/../www/favicon.ico" "${website_dir}"
 }
 
 # stop the application
 stop_kimnaty() {
+    echo "*** kimnaty >>>>>>: stop"
     echo "Stopping ${app_name} on $(date)"
     action_timers stop
     action_services stop
@@ -80,6 +83,7 @@ stop_kimnaty() {
 
 # update the repository
 update_kimnaty() {
+    echo "*** kimnaty >>>>>>: update"
     git fetch origin || sleep 60
     git fetch origin
     DIFFLIST=$(git --no-pager diff --name-only "${branch_name}..origin/${branch_name}")
@@ -91,6 +95,7 @@ update_kimnaty() {
 
 # create graphs
 graph_kimnaty() {
+    echo "*** kimnaty >>>>>>: graph $1"
     ROOT_DIR=$1
 
     echo "Creating graphs [1]"
@@ -104,6 +109,7 @@ graph_kimnaty() {
 # stop, update the repo and start the application
 # do some additional stuff when called by systemd
 restart_kimnaty() {
+    echo "*** kimnaty >>>>>>: restart $1 $2"
     ROOT_DIR=$1
 
     # restarted by --systemd flag
@@ -132,6 +138,7 @@ restart_kimnaty() {
 
 # uninstall the application
 unstall_kimnaty() {
+    echo "*** kimnaty >>>>>>: uninstall"
     echo "Uninstalling ${app_name} on $(date)"
     stop_kimnaty
     action_timers disable
@@ -143,6 +150,7 @@ unstall_kimnaty() {
 
 # install the application
 install_kimnaty() {
+    echo "*** kimnaty >>>>>>: install $1"
     ROOT_DIR=$1
 
     # to suppress git detecting changes by chmod
@@ -204,6 +212,7 @@ install_kimnaty() {
 
 # set-up the application
 boot_kimnaty() {
+    echo "*** kimnaty >>>>>>: boot"
     # make sure website filetree exists
     if [ ! -d "${website_image_dir}" ]; then
         mkdir -p "${website_image_dir}"
@@ -219,6 +228,7 @@ boot_kimnaty() {
 
 # perform systemctl actions on all timers
 action_timers() {
+    echo "*** kimnaty >>>>>>: action_timers $1"
     ACTION=$1
     for TMR in "${kimnaty_timers[@]}"; do
         if [ "${ACTION}" != "rm" ]; then
@@ -233,6 +243,7 @@ action_timers() {
 
 # perform systemctl actions on all services
 action_services() {
+    echo "*** kimnaty >>>>>>: action services $1"
     ACTION=$1
     for SRVC in "${kimnaty_services[@]}"; do
         if [ "${ACTION}" != "rm" ]; then
