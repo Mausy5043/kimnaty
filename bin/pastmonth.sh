@@ -2,11 +2,15 @@
 
 # query daily totals for a period of one month
 
+MAINTENANCE=${1}
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 
 pushd "${HERE}" >/dev/null || exit 1
-    # shellcheck disable=SC1091
-    source ./constants.sh
+# shellcheck disable=SC1091
+source ./constants.sh
+
+if [ "${MAINTENANCE}" == "-" ]; then
+    # do some maintenance
 
     CURRENT_EPOCH=$(date +'%s')
     # do some maintenance
@@ -28,8 +32,8 @@ pushd "${HERE}" >/dev/null || exit 1
         sqlite3 "${db_full_path}" \
                 "DELETE FROM data WHERE sample_epoch < ${PURGE_EPOCH};"
     fi
+fi
 
-    ./trend.py --days 0
-    wait
+./trend.py --days 0
 
 popd >/dev/null || exit
