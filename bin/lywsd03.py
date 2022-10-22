@@ -2,7 +2,6 @@
 
 import argparse
 import lywsd03mmc
-import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('mac', help='MAC address of LYWSD03 device', nargs='+')
