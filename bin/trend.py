@@ -253,7 +253,7 @@ def plot_graph(output_file, data_dict, plot_title):
             plt.setp(l, alpha=ahpla, linewidth=1, linestyle=' ')
         ax1.set_ylabel(parameter)
         if parameter == 'temperature_ac':
-            ax1.set_ylim([10, 30])
+            ax1.set_ylim([12, 28])
         ax1.legend(loc='lower left',
                    ncol=8,
                    framealpha=0.2
