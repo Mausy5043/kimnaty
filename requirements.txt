@@ -1,8 +1,8 @@
-hanging_threads
-lywsd02
-matplotlib
-numpy
-pandas
-requests
-scipy
-mausy5043-common
+hanging-threads==2.0.5
+lywsd02==0.0.9
+matplotlib==3.6.0
+mausy5043-common==1.0.2
+numpy==1.23.3
+pandas==1.5.0
+requests==2.28.1
+scipy==1.9.1
