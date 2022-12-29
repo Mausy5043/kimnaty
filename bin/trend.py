@@ -219,14 +219,15 @@ def remove_nans(frame, col_name, default):
 
 
 def plot_graph(output_file, data_dict, plot_title):
-    """
-    Plot the data into a graph
+    """Plot the data into a graph
 
-    :param output_file: (str) name of the trendgraph file
-    :param data_dict: (dict) contains the data for the lines. Each paramter is a separate pandas Dataframe
+    Args:
+        output_file (str): (str) name of the trendgraph file
+        data_dict (dict): contains the data for the lines. Each paramter is a separate pandas Dataframe
                       {'df': Dataframe}
-    :param plot_title: (str) title to be displayed above the plot
-    :return: None
+        plot_title (str): title to be displayed above the plot
+    Returns:
+        None
     """
     if DEBUG:
         print("*** plotting ***")
