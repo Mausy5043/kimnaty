@@ -7,9 +7,11 @@ import sys
 import pandas as pd
 
 _MYHOME = os.environ["HOME"]
-_DATABASE = '/srv/databases/kimnaty.sqlite3'
+_DATABASE = '/srv/rmt/_databases/kimnaty/kimnaty.sqlite3'
 _WEBSITE = '/tmp/kimnaty/site'
 
+if not os.path.isfile(_DATABASE):
+    _DATABASE = '/srv/databases/kimnaty.sqlite3'
 if not os.path.isfile(_DATABASE):
     _DATABASE = '/srv/data/kimnaty.sqlite3'
 if not os.path.isfile(_DATABASE):
@@ -108,3 +110,9 @@ except KeyError:
     print("*** KeyError when retrieving ROOMS")
     print(ROOMS.to_dict())
 
+
+if __name__ == "__main__":
+    print(f"home              = {_MYHOME}")
+    print(f"database location = {_DATABASE}")
+    print("")
+    print(f"rooms             = {ROOMS}")
