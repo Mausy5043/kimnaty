@@ -20,22 +20,13 @@ if [ "${MAINTENANCE}" == "-" ]; then
     chk_result=$(sqlite3 "${db_full_path}" "PRAGMA integrity_check;")
     echo " ${chk_result}"
     if [ "${chk_result}" == "ok" ]; then
-        echo "${db_full_path} copying... "
-        # sync the backup to the cloud
+        echo "${db_full_path} copying to backup... "
+        # copy to backup
         if command -v rclone &> /dev/null; then
             # shellcheck disable=SC2154
-            rclone sync -v \
-                   "${database_remote_root}/backup" \
-                   "${database_local_root}/backup"
-        fi
-        # shellcheck disable=SC2154
-        cp "${db_full_path}" "${database_local_root}/backup/"
-        # sync the backup to the cloud
-        if command -v rclone &> /dev/null; then
-            # shellcheck disable=SC2154
-            rclone sync -v \
-                   "${database_local_root}/backup" \
-                   "${database_remote_root}/backup"
+            rclone copyto -v \
+                   "${database_local_root}/${app_name}/${database_filename}" \
+                   "${database_remote_root}/backup/${database_filename}"
         fi
         # Keep upto 10 years of data
         echo "${db_full_path} vacuuming... "
