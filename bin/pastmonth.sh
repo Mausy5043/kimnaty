@@ -12,6 +12,7 @@ source ./constants.sh
 if [ "${MAINTENANCE}" == "-" ]; then
     # do some maintenance
     CURRENT_EPOCH=$(date +'%s')
+
     # shellcheck disable=SC2154
     echo "${db_full_path} re-indexing... "
     sqlite3 "${db_full_path}" "REINDEX;"
@@ -28,6 +29,7 @@ if [ "${MAINTENANCE}" == "-" ]; then
                    "${database_local_root}/${app_name}/${database_filename}" \
                    "${database_remote_root}/backup/${database_filename}"
         fi
+
         # Keep upto 10 years of data
         echo "${db_full_path} vacuuming... "
         PURGE_EPOCH=$(echo "${CURRENT_EPOCH} - (3660 * 24 * 3600)" |bc)
@@ -40,9 +42,9 @@ if [ "${MAINTENANCE}" == "-" ]; then
     if command -v rclone &> /dev/null; then
         echo "${db_full_path} syncing... "
         # shellcheck disable=SC2154
-        rclone sync -v \
-               "${database_local_root}/${app_name}" \
-               "${database_remote_root}/${app_name}"
+        rclone copyto -v \
+               "${database_local_root}/${app_name}/${database_filename}" \
+               "${database_remote_root}/${app_name}/${database_filename}"
     fi
 fi
 
