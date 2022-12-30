@@ -21,6 +21,13 @@ if [ "${MAINTENANCE}" == "-" ]; then
     echo " ${chk_result}"
     if [ "${chk_result}" == "ok" ]; then
         echo "${db_full_path} copying... "
+        # sync the backup to the cloud
+        if command -v rclone &> /dev/null; then
+            # shellcheck disable=SC2154
+            rclone sync -v \
+                   "${database_remote_root}/backup" \
+                   "${database_local_root}/backup"
+        fi
         # shellcheck disable=SC2154
         cp "${db_full_path}" "${database_local_root}/backup/"
         # sync the backup to the cloud
