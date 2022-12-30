@@ -82,7 +82,9 @@ stop_kimnaty() {
     action_services stop
     # sync the database into the cloud
     if command -v rclone &> /dev/null; then
-        rclone sync -v "${database_local_root}/${app_name}" "${database_remote_root}/${app_name}"
+        rclone copyto -v \
+               "${database_local_root}/${app_name}/${database_filename}" \
+               "${database_remote_root}/${app_name}/${database_filename}"
     fi
 }
 
@@ -190,15 +192,12 @@ install_kimnaty() {
     echo -n "Installed: "
     python3 -m pip list | grep bluepy
 
-    if [ -f "${db_full_path}" ]; then
-        echo "Found existing database."
-        # sync the database from the cloud; it was copied here during building
-        if command -v rclone &> /dev/null; then
-            rclone sync -v "${database_remote_root}" "${database_local_root}"
-        fi
-    else
-        echo "Creating database."
-        sqlite3 "${db_full_path}" <"${ROOT_DIR}/bin/kimnaty.sql"
+    echo "Fetching existing database from cloud."
+    # sync the database from the cloud
+    if command -v rclone &> /dev/null; then
+    rclone copyto -v \
+           "${database_local_root}/${app_name}/${database_filename}" \
+           "${database_remote_root}/${app_name}/${database_filename}"
     fi
 
     # install services and timers
