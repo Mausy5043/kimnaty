@@ -22,9 +22,6 @@ import constants
 import libdaikin
 import lywsd03mmc
 
-# from hanging_threads import start_monitoring
-# anti_freeze = constants.KIMNATY['report_time'] * 2
-
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
 parser_group.add_argument("--start",
@@ -61,7 +58,6 @@ NODE = os.uname()[1]
 def main():
     """Execute main loop."""
     killer = ml.GracefulKiller()
-    # start_monitoring(seconds_frozen=anti_freeze, test_interval=136)
     fdatabase = constants.KIMNATY['database']
     sqlcmd_rht = constants.KIMNATY['sql_command']
     sqlcmd_ac = constants.AC['sql_command']

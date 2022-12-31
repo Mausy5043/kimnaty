@@ -1,8 +1,7 @@
-hanging-threads==2.0.5
 lywsd02==0.0.9  # does not install on MacOS!
-matplotlib==3.6.0
-mausy5043-common==1.0.2
-numpy==1.23.3
-pandas==1.5.0
-requests==2.28.1
-scipy==1.9.1
+matplotlib
+mausy5043-common
+numpy
+pandas
+requests
+scipy
