@@ -1,9 +1,10 @@
 # kimnaty
 Monitoring LYWSD03MMC devices in various rooms in my house
 
-## installing
+## (un)installing
 Designed and tested to work on Raspberry Pi (DietPi).   
-To install run the `install.sh` script.
+To install run `kimnaty --install`.
+Use `kimnaty --uninstall` to uninstall.
 
 ## lywsd03mmc
 
