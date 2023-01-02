@@ -64,36 +64,30 @@ import requests
 
 
 class Daikin:
-    """Class to get information from Daikin Wireless LAN Connecting Adapter
-    """
+    """Class to get information from Daikin Wireless LAN Connecting Adapter"""
 
-    _CONTROL_FIELDS = ["f_dir",
-                       "f_rate",
-                       "mode",
-                       "pow",
-                       "shum",
-                       "stemp"
-                       ]
+    _CONTROL_FIELDS = ["f_dir", "f_rate", "mode", "pow", "shum", "stemp"]
     """list of fields that need to be defined for a change request"""
 
-    ATTRIBUTES = ["power",
-                  "target_temperature",
-                  "target_humidity",
-                  "mode",
-                  "fan_rate",
-                  "fan_direction",
-                  "mac",
-                  "name",
-                  "rev",
-                  "ver",
-                  "type",
-                  "today_runtime",
-                  "current_month_power_consumption",
-                  "price_int",
-                  "compressor_frequency",
-                  "inside_temperature",
-                  "outside_temperature"
-                  ]
+    ATTRIBUTES = [
+        "power",
+        "target_temperature",
+        "target_humidity",
+        "mode",
+        "fan_rate",
+        "fan_direction",
+        "mac",
+        "name",
+        "rev",
+        "ver",
+        "type",
+        "today_runtime",
+        "current_month_power_consumption",
+        "price_int",
+        "compressor_frequency",
+        "inside_temperature",
+        "outside_temperature",
+    ]
 
     _host = None
 
@@ -131,8 +125,7 @@ class Daikin:
         return fields
 
     def _set(self, path, data):
-        """Internal function to connect to and update information
-        """
+        """Internal function to connect to and update information"""
         logging.debug(data)
         response = requests.get("http://" + self._host + path, data, timeout=3)
         response.raise_for_status()
@@ -490,7 +483,6 @@ class Daikin:
         return self._get_control(all_fields=True)
 
     def __str__(self):
-        return "Daikin(host={0},name={1},mac={2})".format(self._host,
-                                                          self.name,
-                                                          self.mac
-                                                          )
+        return "Daikin(host={0},name={1},mac={2})".format(
+            self._host, self.name, self.mac
+        )
