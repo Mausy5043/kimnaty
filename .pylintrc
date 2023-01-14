@@ -417,7 +417,8 @@ disable=raw-checker-failed,
         deprecated-pragma,
         use-symbolic-message-instead,
         too-many-arguments,
-        logging-fstring-interpolation
+        logging-fstring-interpolation,
+        import-error
 #        useless-suppression,
 
 # Enable the message, report, category or checker with the given id(s). You can
