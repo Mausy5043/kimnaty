@@ -261,11 +261,11 @@ def plot_graph(output_file, data_dict, plot_title):
         fig_y = 7.5
         fig_fontsize = 13
         ahpla = 0.7
-        """
+
         # ###############################
         # Create a line plot of temperatures
         # ###############################
-        """
+
         plt.rc("font", size=fig_fontsize)
         ax1 = data_frame.plot(kind="line", marker=".", figsize=(fig_x, fig_y))
         # linewidth and alpha need to be set separately
