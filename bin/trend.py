@@ -66,7 +66,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         where_condition = (
             f" (sample_time >= datetime('now', '-{hours_to_fetch + 1} hours'))" f" AND (room_id LIKE '{airco_id}')"
         )
-        s3_query = f"SELECT * FROM {TABLE_AC} WHERE {where_condition}"
+        s3_query = f"SELECT * FROM {TABLE_AC} WHERE {where_condition}"  # nosec B608
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
@@ -156,7 +156,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         where_condition = (
             f" (sample_time >= datetime('now', '-{hours_to_fetch + 1} hours'))" f" AND (room_id LIKE '{room_id}')"
         )
-        s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"
+        s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"  # nosec B608
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
