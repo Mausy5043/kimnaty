@@ -107,8 +107,8 @@ def main():
 
 def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
-    data_list = list()
-    retry_list = list()
+    data_list = []
+    retry_list = []
     for mac in dev_list:
         succes, data = get_rht_data(mac[0])
         data[2] = mac[1]  # replace mac-address by room-id
@@ -191,8 +191,8 @@ def get_rht_data(mac):
 
 def do_work_ac(dev_list):
     """Scan the devices to get current readings."""
-    data_list = list()
-    retry_list = list()
+    data_list = []
+    retry_list = []
     for airco in dev_list:
         succes, data = get_ac_data(airco)
         if succes:
