@@ -194,9 +194,9 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         )
 
     if DEBUG:
-        print(f"TEMPERATURE\n", df_t)
-        print(f"HUMIDITY\n", df_h)
-        print(f"VOLTAGE\n", df_v)
+        print(f"TEMPERATURE\n{df_t}")
+        print(f"HUMIDITY\n{df_h}")
+        print(f"VOLTAGE\n{df_v}")
     rht_data_dict = {"temperature": df_t, "humidity": df_h, "voltage": df_v}
     return rht_data_dict
 

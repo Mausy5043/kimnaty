@@ -17,7 +17,7 @@ if not os.path.isfile(_DATABASE):
 if not os.path.isfile(_DATABASE):
     _DATABASE = "/mnt/data/kimnaty.sqlite3"
 if not os.path.isfile(_DATABASE):
-    _DATABASE = f".local/kimnaty.sqlite3"
+    _DATABASE = ".local/kimnaty.sqlite3"
     print("Searching for database in .local")
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"{_MYHOME}/.sqlite3/kimnaty.sqlite3"
@@ -95,7 +95,7 @@ AC = {
     "sql_table": "aircon",
 }
 
-_s3_query = f"SELECT * FROM rooms;"
+_s3_query = "SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
     ROOMS = pd.read_sql_query(_s3_query, _con, index_col="room_id")
 try:
