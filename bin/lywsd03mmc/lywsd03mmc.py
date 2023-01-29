@@ -1,7 +1,10 @@
-from lywsd02 import Lywsd02Client  # noqa
-import struct
+#!/usr/bin/env python3
+
 import collections
+import struct
 from datetime import datetime, timedelta
+
+from lywsd02 import Lywsd02Client  # noqa
 
 UUID_HISTORY = "EBE0CCBC-7A0A-4B0C-8A1A-6FF2997DA3A6"  # Last idx 152          READ NOTIFY
 
