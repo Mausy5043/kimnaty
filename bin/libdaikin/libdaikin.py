@@ -486,4 +486,4 @@ class Daikin:
         return self._get_control(all_fields=True)
 
     def __str__(self):
-        return "Daikin(host={0},name={1},mac={2})".format(self._host, self.name, self.mac)
+        return f"Daikin(host={self._host}, name={self.name}, mac={self.mac})"

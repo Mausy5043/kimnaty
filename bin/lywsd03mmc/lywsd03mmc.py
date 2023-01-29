@@ -97,7 +97,7 @@ class Lywsd03mmcClient(Lywsd02Client):
     def output_history_progress(self, ts, min_temp, max_temp):
         if not self.enable_history_progress:
             return
-        print("{}: {} to {}".format(ts, min_temp, max_temp))
+        print(f"{ts}: {min_temp} to {max_temp}")
 
     @property
     def start_time(self):
