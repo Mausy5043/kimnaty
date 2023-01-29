@@ -203,7 +203,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
 
 def collate(prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_name="room_id"):
     if columns_to_drop is None:
-        columns_to_drop = list()
+        columns_to_drop = []
     # drop the 'columns_to_drop'
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1, errors="ignore")
