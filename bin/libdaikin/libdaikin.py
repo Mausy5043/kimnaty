@@ -283,7 +283,8 @@ class Daikin:
         """Operation mode
 
         Returns:
-            int: "0": "AUTO (cooling cycle)", "1": "AUTO", "2": "DEHUMIDIFIER", "3": "COLD", "4": "HOT", "6": "FAN", "7": "AUTO (heating cycle)"
+            int: "0": "AUTO (cooling cycle)", "1": "AUTO", "2": "DEHUMIDIFIER", "3": "COLD", \
+                 "4": "HOT", "6": "FAN", "7": "AUTO (heating cycle)"
         """
         return int(self._get_control()["mode"])
 
@@ -292,7 +293,8 @@ class Daikin:
         """Fan speed
 
         Returns:
-            str: "A":"auto", "B":"silence", "3":"fan level 1","4":"fan level 2", "5":"fan level 3", "6":"fan level 4","7":"fan level 5"
+            str: "A":"auto", "B":"silence", "3":"fan level 1","4":"fan level 2", \
+                 "5":"fan level 3", "6":"fan level 4","7":"fan level 5"
         """
         return self._get_control()["f_rate"]
 
@@ -301,7 +303,8 @@ class Daikin:
         """Horizontal/vertical fan wings motion
 
         Returns:
-            int: "0":"all wings stopped", "1":"vertical wings motion", "2":"horizontal wings motion", "3":"vertical and horizontal wings motion"
+            int: "0":"all wings stopped", "1":"vertical wings motion", "2":"horizontal wings motion", \
+                 "3":"vertical and horizontal wings motion"
         """
         return int(self._get_control()["f_dir"])
 
