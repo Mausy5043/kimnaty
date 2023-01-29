@@ -4,8 +4,6 @@
 
 import warnings
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
-
 import argparse
 from datetime import datetime as dt
 import sqlite3 as s3
@@ -15,6 +13,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import constants
+
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 DATABASE = constants.TREND["database"]
 TABLE_RHT = constants.TREND["sql_table_rht"]
