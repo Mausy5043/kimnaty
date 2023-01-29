@@ -29,7 +29,7 @@ DEBUG = False
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
-    data_dict = dict()
+    data_dict = {}
     # move outside temperature from Daikin to the table with the other temperature sensors
     for d in data_dict_ac:
         if "T(out)" in data_dict_ac[d]:
