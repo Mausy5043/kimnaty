@@ -8,7 +8,7 @@ import pandas as pd
 
 _MYHOME = os.environ["HOME"]
 _DATABASE = "/srv/rmt/_databases/kimnaty/kimnaty.sqlite3"
-_WEBSITE = "/tmp/kimnaty/site"
+_WEBSITE = "/run/kimnaty/site"
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = "/srv/databases/kimnaty.sqlite3"

@@ -20,7 +20,8 @@ database_local_root="/srv/rmt/_databases"
 database_remote_root="remote:raspi/_databases"
 database_filename="kimnaty.sqlite3"
 db_full_path="${database_local_root}/${app_name}/${database_filename}"
-website_dir="/tmp/${app_name}/site"
+# website_dir="/tmp/${app_name}/site"
+website_dir="/run/${app_name}/site"
 website_image_dir="${website_dir}/img"
 
 constants_sh_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
@@ -221,8 +222,9 @@ boot_kimnaty() {
     echo "*** $app_name running on $host_name >>>>>>: boot"
     # make sure website filetree exists
     if [ ! -d "${website_image_dir}" ]; then
-        mkdir -p "${website_image_dir}"
-        chmod -R 755 "${website_dir}/.."
+        sudo mkdir -p "${website_image_dir}"
+        sudo chown -R pi:users "${website_dir}"
+        sudo chmod -R 755 "${website_dir}/.."
     fi
     # allow website to work even if the graphics have not yet been created
     for GRPH in "${kimnaty_graphs[@]}"; do
