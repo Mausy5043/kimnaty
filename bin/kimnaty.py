@@ -49,7 +49,7 @@ NODE = os.uname()[1]
 # NODE: rbenvir
 
 
-def main():
+def main():  # noqa: C901
     """Execute main loop."""
     killer = ml.GracefulKiller()
     fdatabase = constants.KIMNATY["database"]
