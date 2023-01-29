@@ -164,7 +164,7 @@ def get_rht_data(mac):
             syslog.LOG_CRIT,
             DEBUG,
         )
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
             f"*** While talking to {mac} an error occured on {err_date.strftime(constants.DT_FORMAT)}",
@@ -232,7 +232,7 @@ def get_ac_data(airco):
         # When switched to drying mode the temperature target becomes 'M'
         ac_t_tgt = ac_t_in
         success = True
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
             f"*** While talking to {airco['name']} an error occured " f"on {err_date.strftime(constants.DT_FORMAT)}:",

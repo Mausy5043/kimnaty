@@ -10,7 +10,7 @@ args = parser.parse_args()
 for mac in args.mac:
     try:
         client = lywsd03mmc.Lywsd03mmcClient(mac)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
 
     try:
@@ -20,5 +20,5 @@ for mac in args.mac:
         print(f"Humidity          : {data.humidity}%")
         print(f"Battery           : {data.battery}% ({data.voltage}V)")
         print()
-    except Exception as e:
+    except Exception as e:  # pylint: disable=W0703
         print(e)
