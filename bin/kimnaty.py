@@ -164,7 +164,6 @@ def get_rht_data(mac):
             syslog.LOG_CRIT,
             DEBUG,
         )
-        pass
     except Exception as e:
         err_date = dt.datetime.now()
         mf.syslog_trace(
@@ -174,7 +173,6 @@ def get_rht_data(mac):
         )
         mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
         # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
-        pass
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds")
         print("")
@@ -234,7 +232,6 @@ def get_ac_data(airco):
         # When switched to drying mode the temperature target becomes 'M'
         ac_t_tgt = ac_t_in
         success = True
-        pass
     except Exception as e:
         err_date = dt.datetime.now()
         mf.syslog_trace(
