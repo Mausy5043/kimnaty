@@ -3,10 +3,16 @@ import struct
 import collections
 from datetime import datetime, timedelta
 
-UUID_HISTORY = "EBE0CCBC-7A0A-4B0C-8A1A-6FF2997DA3A6"  # Last idx 152          READ NOTIFY
+UUID_HISTORY = (
+    "EBE0CCBC-7A0A-4B0C-8A1A-6FF2997DA3A6"  # Last idx 152          READ NOTIFY
+)
 
 
-class Sensor3Data(collections.namedtuple("Sensor3DataBase", ["temperature", "humidity", "battery", "voltage"])):
+class Sensor3Data(
+    collections.namedtuple(
+        "Sensor3DataBase", ["temperature", "humidity", "battery", "voltage"]
+    )
+):
     """
     Create a structure to store the data in, which includes battery data
     """
@@ -51,7 +57,9 @@ class Lywsd03mmcClient(Lywsd02Client):
         # Estimate the battery percentage remaining
         # CR2024 maximum theoretical voltage = 3.400V
         battery = round(((voltage - 2.1) / (3.4 - 2.1) * 100), 1)
-        self._data = Sensor3Data(temperature=temperature, humidity=humidity, battery=battery, voltage=voltage)
+        self._data = Sensor3Data(
+            temperature=temperature, humidity=humidity, battery=battery, voltage=voltage
+        )
 
     @property
     def battery(self):
@@ -75,7 +83,9 @@ class Lywsd03mmcClient(Lywsd02Client):
             self._subscribe(UUID_HISTORY, self._process_history_data)
 
             while True:
-                if not self._peripheral.waitForNotifications(self._notification_timeout):
+                if not self._peripheral.waitForNotifications(
+                    self._notification_timeout
+                ):
                     break
 
                 # Find the last date we have data for, and check if it's for the current hour
@@ -83,7 +93,9 @@ class Lywsd03mmcClient(Lywsd02Client):
                     break
 
     def _process_history_data(self, data):
-        (idx, ts, max_temp, max_hum, min_temp, min_hum) = struct.unpack_from("<IIhBhB", data)
+        (idx, ts, max_temp, max_hum, min_temp, min_hum) = struct.unpack_from(
+            "<IIhBhB", data
+        )
 
         # Work out the time of this record by adding the record time to time the device was started
         ts = self.start_time + timedelta(seconds=ts)
@@ -107,7 +119,9 @@ class Lywsd03mmcClient(Lywsd02Client):
         :return: the start time of the device
         """
         if not self._start_time:
-            start_time_delta = self.time[0] - datetime(1970, 1, 1) - timedelta(hours=self.tz_offset)
+            start_time_delta = (
+                self.time[0] - datetime(1970, 1, 1) - timedelta(hours=self.tz_offset)
+            )
             self._start_time = datetime.now() - start_time_delta
         return self._start_time
 
