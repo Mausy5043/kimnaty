@@ -175,7 +175,9 @@ install_kimnaty() {
     echo "Activating BT-support..."
     sudo addgroup --gid 112 bluetooth
     sudo usermod -aG bluetooth pi
-    sudo rm /etc/modprobe.d/dietpi-disable_bluetooth.conf
+    if [ -f /etc/modprobe.d/dietpi-disable_bluetooth.conf ]; then
+      sudo rm /etc/modprobe.d/dietpi-disable_bluetooth.conf
+    fi
     sudo sed -i /^[[:blank:]]*dtoverlay=disable-bt/d /boot/config.txt
     echo
 
