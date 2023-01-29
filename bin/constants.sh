@@ -152,6 +152,7 @@ unstall_kimnaty() {
     action_timers rm
     action_services rm
     rm "${APPROOT}/.${app_name}.branch"
+    sudo rm /var/www/state
 }
 
 # install the application
