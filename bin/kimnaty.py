@@ -20,7 +20,7 @@ import mausy5043_common.libsignals as ml
 
 import constants
 import libdaikin
-import lywsd03mmc
+import pylywsdxx as pyly  # noqa
 
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
@@ -144,7 +144,7 @@ def get_rht_data(mac):
     success = False
     t0 = time.time()
     try:
-        client = lywsd03mmc.Lywsd03mmcClient(mac)
+        client = pyly.Lywsd03client(mac)
         if DEBUG:
             print("")
             print(f"Fetching data from {mac}")

@@ -40,7 +40,7 @@ declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy-helper-ki
 # SQLite3 support (incl python3)
 declare -a kimnaty_apt_packages=("build-essential" "python3" "python3-dev" "python3-pip"
         "libatlas-base-dev" "libxcb1" "libopenjp2-7" "libtiff5" "libglib2.0-dev"
-        "pi-bluetooth" "bluetooth" "bluez"
+        "pi-bluetooth" "bluetooth" "bluez" "libbluetooth-dev"
         "sqlite3")
 # placeholders for trendgraphs to make website work regardless of the state of the graphs.
 declare -a kimnaty_graphs=('kim_days_compressor.png'
@@ -184,16 +184,8 @@ install_kimnaty() {
 
     # install Python3 stuff
     python3 -m pip install --upgrade pip setuptools wheel
-    python3 -m pip install -r requirements.txt
+    python3 -m pip install --upgrade -r requirements.txt
     echo
-    echo "Uninstalling common python functions..."
-    python3 -m pip uninstall -y bluepy
-    echo
-    echo "Installing common python functions..."
-    python3 -m pip install "git+https://github.com/Mausy5043/bluepy@master#egg=bluepy"
-    echo
-    echo -n "Installed: "
-    python3 -m pip list | grep bluepy
 
     echo "Fetching existing database from cloud."
     # sync the database from the cloud
