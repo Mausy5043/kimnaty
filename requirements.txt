@@ -1,7 +1,7 @@
-pylywsdxx
 matplotlib
 mausy5043-common
 numpy
 pandas
+pylywsdxx
 requests
 scipy
