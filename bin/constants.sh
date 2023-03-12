@@ -184,16 +184,8 @@ install_kimnaty() {
 
     # install Python3 stuff
     python3 -m pip install --upgrade pip setuptools wheel
-    python3 -m pip install -r requirements.txt
+    python3 -m pip install --upgrade -r requirements.txt
     echo
-    echo "Uninstalling common python functions..."
-    python3 -m pip uninstall -y bluepy
-    echo
-    echo "Installing common python functions..."
-    python3 -m pip install "git+https://github.com/Mausy5043/bluepy@master#egg=bluepy"
-    echo
-    echo -n "Installed: "
-    python3 -m pip list | grep bluepy
 
     echo "Fetching existing database from cloud."
     # sync the database from the cloud
