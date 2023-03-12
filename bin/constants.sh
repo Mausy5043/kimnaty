@@ -40,7 +40,7 @@ declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy-helper-ki
 # SQLite3 support (incl python3)
 declare -a kimnaty_apt_packages=("build-essential" "python3" "python3-dev" "python3-pip"
         "libatlas-base-dev" "libxcb1" "libopenjp2-7" "libtiff5" "libglib2.0-dev"
-        "pi-bluetooth" "bluetooth" "bluez"
+        "pi-bluetooth" "bluetooth" "bluez" "libbluetooth-dev"
         "sqlite3")
 # placeholders for trendgraphs to make website work regardless of the state of the graphs.
 declare -a kimnaty_graphs=('kim_days_compressor.png'
