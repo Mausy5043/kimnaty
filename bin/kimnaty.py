@@ -144,7 +144,7 @@ def get_rht_data(mac):
     success = False
     t0 = time.time()
     try:
-        client = pyly.Lywsd03mmcClient(mac)
+        client = pyly.Lywsd03client(mac)
         if DEBUG:
             print("")
             print(f"Fetching data from {mac}")
