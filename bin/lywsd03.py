@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import argparse
-import lywsd03mmc
+
+import pylywsdxx as pyly  # noqa
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mac", help="MAC address of LYWSD03 device", nargs="+")
@@ -9,7 +10,7 @@ args = parser.parse_args()
 
 for mac in args.mac:
     try:
-        client = lywsd03mmc.Lywsd03mmcClient(mac)
+        client = pyly.Lywsd03mmcClient(mac)
     except Exception as e:  # pylint: disable=W0703
         print(e)
 
