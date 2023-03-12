@@ -1,7 +1,7 @@
-lywsd02==0.0.9  # does not install on MacOS!
 matplotlib
 mausy5043-common
 numpy
 pandas
+pylywsdxx
 requests
 scipy
