@@ -1,7 +1,7 @@
-# This service is for killing bluepy-helper when it hangs
+# This service is for killing bluepy3-helper when it hangs
 
 [Unit]
-Description=bluepy-helper-killer service
+Description=bluepy3-helper-killer service
 After=multi-user.target
 
 [Service]

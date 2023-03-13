@@ -32,7 +32,7 @@ declare -a kimnaty_timers=("kimnaty.trend.day.timer"
         "kimnaty.trend.year.timer"
         "kimnaty.update.timer")
 # list of services provided
-declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy-helper-killer.service")
+declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy3-helper-killer.service")
 
 # Install python3 and develop packages
 # Support for matplotlib & numpy needs to be installed seperately
