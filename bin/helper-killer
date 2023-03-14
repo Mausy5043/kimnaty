@@ -3,7 +3,9 @@
 # Kill bluepy3-helper if it has been active for longer than 30 seconds
 
 while true; do
+    sleep 30
     for PID in $(pgrep "bluepy3-helper"); do
+        sleep 1
         RUNTIMESEC=$(ps -o etimes= -p "$PID")
         if [ "$RUNTIMESEC" -gt 30 ]; then
             echo "** ** bluepy3-helper has been running for ${RUNTIMESEC} seconds; killing ${PID}"
@@ -17,5 +19,4 @@ while true; do
             fi
         fi
     done
-    sleep 30
 done
