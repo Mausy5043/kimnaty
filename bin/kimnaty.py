@@ -118,7 +118,7 @@ def do_work_rht(dev_list):
         else:
             set_led(mac[1], "orange")
             retry_list.append(mac)
-        time.sleep(8.0)  # relax on the BLE-chip
+        #time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
         if DEBUG:
@@ -132,7 +132,7 @@ def do_work_rht(dev_list):
                 data_list.append(data)
             else:
                 set_led(mac[1], "red")
-            time.sleep(8.0)  # relax on the BLE-chip
+            #time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
