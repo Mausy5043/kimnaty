@@ -143,7 +143,7 @@ restart_kimnaty() {
     echo "...systemd updated"; sleep 60
 
     start_kimnaty "${ROOT_DIR}" "${SYSTEMD_REQUEST}"
-    echo "...kimnaty started"; sleep 60
+    echo "...kimnaty started"
 }
 
 # uninstall the application
