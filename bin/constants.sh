@@ -123,8 +123,10 @@ restart_kimnaty() {
 
     echo "Restarting ${app_name} on $(date)"
     stop_kimnaty
+    echo "...kimnaty stopped"; sleep 60
 
     update_kimnaty
+    echo "...kimnaty updated"; sleep 60
 
     if [ "${SYSTEMD_REQUEST}" -eq 1 ]; then
         SYSTEMD_REQUEST="-graph"
@@ -138,8 +140,10 @@ restart_kimnaty() {
     sudo cp "${ROOT_DIR}"/services/*.timer /etc/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl reset-failed
+    echo "...systemd updated"; sleep 60
 
     start_kimnaty "${ROOT_DIR}" "${SYSTEMD_REQUEST}"
+    echo "...kimnaty started"; sleep 60
 }
 
 # uninstall the application
