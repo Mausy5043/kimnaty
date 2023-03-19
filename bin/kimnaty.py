@@ -26,10 +26,12 @@ parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
 parser_group.add_argument("--start", action="store_true", help="start the daemon as a service")
 parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")
+parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")
 OPTION = parser.parse_args()
 
 # constants
 DEBUG = False
+DEBUG_HW = False
 HERE = os.path.realpath(__file__).split("/")
 # runlist id :
 MYID = HERE[-1]
@@ -144,7 +146,7 @@ def get_rht_data(addr):
     success = False
     t0 = time.time()
     try:
-        client = pyly.Lywsd03client(mac=addr, debug=DEBUG)
+        client = pyly.Lywsd03client(mac=addr, debug=DEBUG_HW)
         if DEBUG:
             print("")
             print(f"Fetching data from {addr}")
@@ -352,6 +354,9 @@ if __name__ == "__main__":
     # set-up LEDs
     for device in constants.DEVICES:
         set_led(device[1], "orange")
+    if OPTION.debughw:
+        DEBUG_HW = True
+        OPTION.debug = True
     if OPTION.debug:
         DEBUG = True
         mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
