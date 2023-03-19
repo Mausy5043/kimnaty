@@ -109,34 +109,34 @@ def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
     data_list = []
     retry_list = []
-    for mac in dev_list:
-        succes, data = get_rht_data(mac[0])
-        data[2] = mac[1]  # replace mac-address by room-id
+    for device in dev_list:
+        succes, data = get_rht_data(device[0])
+        data[2] = device[1]  # replace mac-address by room-id
         if succes:
-            set_led(mac[1], "green")
+            set_led(device[1], "green")
             data_list.append(data)
         else:
-            set_led(mac[1], "orange")
-            retry_list.append(mac)
+            set_led(device[1], "orange")
+            retry_list.append(device)
         #time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
         if DEBUG:
             print("Retrying failed connections in 20s...")
         time.sleep(20.0)
-        for mac in retry_list:
-            succes, data = get_rht_data(mac[0])
-            data[2] = mac[1]  # replace mac-address by room-id
+        for device in retry_list:
+            succes, data = get_rht_data(device[0])
+            data[2] = device[1]  # replace mac-address by room-id
             if succes:
-                set_led(mac[1], "green")
+                set_led(device[1], "green")
                 data_list.append(data)
             else:
-                set_led(mac[1], "red")
+                set_led(device[1], "red")
             #time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
-def get_rht_data(mac):
+def get_rht_data(addr):
     """Fetch data from a device."""
     temperature = 0.0
     humidity = 0
@@ -144,10 +144,10 @@ def get_rht_data(mac):
     success = False
     t0 = time.time()
     try:
-        client = pyly.Lywsd03client(mac)
+        client = pyly.Lywsd03client(mac=addr, debug=DEBUG)
         if DEBUG:
             print("")
-            print(f"Fetching data from {mac}")
+            print(f"Fetching data from {addr}")
         data = client.data
         if DEBUG:
             print(f"Temperature       : {data.temperature}°C")
@@ -167,7 +167,7 @@ def get_rht_data(mac):
     except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {mac} an error occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {addr} an error occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
@@ -182,7 +182,7 @@ def get_rht_data(mac):
     return success, [
         out_date.strftime(constants.DT_FORMAT),
         out_epoch,
-        mac,
+        addr,
         temperature,
         humidity,
         voltage,
