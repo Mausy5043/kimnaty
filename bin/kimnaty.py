@@ -112,7 +112,7 @@ def do_work_rht(dev_list):
     data_list = []
     retry_list = []
     for device in dev_list:
-        succes, data = get_rht_data(device[0])
+        succes, data = get_rht_data(device[0], f"room {device[1]}")
         data[2] = device[1]  # replace mac-address by room-id
         if succes:
             set_led(device[1], "green")
@@ -127,7 +127,7 @@ def do_work_rht(dev_list):
             print("Retrying failed connections in 20s...")
         time.sleep(20.0)
         for device in retry_list:
-            succes, data = get_rht_data(device[0])
+            succes, data = get_rht_data(device[0], f"room {device[1]}")
             data[2] = device[1]  # replace mac-address by room-id
             if succes:
                 set_led(device[1], "green")
@@ -138,7 +138,7 @@ def do_work_rht(dev_list):
     return data_list
 
 
-def get_rht_data(addr):
+def get_rht_data(addr, dev_id):
     """Fetch data from a device."""
     temperature = 0.0
     humidity = 0
@@ -169,7 +169,7 @@ def get_rht_data(addr):
     except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {addr} an error occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {dev_id} ({addr}) an error occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
