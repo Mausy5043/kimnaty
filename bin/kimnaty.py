@@ -42,7 +42,6 @@ APPROOT = "/".join(HERE[0:-2])
 # host_name :
 NODE = os.uname()[1]
 
-
 # example values:
 # HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
 # MYID: 'kimnaty.py
@@ -111,31 +110,50 @@ def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
     data_list = []
     retry_list = []
-    for device in dev_list:
-        succes, data = get_rht_data(device[0], f"room {device[1]}")
-        data[2] = device[1]  # replace mac-address by room-id
+    for dev in dev_list:
+        health_state = 0
+        succes, data = get_rht_data(dev[0], f"room {dev[1]}")
+        data[2] = dev[1]  # replace mac-address by room-id
         if succes:
-            set_led(device[1], "green")
+            health_state += 1
+            set_led(dev[1], "green")
             data_list.append(data)
         else:
-            set_led(device[1], "orange")
-            retry_list.append(device)
-        #time.sleep(0.8)  # relax on the BLE-chip
+            health_state -= 2
+            set_led(dev[1], "orange")
+            retry_list.append(dev)
+        log_health_state(room_id=dev[1], state_change=health_state)
 
     if retry_list:
         if DEBUG:
-            print("Retrying failed connections in 20s...")
-        time.sleep(20.0)
-        for device in retry_list:
-            succes, data = get_rht_data(device[0], f"room {device[1]}")
-            data[2] = device[1]  # replace mac-address by room-id
+            print("Retrying failed connections in 5s...")
+        time.sleep(5.0)
+        for dev in retry_list:
+            health_state = 0
+            succes, data = get_rht_data(dev[0], f"room {dev[1]}")
+            data[2] = dev[1]  # replace mac-address by room-id
             if succes:
-                set_led(device[1], "green")
+                health_state += 1
+                set_led(dev[1], "green")
                 data_list.append(data)
             else:
-                set_led(device[1], "red")
-            #time.sleep(8.0)  # relax on the BLE-chip
+                health_state -= 3
+                set_led(dev[1], "red")
+            log_health_state(room_id=dev[1], state_change=health_state)
     return data_list
+
+
+def log_health_state(room_id, state_change):
+    """Store the state of a device in the database."""
+    old_state = constants.get_health(room_id)
+    state = old_state + state_change
+    state = max(0, min(state, 100))
+    update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
+    if DEBUG:
+        print(f"{room_id} : previous state = {old_state}; new state = {state}")
+        print(f"{update_cmd}")
+    do_update_database(fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
+    return
 
 
 def get_rht_data(addr, dev_id):
@@ -297,6 +315,27 @@ def do_add_to_database(results, fdatabase, sql_cmd):
         print(f"{time.time() - t0:.2f} seconds\n")
 
 
+def do_update_database(fdatabase, sql_cmd):
+    """Commit the results to the database."""
+    conn = None
+    cursor = None
+    t0 = time.time()
+    try:
+        conn = create_db_connection(fdatabase)
+        cursor = conn.cursor()
+        cursor.execute(sql_cmd)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        err_flag = False
+    except s3.OperationalError:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    if DEBUG:
+        print(f"{time.time() - t0:.2f} seconds\n")
+
 def create_db_connection(database_file):
     """
     Create a database connection to the SQLite3 database specified
@@ -345,7 +384,10 @@ def set_led(dev, colour):
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
-    shutil.copy(f"{in_dirfile}", out_dirfile)
+    try:
+        shutil.copy(f"{in_dirfile}", out_dirfile)
+    except FileNotFoundError:
+        pass
 
 
 if __name__ == "__main__":
