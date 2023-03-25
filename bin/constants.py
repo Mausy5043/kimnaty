@@ -96,7 +96,7 @@ AC = {
 }
 
 # Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
-BAT_HEALTH = {
+HEALTH_UPDATE = {
     "database": _DATABASE,
     "sql_command": "UPDATE rooms SET health = %s WHERE room_id = %s",
     "sql_table": "rooms",
