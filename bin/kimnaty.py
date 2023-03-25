@@ -122,7 +122,7 @@ def do_work_rht(dev_list):
             health_state -= 2
             set_led(dev[1], "orange")
             retry_list.append(dev)
-        log_health_state(room_id=dev, state=health_state)
+        log_health_state(room_id=dev[0], state=health_state)
         # time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
@@ -147,7 +147,7 @@ def do_work_rht(dev_list):
 
 def log_health_state(room_id, state):
     """Store the state of a device in the database."""
-    update_cmd = constants.BAT_HEALTH["sql_command"] % room_id, state
+    update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{update_cmd}")
     do_add_to_database("", fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
