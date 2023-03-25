@@ -2,7 +2,7 @@
 
 
 --TABLE data is used to store RH/T data from Mija LYWSD03MMC devices
-DROP TABLE IF EXISTS data;
+-- DROP TABLE IF EXISTS data;
 
 CREATE TABLE data (
     sample_time   datetime NOT NULL,
@@ -44,7 +44,7 @@ INSERT INTO rooms VALUES('2.2', 'slaapkamer 4', 50);
 
 
 -- TABLE aircon is used to store data from the DAIKIN airconditioners
-DROP TABLE IF EXISTS aircon;
+-- DROP TABLE IF EXISTS aircon;
 
 CREATE TABLE aircon (
     sample_time         datetime NOT NULL,
