@@ -111,30 +111,30 @@ def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
     data_list = []
     retry_list = []
-    for device in dev_list:
-        succes, data = get_rht_data(device[0], f"room {device[1]}")
-        data[2] = device[1]  # replace mac-address by room-id
+    for dev in dev_list:
+        succes, data = get_rht_data(dev[0], f"room {dev[1]}")
+        data[2] = dev[1]  # replace mac-address by room-id
         if succes:
-            set_led(device[1], "green")
+            set_led(dev[1], "green")
             data_list.append(data)
         else:
-            set_led(device[1], "orange")
-            retry_list.append(device)
-        #time.sleep(0.8)  # relax on the BLE-chip
+            set_led(dev[1], "orange")
+            retry_list.append(dev)
+        # time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
         if DEBUG:
             print("Retrying failed connections in 20s...")
         time.sleep(20.0)
-        for device in retry_list:
-            succes, data = get_rht_data(device[0], f"room {device[1]}")
-            data[2] = device[1]  # replace mac-address by room-id
+        for dev in retry_list:
+            succes, data = get_rht_data(dev[0], f"room {dev[1]}")
+            data[2] = dev[1]  # replace mac-address by room-id
             if succes:
-                set_led(device[1], "green")
+                set_led(dev[1], "green")
                 data_list.append(data)
             else:
-                set_led(device[1], "red")
-            #time.sleep(8.0)  # relax on the BLE-chip
+                set_led(dev[1], "red")
+            # time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
