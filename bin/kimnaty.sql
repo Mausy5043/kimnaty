@@ -29,7 +29,7 @@ CREATE TABLE rooms (
 -- Groundfloor
 -- INSERT INTO rooms VALUES('0.0', 'hal', 50);
 INSERT INTO rooms VALUES('0.1', 'woonkamer', 50);
-INSERT INTO rooms VALUES('0.2', 'keuken', 50);
+INSERT INTO rooms VALUES('0.5', 'keuken', 50);
 -- INSERT INTO rooms VALUES('0.5', 'schuur', 50);
 -- INSERT INTO rooms VALUES('0.6', 'kweektafel', 50);
 -- 1st floor
