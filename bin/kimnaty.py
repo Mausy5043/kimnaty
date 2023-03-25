@@ -42,7 +42,6 @@ APPROOT = "/".join(HERE[0:-2])
 # host_name :
 NODE = os.uname()[1]
 
-
 # example values:
 # HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
 # MYID: 'kimnaty.py
@@ -112,14 +111,18 @@ def do_work_rht(dev_list):
     data_list = []
     retry_list = []
     for dev in dev_list:
+        health_state = 0
         succes, data = get_rht_data(dev[0], f"room {dev[1]}")
         data[2] = dev[1]  # replace mac-address by room-id
         if succes:
+            health_state += 1
             set_led(dev[1], "green")
             data_list.append(data)
         else:
+            health_state -= 2
             set_led(dev[1], "orange")
             retry_list.append(dev)
+        log_health_state(id=dev, state=health_state)
         # time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
@@ -127,16 +130,26 @@ def do_work_rht(dev_list):
             print("Retrying failed connections in 20s...")
         time.sleep(20.0)
         for dev in retry_list:
+            health_state = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
             data[2] = dev[1]  # replace mac-address by room-id
             if succes:
+                health_state +=1
                 set_led(dev[1], "green")
                 data_list.append(data)
             else:
+                health_state -= 3
                 set_led(dev[1], "red")
+            log_health_state(id=dev, state=health_state)
             # time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
+
+def log_health_state(id, state):
+    """Store the state of a device in the database."""
+    if DEBUG:
+        print(f"Battery Health of device {id} = {state}")
+    return
 
 def get_rht_data(addr, dev_id):
     """Fetch data from a device."""
