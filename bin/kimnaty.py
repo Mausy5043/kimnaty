@@ -152,7 +152,7 @@ def log_health_state(room_id, state_change):
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
         print(f"{update_cmd}")
-    do_add_to_database("", fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
+    do_update_database(fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
     return
 
 
@@ -314,6 +314,27 @@ def do_add_to_database(results, fdatabase, sql_cmd):
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds\n")
 
+
+def do_update_database(fdatabase, sql_cmd):
+    """Commit the results to the database."""
+    conn = None
+    cursor = None
+    t0 = time.time()
+    try:
+        conn = create_db_connection(fdatabase)
+        cursor = conn.cursor()
+        cursor.execute(sql_cmd)
+        cursor.close()
+        conn.commit()
+        conn.close()
+        err_flag = False
+    except s3.OperationalError:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+    if DEBUG:
+        print(f"{time.time() - t0:.2f} seconds\n")
 
 def create_db_connection(database_file):
     """
