@@ -140,15 +140,15 @@ def do_work_rht(dev_list):
             else:
                 health_state -= 3
                 set_led(dev[1], "red")
-            log_health_state(id=dev, state=health_state)
+            log_health_state(room_id=dev[1], state=health_state)
             # time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
-def log_health_state(id, state):
+def log_health_state(room_id, state):
     """Store the state of a device in the database."""
     if DEBUG:
-        print(f"Battery Health of device {id} = {state}")
+        print(f"Battery Health of device in room {room_id} = {state}")
     return
 
 def get_rht_data(addr, dev_id):
