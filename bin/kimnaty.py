@@ -153,7 +153,6 @@ def log_health_state(room_id, state_change):
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
         print(f"{update_cmd}")
     do_update_database(fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
-    return
 
 
 def get_rht_data(addr, dev_id):
