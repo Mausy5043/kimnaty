@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS rooms;
 CREATE TABLE rooms (
     room_id     text NOT NULL PRIMARY KEY,
     name        text NOT NULL,
-    health      integer DEFAULT 50,
+    health      integer DEFAULT 50
   );
 -- Prefill the table with roomnames
 -- Groundfloor
