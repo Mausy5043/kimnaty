@@ -95,6 +95,13 @@ AC = {
     "sql_table": "aircon",
 }
 
+# Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
+BAT_HEALTH = {
+    "database": _DATABASE,
+    "sql_command": "UPDATE rooms SET health = %s WHERE room_id = %s",
+    "sql_table": "rooms",
+}
+
 _s3_query = "SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
     ROOMS = pd.read_sql_query(_s3_query, _con, index_col="room_id")
