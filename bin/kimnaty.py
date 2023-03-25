@@ -140,7 +140,7 @@ def do_work_rht(dev_list):
             else:
                 health_state -= 3
                 set_led(dev[1], "red")
-            log_health_state(room_id=dev[1], state=health_state)
+            log_health_state(room_id=dev[1], state_change=health_state)
             # time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
