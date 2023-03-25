@@ -104,10 +104,10 @@ BAT_HEALTH = {
 
 _s3_query = "SELECT * FROM rooms;"
 with s3.connect(_DATABASE) as _con:
-    ROOMS = pd.read_sql_query(_s3_query, _con, index_col="room_id")
+    _ROOMS_TBL = pd.read_sql_query(_s3_query, _con, index_col="room_id")
 try:
-    ROOMS = ROOMS.to_dict()["name"]
-    BAT_HEALTH = ROOMS.to_dict()["health"]
+    ROOMS = _ROOMS_TBL.to_dict()["name"]
+    BAT_HEALTH = _ROOMS_TBL.to_dict()["health"]
 except KeyError:
     print("*** KeyError when retrieving ROOMS")
     print(ROOMS.to_dict())
