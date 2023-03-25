@@ -358,7 +358,10 @@ def set_led(dev, colour):
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
-    shutil.copy(f"{in_dirfile}", out_dirfile)
+    try:
+        shutil.copy(f"{in_dirfile}", out_dirfile)
+    except FileNotFoundError:
+        pass
 
 
 if __name__ == "__main__":
