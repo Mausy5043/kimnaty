@@ -7,20 +7,21 @@ import sys
 import pandas as pd
 
 _MYHOME = os.environ["HOME"]
-_DATABASE = "/srv/rmt/_databases/kimnaty/kimnaty.sqlite3"
+_DATABASE_FILENAME = "kimnaty.v2.sqlite3"
+_DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site"
 
 if not os.path.isfile(_DATABASE):
-    _DATABASE = "/srv/databases/kimnaty.sqlite3"
+    _DATABASE = f"/srv/databases/{_DATABASE_FILENAME}"
 if not os.path.isfile(_DATABASE):
-    _DATABASE = "/srv/data/kimnaty.sqlite3"
+    _DATABASE = f"/srv/data/{_DATABASE_FILENAME}"
 if not os.path.isfile(_DATABASE):
-    _DATABASE = "/mnt/data/kimnaty.sqlite3"
+    _DATABASE = f"/mnt/data/{_DATABASE_FILENAME}"
 if not os.path.isfile(_DATABASE):
-    _DATABASE = ".local/kimnaty.sqlite3"
+    _DATABASE = f".local/{_DATABASE_FILENAME}"
     print("Searching for database in .local")
 if not os.path.isfile(_DATABASE):
-    _DATABASE = f"{_MYHOME}/.sqlite3/kimnaty.sqlite3"
+    _DATABASE = f"{_MYHOME}/.sqlite3/{_DATABASE_FILENAME}"
     print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
