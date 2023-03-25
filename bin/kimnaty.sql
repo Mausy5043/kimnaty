@@ -22,24 +22,25 @@ DROP TABLE IF EXISTS rooms;
 
 CREATE TABLE rooms (
     room_id     text NOT NULL PRIMARY KEY,
-    name        text NOT NULL
+    name        text NOT NULL,
+    health      integer DEFAULT 50,
   );
 -- Prefill the table with roomnames
 -- Groundfloor
-INSERT INTO rooms VALUES('0.0', 'hal');
-INSERT INTO rooms VALUES('0.1', 'woonkamer voor');
-INSERT INTO rooms VALUES('0.2', 'keuken');
-INSERT INTO rooms VALUES('0.5', 'schuur');
-INSERT INTO rooms VALUES('0.6', 'kweektafel');
+-- INSERT INTO rooms VALUES('0.0', 'hal', 50);
+INSERT INTO rooms VALUES('0.1', 'woonkamer', 50);
+INSERT INTO rooms VALUES('0.2', 'keuken', 50);
+-- INSERT INTO rooms VALUES('0.5', 'schuur', 50);
+-- INSERT INTO rooms VALUES('0.6', 'kweektafel', 50);
 -- 1st floor
-INSERT INTO rooms VALUES('1.0', 'overloop');
-INSERT INTO rooms VALUES('1.1', 'slaapkamer 1');
-INSERT INTO rooms VALUES('1.2', 'slaapkamer 2');
-INSERT INTO rooms VALUES('1.3', 'slaapkamer 3');
-INSERT INTO rooms VALUES('1.4', 'badkamer');
+-- INSERT INTO rooms VALUES('1.0', 'overloop', 50);
+INSERT INTO rooms VALUES('1.1', 'slaapkamer 1', 50);
+INSERT INTO rooms VALUES('1.2', 'slaapkamer 2', 50);
+INSERT INTO rooms VALUES('1.3', 'slaapkamer 3', 50);
+INSERT INTO rooms VALUES('1.4', 'badkamer', 50);
 -- 2nd floor
-INSERT INTO rooms VALUES('2.1', 'zolder');
-INSERT INTO rooms VALUES('2.2', 'slaapkamer 4');
+INSERT INTO rooms VALUES('2.1', 'zolder', 50);
+INSERT INTO rooms VALUES('2.2', 'slaapkamer 4', 50);
 
 
 -- TABLE aircon is used to store data from the DAIKIN airconditioners
