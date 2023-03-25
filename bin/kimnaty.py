@@ -327,7 +327,6 @@ def do_update_database(fdatabase, sql_cmd):
         cursor.close()
         conn.commit()
         conn.close()
-        err_flag = False
     except s3.OperationalError:
         if cursor:
             cursor.close()
