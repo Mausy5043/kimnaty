@@ -123,12 +123,11 @@ def do_work_rht(dev_list):
             set_led(dev[1], "orange")
             retry_list.append(dev)
         log_health_state(room_id=dev[1], state_change=health_state)
-        # time.sleep(0.8)  # relax on the BLE-chip
 
     if retry_list:
         if DEBUG:
-            print("Retrying failed connections in 20s...")
-        time.sleep(20.0)
+            print("Retrying failed connections in 5s...")
+        time.sleep(5.0)
         for dev in retry_list:
             health_state = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
@@ -141,7 +140,6 @@ def do_work_rht(dev_list):
                 health_state -= 3
                 set_led(dev[1], "red")
             log_health_state(room_id=dev[1], state_change=health_state)
-            # time.sleep(8.0)  # relax on the BLE-chip
     return data_list
 
 
