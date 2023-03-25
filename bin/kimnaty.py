@@ -334,6 +334,7 @@ def do_update_database(fdatabase, sql_cmd):
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds\n")
 
+
 def create_db_connection(database_file):
     """
     Create a database connection to the SQLite3 database specified
