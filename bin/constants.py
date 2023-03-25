@@ -118,4 +118,4 @@ if __name__ == "__main__":
     print(f"database location = {_DATABASE}")
     print("")
     print(f"rooms             = {ROOMS}")
-    print(f"rooms             = {BAT_HEALTH}")
+    print(f"battery health    = {BAT_HEALTH}")
