@@ -149,6 +149,7 @@ def log_health_state(room_id, state_change):
     """Store the state of a device in the database."""
     old_state = constants.get_health(room_id)
     state = old_state + state_change
+    state = max(0, min(state, 100))
     update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
