@@ -147,7 +147,7 @@ def do_work_rht(dev_list):
 
 def log_health_state(room_id, state):
     """Store the state of a device in the database."""
-    update_cmd = constants.BAT_HEALTH["sql_cmd"] % room_id, state
+    update_cmd = constants.BAT_HEALTH["sql_command"] % room_id, state
     if DEBUG:
         print(f"{update_cmd}")
     do_add_to_database("", fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
