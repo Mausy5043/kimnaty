@@ -102,15 +102,30 @@ HEALTH_UPDATE = {
     "sql_table": "rooms",
 }
 
+
 _s3_query = "SELECT * FROM rooms;"
+
+
+def get_health(room_id):
+    # _s3_query = "SELECT * FROM rooms;"
+    with s3.connect(_DATABASE) as _con:
+        _table_data = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
+    try:
+        _health = _table_data["health"][room_id]
+    except KeyError:
+        print(f"*** KeyError when retrieving health for room {room_id}")
+        print(_table_data)
+    return _health
+
+
 with s3.connect(_DATABASE) as _con:
-    _ROOMS_TBL = pd.read_sql_query(_s3_query, _con, index_col="room_id")
+    _ROOMS_TBL = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
 try:
-    ROOMS = _ROOMS_TBL.to_dict()["name"]
-    BAT_HEALTH = _ROOMS_TBL.to_dict()["health"]
+    ROOMS = _ROOMS_TBL["name"]
+    BAT_HEALTH = _ROOMS_TBL["health"]
 except KeyError:
-    print("*** KeyError when retrieving ROOMS")
-    print(ROOMS.to_dict())
+    print("*** KeyError when retrieving ROOMS or BAT_HEALTH")
+    print(_ROOMS_TBL)
 
 
 if __name__ == "__main__":

@@ -145,10 +145,13 @@ def do_work_rht(dev_list):
     return data_list
 
 
-def log_health_state(room_id, state):
+def log_health_state(room_id, state_change):
     """Store the state of a device in the database."""
+    old_state = constants.get_health(room_id)
+    state = old_state + state_change
     update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
+        print(f"{room_id} : previous state = {old_state}; new state = {state}")
         print(f"{update_cmd}")
     do_add_to_database("", fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
     return
