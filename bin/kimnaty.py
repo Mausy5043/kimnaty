@@ -318,7 +318,7 @@ def do_update_database(fdatabase, sql_cmd):
     """Commit the results to the database."""
     conn = None
     cursor = None
-    t0 = time.time()
+    # t0 = time.time()
     try:
         conn = create_db_connection(fdatabase)
         cursor = conn.cursor()
@@ -331,8 +331,8 @@ def do_update_database(fdatabase, sql_cmd):
             cursor.close()
         if conn:
             conn.close()
-    if DEBUG:
-        print(f"{time.time() - t0:.2f} seconds\n")
+    # if DEBUG:
+    #     print(f"{time.time() - t0:.2f} seconds\n")
 
 
 def create_db_connection(database_file):
