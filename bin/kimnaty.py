@@ -108,45 +108,52 @@ def main():  # noqa: C901
 
 def do_work_rht(dev_list):
     """Scan the devices to get current readings."""
+    # possible outcomes for health_score
+    # success       +5; current battery level will limit max. score
+    # fail+success  -5
+    # fail+fail     -10
     data_list = []
     retry_list = []
     for dev in dev_list:
-        health_state = 0
+        health_score = 0
         succes, data = get_rht_data(dev[0], f"room {dev[1]}")
         data[2] = dev[1]  # replace mac-address by room-id
         if succes:
-            health_state += 1
+            health_score += 5
             set_led(dev[1], "green")
             data_list.append(data)
         else:
-            health_state -= 2
+            health_score -= 5
             set_led(dev[1], "orange")
             retry_list.append(dev)
-        log_health_state(room_id=dev[1], state_change=health_state)
+        log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
 
     if retry_list:
         if DEBUG:
             print("Retrying failed connections in 5s...")
         time.sleep(5.0)
         for dev in retry_list:
-            health_state = 0
+            health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
             data[2] = dev[1]  # replace mac-address by room-id
             if succes:
-                health_state += 1
+                health_score += 0
                 set_led(dev[1], "green")
                 data_list.append(data)
             else:
-                health_state -= 3
+                health_score -= 5
                 set_led(dev[1], "red")
-            log_health_state(room_id=dev[1], state_change=health_state)
+            log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
     return data_list
 
 
-def log_health_state(room_id, state_change):
+def log_health_score(room_id, state_change, battery):
     """Store the state of a device in the database."""
+    bat_hi = 3.0
+    bat_lo = 2.0
     old_state = constants.get_health(room_id)
-    state = old_state + state_change
+    bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.
+    state = min(bat_state, old_state) + state_change
     state = max(0, min(state, 100))
     update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
