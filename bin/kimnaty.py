@@ -154,7 +154,7 @@ def log_health_score(room_id, state_change, battery):
     old_state = constants.get_health(room_id)
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.
     state = min(bat_state, old_state) + state_change
-    state = max(0, min(state, 100))
+    state = int(max(0, min(state, 100)))
     update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
