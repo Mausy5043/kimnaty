@@ -10,7 +10,7 @@ args = parser.parse_args()
 
 for mac in args.mac:
     try:
-        client = pyly.Lywsd03client(mac)
+        client = pyly.Lywsd03client(mac=mac, debug=True)
     except Exception as e:  # pylint: disable=W0703
         print(e)
 
