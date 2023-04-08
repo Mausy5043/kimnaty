@@ -77,6 +77,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         df.index = pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
+        # FIXME:
+        # pandas 2.0.0: ValueError: Invalid fill method. Expecting pad (ffill) or backfill (bfill). Got slinear
         df = df.interpolate(method="slinear")
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan

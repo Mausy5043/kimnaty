@@ -1,7 +1,7 @@
 matplotlib
 mausy5043-common
 numpy
-pandas
+pandas==1.5.2
 pylywsdxx
 requests
 scipy
