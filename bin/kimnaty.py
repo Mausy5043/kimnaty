@@ -131,10 +131,10 @@ def do_work_rht(dev_list):
     if retry_list:
         if DEBUG:
             print("Retrying failed connections in 5s...")
-        os.system("bluetoothctl power off")
+        os.system("/usr/bin/bluetoothctl power off")
         time.sleep(5.0)
-        os.system("bluetoothctl power on")
-        os.system("sudo systemctl restart bluetoothctl.service")
+        os.system("/usr/bin/bluetoothctl power on")
+        os.system("/usr/bin/sudo /usr/bin/systemctl restart bluetooth.service")
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
