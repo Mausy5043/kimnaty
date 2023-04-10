@@ -43,13 +43,13 @@ TREND = {
 
 DEVICES = [
     ["A4:C1:38:A5:71:D0", "0.1"],
-    ["A4:C1:38:99:AC:4D", "0.5"],
+    # ["A4:C1:38:99:AC:4D", "0.5"],
     ["A4:C1:38:6F:E7:CA", "1.1"],
     ["A4:C1:38:50:D7:2D", "1.2"],
-    ["A4:C1:38:91:D9:47", "1.3"],
-    ["A4:C1:38:59:9A:9B", "1.4"],
+    # ["A4:C1:38:91:D9:47", "1.3"],
+    # ["A4:C1:38:59:9A:9B", "1.4"],
     ["A4:C1:38:76:59:43", "2.1"],
-    ["A4:C1:38:58:23:E1", "2.2"],
+    # ["A4:C1:38:58:23:E1", "2.2"],
 ]
 
 AIRCO = [
@@ -67,7 +67,7 @@ _sample_time_per_ac = 5.0
 _pause_time = 30.0
 _report_time = (_sample_time_per_device * (len(DEVICES) * 2)) + (_sample_time_per_ac * (len(AIRCO))) + _pause_time
 # The minimum report_time is 600 seconds, to prevent unrealistic scantimes, high loads and battery drain.
-_report_time = max(_report_time, 600.0)
+_report_time = max(_report_time, 1600.0)
 
 KIMNATY = {
     "database": _DATABASE,
