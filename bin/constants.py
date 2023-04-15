@@ -71,7 +71,7 @@ _report_time = (
     + _pause_time
 )
 # The minimum report_time is 600 seconds, to prevent unrealistic scantimes, high loads and battery drain.
-_report_time = max(_report_time, 1600.0)
+_report_time = max(_report_time, 1500.0)
 
 KIMNATY = {
     "database": _DATABASE,
