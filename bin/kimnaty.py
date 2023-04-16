@@ -138,11 +138,12 @@ def do_work_rht(dev_list):
 
     if retry_list:
         if DEBUG:
-            print("Retrying failed connections in 5s...")
-        os.system("/usr/bin/bluetoothctl power off")
-        time.sleep(5.0)
-        os.system("/usr/bin/bluetoothctl power on")
-        os.system("/usr/bin/sudo /usr/bin/systemctl restart bluetooth.service")
+            print("Retrying failed connections...")
+        # os.system("/usr/bin/bluetoothctl power off")
+        # time.sleep(5.0)
+        # os.system("/usr/bin/bluetoothctl power on")
+        # os.system("/usr/bin/sudo /usr/bin/systemctl restart bluetooth.service")
+        pyly.bt_hardware.ble_reset()
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
@@ -204,7 +205,7 @@ def get_rht_data(addr, dev_id):
     except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({addr}) an error occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {dev_id} ({addr}) an error of type {type(e).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
@@ -272,7 +273,7 @@ def get_ac_data(airco):
     except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {airco['name']} an error occured "
+            f"*** While talking to {airco['name']} an error of type {type(e).__name__} occured "
             f"on {err_date.strftime(constants.DT_FORMAT)}:",
             syslog.LOG_CRIT,
             DEBUG,
