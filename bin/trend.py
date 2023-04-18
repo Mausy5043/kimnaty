@@ -27,9 +27,7 @@ DEBUG = False
 
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
-    data_dict_rht = fetch_data_rht(
-        hours_to_fetch=hours_to_fetch, aggregation=aggregation
-    )
+    data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict = {}
     # move outside temperature from Daikin to the table with the other temperature sensors
@@ -84,9 +82,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             if c not in ["sample_time"]:
                 df[c] = pd.to_numeric(df[c], errors="coerce")
         df.index = (
-            pd.to_datetime(df.index, unit="s")
-            .tz_localize("UTC")
-            .tz_convert("Europe/Amsterdam")
+            pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         )
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
@@ -96,9 +92,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan
         # conserve memory; we dont need the these.
-        df.drop(
-            ["ac_mode", "ac_power", "room_id"], axis=1, inplace=True, errors="ignore"
-        )
+        df.drop(["ac_mode", "ac_power", "room_id"], axis=1, inplace=True, errors="ignore")
         df_cmp = collate(
             df_cmp,
             df,
@@ -187,9 +181,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
             if c not in ["sample_time"]:
                 df[c] = pd.to_numeric(df[c], errors="coerce")
         df.index = (
-            pd.to_datetime(df.index, unit="s")
-            .tz_localize("UTC")
-            .tz_convert("Europe/Amsterdam")
+            pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         )
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
@@ -233,9 +225,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     return rht_data_dict
 
 
-def collate(
-    prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_name="room_id"
-):
+def collate(prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_name="room_id"):
     if columns_to_drop is None:
         columns_to_drop = []
     # drop the 'columns_to_drop'
@@ -358,22 +348,16 @@ if __name__ == "__main__":
         type=int,
         help="create hour-trend for last <HOURS> hours",
     )
-    parser.add_argument(
-        "-d", "--days", type=int, help="create day-trend for last <DAYS> days"
-    )
+    parser.add_argument("-d", "--days", type=int, help="create day-trend for last <DAYS> days")
     parser.add_argument(
         "-m",
         "--months",
         type=int,
         help="number of months of data to use for the graph",
     )
-    parser.add_argument(
-        "-o", "--outside", action="store_true", help="plot outside temperature"
-    )
+    parser.add_argument("-o", "--outside", action="store_true", help="plot outside temperature")
     parser_group = parser.add_mutually_exclusive_group(required=False)
-    parser_group.add_argument(
-        "--debug", action="store_true", help="start in debugging mode"
-    )
+    parser_group.add_argument("--debug", action="store_true", help="start in debugging mode")
     OPTION = parser.parse_args()
     if OPTION.hours == 0:
         OPTION.hours = 80
