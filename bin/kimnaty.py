@@ -194,20 +194,21 @@ def get_rht_data(addr, dev_id):
             syslog.LOG_CRIT,
             DEBUG,
         )
-    except bluepy3.btle.BTLEConnectError:
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-    except bluepy3.btle.BTLEConnectTimeout:
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"BTLEConnectTimeout on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
+    # TODO: catch upstream
+    # except bluepy3.btle.BTLEConnectError:
+    #     err_date = dt.datetime.now()
+    #     mf.syslog_trace(
+    #         f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
+    #         syslog.LOG_CRIT,
+    #         DEBUG,
+    #     )
+    # except bluepy3.btle.BTLEConnectTimeout:
+    #     err_date = dt.datetime.now()
+    #     mf.syslog_trace(
+    #         f"BTLEConnectTimeout on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
+    #         syslog.LOG_CRIT,
+    #         DEBUG,
+    #     )
     except Exception as e:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
