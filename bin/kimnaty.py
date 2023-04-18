@@ -24,9 +24,7 @@ import pylywsdxx as pyly  # noqa
 
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
-parser_group.add_argument(
-    "--start", action="store_true", help="start the daemon as a service"
-)
+parser_group.add_argument("--start", action="store_true", help="start the daemon as a service")
 parser_group.add_argument(
     "--debug", action="store_true", help="start the daemon in debugging mode"
 )
@@ -97,9 +95,7 @@ def main():  # noqa: C901
             if DEBUG:
                 print(f" >>> Time to get results: {time.time() - start_time}")
 
-            pause_time = (
-                sample_time - (time.time() - start_time) - (start_time % sample_time)
-            )
+            pause_time = sample_time - (time.time() - start_time) - (start_time % sample_time)
             next_time = time.time() + pause_time
             if pause_time > 0:
                 if DEBUG:
