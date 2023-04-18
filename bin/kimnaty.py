@@ -135,10 +135,6 @@ def do_work_rht(dev_list):
     if retry_list:
         if DEBUG:
             print("Retrying failed connections...")
-        # os.system("/usr/bin/bluetoothctl power off")
-        # time.sleep(5.0)
-        # os.system("/usr/bin/bluetoothctl power on")
-        # os.system("/usr/bin/sudo /usr/bin/systemctl restart bluetooth.service")
         pyly.bt_hardware.ble_reset()
         for dev in retry_list:
             health_score = 0
@@ -195,6 +191,13 @@ def get_rht_data(addr, dev_id):
         err_date = dt.datetime.now()
         mf.syslog_trace(
             f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}",
+            syslog.LOG_CRIT,
+            DEBUG,
+        )
+    except BTLEConnectError:
+        err_date = dt.datetime.now()
+        mf.syslog_trace(
+            f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
             syslog.LOG_CRIT,
             DEBUG,
         )
