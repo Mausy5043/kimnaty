@@ -75,12 +75,14 @@ _report_time = max(_report_time, 900.0)
 
 KIMNATY = {
     "database": _DATABASE,
-    "sql_command": "INSERT INTO data ("
-    "sample_time, sample_epoch, "
-    "room_id, "
-    "temperature, humidity, voltage "
-    ") "
-    "VALUES (?, ?, ?, ?, ?, ?)",
+    "sql_command": (
+        "INSERT INTO data ("
+        "sample_time, sample_epoch, "
+        "room_id, "
+        "temperature, humidity, voltage "
+        ") "
+        "VALUES (?, ?, ?, ?, ?, ?)"
+    ),
     "sql_table": "data",
     "report_time": _report_time,
     "cycles": 1,
@@ -89,13 +91,15 @@ KIMNATY = {
 
 AC = {
     "database": _DATABASE,
-    "sql_command": "INSERT INTO aircon ("
-    "sample_time, sample_epoch, "
-    "room_id, "
-    "ac_power, ac_mode,"
-    "temperature_ac, temperature_target, temperature_outside, "
-    "cmp_freq) "
-    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "sql_command": (
+        "INSERT INTO aircon ("
+        "sample_time, sample_epoch, "
+        "room_id, "
+        "ac_power, ac_mode,"
+        "temperature_ac, temperature_target, temperature_outside, "
+        "cmp_freq) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ),
     "sql_table": "aircon",
 }
 

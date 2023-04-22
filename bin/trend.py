@@ -87,7 +87,9 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
         # FIXME: ValueError in pandas 2.0.0
-        # pandas 2.0.0: ValueError: Invalid fill method. Expecting pad (ffill) or backfill (bfill). Got slinear
+        # pandas 2.0.0: ValueError: Invalid fill method.
+        #                           Expecting pad (ffill) or backfill (bfill).
+        #                           Got slinear
         df = df.interpolate(method="slinear")
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan
@@ -263,8 +265,9 @@ def plot_graph(output_file, data_dict, plot_title):
 
     Args:
         output_file (str): (str) name of the trendgraph file
-        data_dict (dict): contains the data for the lines. Each paramter is a separate pandas Dataframe
-                      {'df': Dataframe}
+        data_dict (dict): contains the data for the lines.
+                          Each parameter is a separate pandas Dataframe
+                          e.g. {'df': Dataframe}
         plot_title (str): title to be displayed above the plot
     Returns:
         None
