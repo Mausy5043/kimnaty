@@ -37,12 +37,10 @@ def fetch_data(hours_to_fetch=48, aggregation="10min"):
     #             data_dict_ac[d].drop(["T(out)"], axis=1, inplace=True, errors="ignore")s
     for key, value in data_dict_ac.items():
         if "T(out)" in value:
-            data_dict_rht["temperature"]["T(out)"] = data_dict_ac[key][
-                "T(out)"
-            ]  # pylint: disable=R1733
-            data_dict_ac[key].drop(
-                ["T(out)"], axis=1, inplace=True, errors="ignore"
-            )  # pylint: disable=R1733
+            # pylint: disable-next=R1733
+            data_dict_rht["temperature"]["T(out)"] = data_dict_ac[key]["T(out)"]
+            # pylint: disable-next=R1733
+            data_dict_ac[key].drop(["T(out)"], axis=1, inplace=True, errors="ignore")
     # for d in data_dict_rht:
     #     data_dict[d] = data_dict_rht[d]
     for key, value in data_dict_rht.items():
