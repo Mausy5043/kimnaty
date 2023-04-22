@@ -415,7 +415,11 @@ def test_db_connection(fdatabase):
         conn.close()
         syslog.syslog(syslog.LOG_INFO, f"Attached to SQLite3 server: {versql}")
     except s3.Error as her:
-        mf.syslog_trace(f"Unexpected SQLite3 error {her} of type {type(her).__name__} during test.", syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(
+            f"Unexpected SQLite3 error {her} of type {type(her).__name__} during test.",
+            syslog.LOG_CRIT,
+            DEBUG,
+        )
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
         raise
     except Exception as her:  # pylint: disable=W0703
