@@ -198,14 +198,16 @@ def get_rht_data(addr, dev_id):
     # except pyly.btle.BTLEConnectError:
     #     err_date = dt.datetime.now()
     #     mf.syslog_trace(
-    #         f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
+    #         f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} "
+    #         f"for {dev_id} ({addr}) ",
     #         syslog.LOG_CRIT,
     #         DEBUG,
     #     )
     # except pyly.btle.BTLEConnectTimeout:
     #     err_date = dt.datetime.now()
     #     mf.syslog_trace(
-    #         f"BTLEConnectTimeout on {err_date.strftime(constants.DT_FORMAT)} for {dev_id} ({addr}) ",
+    #         f"BTLEConnectTimeout on {err_date.strftime(constants.DT_FORMAT)} "
+    #         f"for {dev_id} ({addr}) ",
     #         syslog.LOG_CRIT,
     #         DEBUG,
     #     )

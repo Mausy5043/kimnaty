@@ -58,9 +58,11 @@ AIRCO = [
 ]
 
 # Reading a LYWSD03 sensor takes 11.5 sec on average.
-# `KIMNATY['report_time']` is determined by the number of devices to be interogated * 12 sec/device
+# `KIMNATY['report_time']` is determined by the number of devices
+# to be interogated * 12 sec/device
 # and allowing for all to misread every cycle.
-# Also the aircos are read. Reading those takes on average 1 sec/AC. Here too, we allow for 1 misread.
+# Also the aircos are read. Reading those takes on average 1 sec/AC.
+# Here too, we allow for 1 misread.
 _sample_time_per_device = 12.0 + 8.0
 _sample_time_per_ac = 5.0
 # Set a minimum pause time between scans
@@ -70,7 +72,8 @@ _report_time = (
     + (_sample_time_per_ac * (len(AIRCO)))
     + _pause_time
 )
-# The minimum report_time is 900 seconds, to prevent unrealistic scantimes, high loads and battery drain.
+# The minimum report_time is 900 seconds, to prevent unrealistic scantimes,
+# high loads and battery drain.
 _report_time = max(_report_time, 900.0)
 
 KIMNATY = {

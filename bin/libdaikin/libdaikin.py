@@ -16,8 +16,10 @@ Example usage:
 {'ret': 'OK', 'type': 'N', 'reg': 'eu', 'dst': '1',
  'ver': '1_2_51', 'rev': 'D3A0C9F', 'pow': '1', 'err': '0', 'location': '0',
  'name': 'DaikinAP34517', 'icon': '0', 'method': 'home only', 'port': '30050',
- 'id': '', 'pw': '', 'lpw_flag': '0', 'adp_kind': '3', 'pv': '3.20', 'cpv': '3', 'cpv_minor': '20',
- 'led': '1', 'en_setzone': '1', 'mac': '706655296EF7', 'adp_mode': 'run', 'en_hol': '0',
+ 'id': '', 'pw': '', 'lpw_flag': '0', 'adp_kind': '3',
+ 'pv': '3.20', 'cpv': '3', 'cpv_minor': '20',
+ 'led': '1', 'en_setzone': '1', 'mac': '706655296EF7',
+ 'adp_mode': 'run', 'en_hol': '0',
  'grp_name': '', 'en_grp': '0', 'auto_off_flg': '0', 'auto_off_tm': '- -',
  'today_runtime': '38',
  'datas': '0/0/0/1600/900/1000/200',
@@ -30,7 +32,8 @@ Example usage:
  'acled': '0', 'land': '0', 'elec': '1', 'temp': '1', 'temp_rng': '0',
  'm_dtct': '1', 'ac_dst': '--', 'disp_dry': '0', 'dmnd': '1', 'en_scdltmr': '1',
  'en_frate': '1', 'en_fdir': '1', 's_fdir': '3', 'en_rtemp_a': '0', 'en_spmode': '7',
- 'en_ipw_sep': '1', 'en_mompow': '0', 'hmlmt_l': '10.0', 'notice_ip_int': '3600', 'notice_sync_int': '60'
+ 'en_ipw_sep': '1', 'en_mompow': '0', 'hmlmt_l': '10.0',
+ 'notice_ip_int': '3600', 'notice_sync_int': '60'
 }
 
 #>>> API.target_temperature
@@ -303,7 +306,9 @@ class Daikin:
         """Horizontal/vertical fan wings motion
 
         Returns:
-            int: "0":"all wings stopped", "1":"vertical wings motion", "2":"horizontal wings motion", \
+            int: "0":"all wings stopped",
+                 "1":"vertical wings motion",
+                 "2":"horizontal wings motion",
                  "3":"vertical and horizontal wings motion"
         """
         return int(self._get_control()["f_dir"])
