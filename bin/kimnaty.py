@@ -209,15 +209,15 @@ def get_rht_data(addr, dev_id):
     #         syslog.LOG_CRIT,
     #         DEBUG,
     #     )
-    except Exception as e:  # pylint: disable=W0703
+    except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({addr}) an error of type {type(e).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {dev_id} ({addr}) an error of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
-        mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
-        # mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
+        # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds")
         print("")
@@ -277,16 +277,15 @@ def get_ac_data(airco):
         # When switched to drying mode the temperature target becomes 'M'
         ac_t_tgt = ac_t_in
         success = True
-    except Exception as e:  # pylint: disable=W0703
+    except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {airco['name']} an error of type {type(e).__name__} occured "
+            f"*** While talking to {airco['name']} an error of type {type(her).__name__} occured "
             f"on {err_date.strftime(constants.DT_FORMAT)}:",
             syslog.LOG_CRIT,
             DEBUG,
         )
-        mf.syslog_trace(f"    {e}", syslog.LOG_CRIT, DEBUG)
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
         print(f"+----------------Room {airco['name']} Data----")
         print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC " f"state = {ac_pwr}")
@@ -337,6 +336,14 @@ def do_add_to_database(results, fdatabase, sql_cmd):
                     cursor.close()
                 if conn:
                     conn.close()
+            except Exception as her:  # pylint: disable=W0703
+                err_date = dt.datetime.now()
+                mf.syslog_trace(
+                    f"*** An error of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+                    syslog.LOG_CRIT,
+                    DEBUG,
+                )
+                mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
         print(f"{time.time() - t0:.2f} seconds\n")
 
@@ -358,6 +365,14 @@ def do_update_database(fdatabase, sql_cmd):
             cursor.close()
         if conn:
             conn.close()
+    except Exception as her:  # pylint: disable=W0703
+        err_date = dt.datetime.now()
+        mf.syslog_trace(
+            f"*** An error of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            syslog.LOG_CRIT,
+            DEBUG,
+        )
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     # if DEBUG:
     #     print(f"{time.time() - t0:.2f} seconds\n")
 
@@ -373,13 +388,13 @@ def create_db_connection(database_file):
     try:
         consql = s3.connect(database_file, timeout=9000)
         return consql
-    except s3.Error:
+    except s3.Error as her:
         mf.syslog_trace(
-            "Unexpected SQLite3 error when connecting to server.",
+            f"Unexpected SQLite3 error of type {type(her).__name__} when connecting to server.",
             syslog.LOG_CRIT,
             DEBUG,
         )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_CRIT, DEBUG)
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
         if consql:  # attempt to close connection to SQLite3 server
             consql.close()
             mf.syslog_trace(" ** Closed SQLite3 connection. **", syslog.LOG_CRIT, DEBUG)
@@ -401,8 +416,16 @@ def test_db_connection(fdatabase):
         syslog.syslog(syslog.LOG_INFO, f"Attached to SQLite3 server: {versql}")
     except s3.Error:
         mf.syslog_trace("Unexpected SQLite3 error during test.", syslog.LOG_CRIT, DEBUG)
-        print(traceback.format_exc())
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
         raise
+    except Exception as her:  # pylint: disable=W0703
+        err_date = dt.datetime.now()
+        mf.syslog_trace(
+            f"*** An error of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            syslog.LOG_CRIT,
+            DEBUG,
+        )
+        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
 
 
 def set_led(dev, colour):
