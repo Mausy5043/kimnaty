@@ -212,7 +212,8 @@ def get_rht_data(addr, dev_id):
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({addr}) error {her} of type of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {dev_id} ({addr}) error {her} of type of type {type(her).__name__} "
+            f"occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
