@@ -166,7 +166,7 @@ def do_work_rht(dev_list):
     for dev in dev_list:
         health_score = 0
         succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-        data[2] = dev[1]  # replace mac-address by room-id
+        data['room_id'] = dev[1]  # replace mac-address by room-id
         if succes:
             health_score += 5
             set_led(dev[1], "green")
@@ -175,7 +175,7 @@ def do_work_rht(dev_list):
             health_score -= 5
             set_led(dev[1], "orange")
             retry_list.append(dev)
-        log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
+        log_health_score(room_id=data['room_id'], state_change=health_score, battery=data['voltage'])
 
     if retry_list:
         if DEBUG:
@@ -184,7 +184,7 @@ def do_work_rht(dev_list):
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-            data[2] = dev[1]  # replace mac-address by room-id
+            data['room_id'] = dev[1]  # replace mac-address by room-id
             if succes:
                 health_score += 0
                 set_led(dev[1], "green")
@@ -192,7 +192,7 @@ def do_work_rht(dev_list):
             else:
                 health_score -= 5
                 set_led(dev[1], "red")
-            log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
+            log_health_score(room_id=data['room_id'], state_change=health_score, battery=data['voltage'])
     return data_list
 
 
@@ -204,7 +204,7 @@ def log_health_score(room_id, state_change, battery):
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
-    update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
+    # update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
         # print(f"{update_cmd}")
