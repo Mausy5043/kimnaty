@@ -42,14 +42,14 @@ TREND = {
 }
 
 DEVICES = [
-    ["A4:C1:38:A5:71:D0", "0.1"],
-    ["A4:C1:38:99:AC:4D", "0.5"],
-    ["A4:C1:38:6F:E7:CA", "1.1"],
-    ["A4:C1:38:50:D7:2D", "1.2"],
-    ["A4:C1:38:91:D9:47", "1.3"],
-    ["A4:C1:38:59:9A:9B", "1.4"],
-    ["A4:C1:38:76:59:43", "2.1"],
-    ["A4:C1:38:58:23:E1", "2.2"],
+    ["A4:C1:38:A5:71:D0", "0.1", "woonkamer"],
+    ["A4:C1:38:99:AC:4D", "0.5", "keuken"],
+    ["A4:C1:38:6F:E7:CA", "1.1", "slaapkamer 1"],
+    ["A4:C1:38:50:D7:2D", "1.2", "badkamer"],
+    ["A4:C1:38:91:D9:47", "1.3", "slaapkamer 2"],
+    ["A4:C1:38:59:9A:9B", "1.4", "slaapkamer 3"],
+    ["A4:C1:38:76:59:43", "2.1", "zolder"],
+    ["A4:C1:38:58:23:E1", "2.2", "slaapkamer 4"],
 ]
 
 AIRCO = [
@@ -109,7 +109,7 @@ AC = {
 # Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
 HEALTH_UPDATE = {
     "database": _DATABASE,
-    "sql_command": "INSERT INTO rooms (room_id, health) VALUES (?, ?)",
+    "sql_command": "INSERT INTO rooms (room_id, name, health) VALUES (?, ?, ?)",
     "sql_table": "rooms",
 }
 
@@ -118,7 +118,7 @@ _health_query = "SELECT * FROM rooms;"
 
 
 def get_health(room_id):
-    # _s3_query = "SELECT * FROM rooms;"
+    _health = 0
     with s3.connect(_DATABASE) as _con:
         _table_data = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
     try:
