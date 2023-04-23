@@ -109,18 +109,18 @@ AC = {
 # Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
 HEALTH_UPDATE = {
     "database": _DATABASE,
-    "sql_command": "UPDATE rooms SET health = %s WHERE room_id = %s",
+    "sql_command": "INSERT INTO rooms (room_id, health) VALUES (?, ?)",
     "sql_table": "rooms",
 }
 
 
-_s3_query = "SELECT * FROM rooms;"
+_health_query = "SELECT * FROM rooms;"
 
 
 def get_health(room_id):
     # _s3_query = "SELECT * FROM rooms;"
     with s3.connect(_DATABASE) as _con:
-        _table_data = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
+        _table_data = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
     try:
         _health = _table_data["health"][room_id]
     except KeyError:
@@ -130,7 +130,7 @@ def get_health(room_id):
 
 
 with s3.connect(_DATABASE) as _con:
-    _ROOMS_TBL = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
+    _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
 try:
     ROOMS = _ROOMS_TBL["name"]
     BAT_HEALTH = _ROOMS_TBL["health"]
