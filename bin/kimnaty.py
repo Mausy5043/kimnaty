@@ -49,8 +49,7 @@ NODE = os.uname()[1]
 # MYID: 'kimnaty.py
 # MYAPP: kimnaty
 # MYROOT: /home/pi
-# NODE: rbenvir
-
+# NODE: rbair
 
 # class SensorDevice():
 #     """..."""
@@ -59,7 +58,7 @@ sql_health = m3.SqlDatabase(
     database=constants.HEALTH_UPDATE["database"],
     table=constants.HEALTH_UPDATE["sql_table"],
     insert=constants.HEALTH_UPDATE["sql_command"],
-    debug=DEBUG,
+    debug=OPTION.debug,
 )
 
 
@@ -166,7 +165,7 @@ def do_work_rht(dev_list):
     for dev in dev_list:
         health_score = 0
         succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-        data['room_id'] = dev[1]  # replace mac-address by room-id
+        data["room_id"] = dev[1]  # replace mac-address by room-id
         if succes:
             health_score += 5
             set_led(dev[1], "green")
@@ -175,7 +174,9 @@ def do_work_rht(dev_list):
             health_score -= 5
             set_led(dev[1], "orange")
             retry_list.append(dev)
-        log_health_score(room_id=data['room_id'], state_change=health_score, battery=data['voltage'])
+        log_health_score(
+            room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
+        )
 
     if retry_list:
         if DEBUG:
@@ -184,7 +185,7 @@ def do_work_rht(dev_list):
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-            data['room_id'] = dev[1]  # replace mac-address by room-id
+            data["room_id"] = dev[1]  # replace mac-address by room-id
             if succes:
                 health_score += 0
                 set_led(dev[1], "green")
@@ -192,7 +193,9 @@ def do_work_rht(dev_list):
             else:
                 health_score -= 5
                 set_led(dev[1], "red")
-            log_health_score(room_id=data['room_id'], state_change=health_score, battery=data['voltage'])
+            log_health_score(
+                room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
+            )
     return data_list
 
 
@@ -204,11 +207,9 @@ def log_health_score(room_id, state_change, battery):
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
-    # update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
-        # print(f"{update_cmd}")
-    sql_health.queue({"health": state, "room_id": room_id})
+    sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
 def get_rht_data(addr, dev_id):
@@ -402,6 +403,7 @@ if __name__ == "__main__":
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
+
     if OPTION.debug:
         DEBUG = True
         mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
