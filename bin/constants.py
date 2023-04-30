@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import os
+import pprint as pp
 import sqlite3 as s3
 import sys
+import subprocess  # nosec B404
 
 import pandas as pd
 
@@ -10,6 +12,9 @@ _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site"
+
+ROOMS = dict()
+BAT_HEALTH = dict()
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"/srv/databases/{_DATABASE_FILENAME}"
@@ -25,7 +30,9 @@ if not os.path.isfile(_DATABASE):
     print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
-    sys.exit(1)
+    _DATABASE_FILENAME = "unknown"
+    _DATABASE = None
+    # sys.exit(1)
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -113,7 +120,6 @@ HEALTH_UPDATE = {
     "sql_table": "rooms",
 }
 
-
 _health_query = "SELECT * FROM rooms;"
 
 
@@ -129,19 +135,90 @@ def get_health(room_id):
     return _health
 
 
-with s3.connect(_DATABASE) as _con:
-    _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
-try:
-    ROOMS = _ROOMS_TBL["name"]
-    BAT_HEALTH = _ROOMS_TBL["health"]
-except KeyError:
-    print("*** KeyError when retrieving ROOMS or BAT_HEALTH")
-    print(_ROOMS_TBL)
+def get_kimnaty_version() -> str:
+    """Retrieve information of current version of kimnaty.
 
+    Returns:
+        versionstring
+    """
+    # git log -n1 --format="%h"
+    # git --no-pager log -1 --format="%ai"
+    args = ["git", "log", "-1", "--format='%h'"]
+    _exit_h = (
+        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        .strip("\n")
+        .strip("'")
+    )
+    args[3] = "--format='%ai'"
+    _exit_ai = (
+        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        .strip("\n")
+        .strip("'")
+    )
+    return f"({_exit_h}) {_exit_ai}"
+
+
+def get_pypkg_version(package) -> str:
+    # pip list | grep bluepy3
+    args = ["pip", "list"]
+    _exit_code = (
+        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        .strip("\n")
+        .strip("'")
+    ).split("\n")
+    for element in _exit_code:
+        element_list = element.split()
+        if element_list[0] == package:
+            return element_list[1]
+    return f"unknown package {package}"
+
+
+def get_btctl_version():
+    # bluetoothctl version
+    args = ["bluetoothctl", "version"]
+    try:
+        _exit_code = (
+            subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+            .strip("\n")
+            .strip("'")
+            ).split()
+    except FileNotFoundError:
+        return "not installed"
+    return f"{_exit_code[1]}"
+
+
+def get_helper_version():
+    return "unknown"
+
+
+if _DATABASE:
+    with s3.connect(_DATABASE) as _con:
+        _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
+    try:
+        ROOMS = _ROOMS_TBL["name"]
+    except KeyError:
+        print("*** KeyError when retrieving ROOMS")
+        print(_ROOMS_TBL)
+        raise
+    try:
+        BAT_HEALTH = _ROOMS_TBL["health"]
+    except KeyError:
+        print("*** KeyError when retrieving BAT_HEALTH")
+        print(_ROOMS_TBL)
+        raise
 
 if __name__ == "__main__":
+    _bp3_helper_version = get_helper_version()
+
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
+    print(f"rooms             =\n{pp.pformat(ROOMS, indent=20)}")
+    print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
-    print(f"rooms             = {ROOMS}")
-    print(f"battery health    = {BAT_HEALTH}")
+    args = ["git", "log", "-n1", "--format='%h'"]
+    _exit_code = subprocess.check_output(args, shell=False)  # nosec B603
+    print(f"bluetoothctl      = {get_btctl_version()}")
+    print(f"bluepy3-helper    = {_bp3_helper_version}")
+    print(f"bluepy3           = {get_pypkg_version('bluepy3')}")
+    print(f"pylywsdxx         = {get_pypkg_version('pylywsdxx')}")
+    print(f"kimnaty (me)      = {get_kimnaty_version()}")
