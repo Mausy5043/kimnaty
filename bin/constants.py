@@ -12,6 +12,8 @@ _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site"
+_HERE = os.path.realpath(__file__).split("/") # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
+_HERE = "/".join(_HERE[0:-2])
 
 ROOMS = dict()
 BAT_HEALTH = dict()
@@ -145,24 +147,24 @@ def get_kimnaty_version() -> str:
     # git --no-pager log -1 --format="%ai"
     args = ["git", "log", "-1", "--format='%h'"]
     _exit_h = (
-        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
         .strip("\n")
         .strip("'")
     )
     args[3] = "--format='%ai'"
     _exit_ai = (
-        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
         .strip("\n")
         .strip("'")
     )
-    return f"({_exit_h}) {_exit_ai}"
+    return f"{_exit_h}  -  {_exit_ai}"
 
 
 def get_pypkg_version(package) -> str:
     # pip list | grep bluepy3
     args = ["pip", "list"]
     _exit_code = (
-        subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+        subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.DEVNULL)  # nosec B603
         .strip("\n")
         .strip("'")
     ).split("\n")
@@ -178,7 +180,7 @@ def get_btctl_version():
     args = ["bluetoothctl", "version"]
     try:
         _exit_code = (
-            subprocess.check_output(args, shell=False, encoding="utf-8")  # nosec B603
+            subprocess.check_output(args, shell=False, encoding="utf-8", )  # nosec B603
             .strip("\n")
             .strip("'")
             ).split()
@@ -188,8 +190,26 @@ def get_btctl_version():
 
 
 def get_helper_version():
-    return "unknown"
+    helper_list = find_all("bluepy3-helper", "/")
+    for helper in helper_list:
+        args = [helper, "version"]
+        try:
+            _exit_code = (
+                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # nosec B603
+                    .strip("\n")
+                    .strip("'")
+                ).split()
+        except subprocess.CalledProcessError as exc:
+            _exit_code = exc.split('\n')[0]
+    return _exit_code
 
+
+def find_all(name, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            result.append(os.path.join(root, name))
+    return result
 
 if _DATABASE:
     with s3.connect(_DATABASE) as _con:
@@ -215,8 +235,6 @@ if __name__ == "__main__":
     print(f"rooms             =\n{pp.pformat(ROOMS, indent=20)}")
     print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
-    args = ["git", "log", "-n1", "--format='%h'"]
-    _exit_code = subprocess.check_output(args, shell=False)  # nosec B603
     print(f"bluetoothctl      = {get_btctl_version()}")
     print(f"bluepy3-helper    = {_bp3_helper_version}")
     print(f"bluepy3           = {get_pypkg_version('bluepy3')}")
