@@ -201,7 +201,7 @@ def get_helper_version():
                 ).split()
         except subprocess.CalledProcessError as exc:
             _exit_code = exc.output.split('\n')[0]
-    return "unknown"
+    return _exit_code
 
 
 def find_all(name, path):
