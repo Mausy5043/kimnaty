@@ -106,8 +106,6 @@ def main():  # noqa: C901
                     sql_db_rht.queue(element)
             # AC
             ac_results = do_work_ac(list_of_aircos)
-            if DEBUG:
-                print(f"Result   : {ac_results}")
             # report samples
             if ac_results:
                 for element in ac_results:
