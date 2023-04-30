@@ -32,9 +32,9 @@ if not os.path.isfile(_DATABASE):
     print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
-    _DATABASE_FILENAME = "unknown"
-    _DATABASE = None
-    # sys.exit(1)
+    # _DATABASE_FILENAME = "unknown"
+    # _DATABASE = None
+    sys.exit(1)
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
