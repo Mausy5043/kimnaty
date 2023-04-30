@@ -228,7 +228,6 @@ if _DATABASE:
         raise
 
 if __name__ == "__main__":
-    _bp3_helper_version = get_helper_version()
 
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
@@ -236,7 +235,7 @@ if __name__ == "__main__":
     print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
     print(f"bluetoothctl      = {get_btctl_version()}")
-    print(f"bluepy3-helper    = {_bp3_helper_version}")
+    print(f"bluepy3-helper    = {get_helper_version()}")
     print(f"bluepy3           = {get_pypkg_version('bluepy3')}")
     print(f"pylywsdxx         = {get_pypkg_version('pylywsdxx')}")
     print(f"kimnaty (me)      = {get_kimnaty_version()}")
