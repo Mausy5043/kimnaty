@@ -10,28 +10,26 @@ import argparse
 import datetime as dt
 import os
 import shutil
-import sqlite3 as s3
 import syslog
 import time
 import traceback
 
 import mausy5043_common.funfile as mf
 import mausy5043_common.libsignals as ml
+import mausy5043_common.libsqlite3 as m3
 
 import constants
 import libdaikin
 import pylywsdxx as pyly  # noqa
 
+# fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
 parser_group.add_argument("--start", action="store_true", help="start the daemon as a service")
-parser_group.add_argument(
-    "--debug", action="store_true", help="start the daemon in debugging mode"
-)
-parser_group.add_argument(
-    "--debughw", action="store_true", help="start the daemon in hardware debugging mode"
-)
+parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")
+parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")
 OPTION = parser.parse_args()
+# fmt: on
 
 # constants
 DEBUG = False
@@ -51,15 +49,40 @@ NODE = os.uname()[1]
 # MYID: 'kimnaty.py
 # MYAPP: kimnaty
 # MYROOT: /home/pi
-# NODE: rbenvir
+# NODE: rbair
+
+# class SensorDevice():
+#     """..."""
+
+sql_health = m3.SqlDatabase(
+    database=constants.HEALTH_UPDATE["database"],
+    table=constants.HEALTH_UPDATE["sql_table"],
+    insert=constants.HEALTH_UPDATE["sql_command"],
+    debug=OPTION.debug,
+)
 
 
 def main():  # noqa: C901
     """Execute main loop."""
     killer = ml.GracefulKiller()
-    fdatabase = constants.KIMNATY["database"]
-    sqlcmd_rht = constants.KIMNATY["sql_command"]
-    sqlcmd_ac = constants.AC["sql_command"]
+
+    sql_db_rht = m3.SqlDatabase(
+        database=constants.KIMNATY["database"],
+        table=constants.KIMNATY["sql_table"],
+        insert=constants.KIMNATY["sql_command"],
+        debug=DEBUG,
+    )
+
+    sql_db_ac = m3.SqlDatabase(
+        database=constants.AC["database"],
+        table=constants.AC["sql_table"],
+        insert=constants.AC["sql_command"],
+        debug=DEBUG,
+    )
+
+    # fdatabase = constants.KIMNATY["database"]
+    # sqlcmd_rht = constants.KIMNATY["sql_command"]
+    # sqlcmd_ac = constants.AC["sql_command"]
     report_time = int(constants.KIMNATY["report_time"])
     sample_time = report_time / int(constants.KIMNATY["samplespercycle"])
     list_of_devices = constants.DEVICES
@@ -72,28 +95,39 @@ def main():  # noqa: C901
     if DEBUG:
         print(list_of_aircos)
 
-    test_db_connection(fdatabase)
-
     next_time = time.time()
     while not killer.kill_now:
         if time.time() > next_time:
             start_time = time.time()
             # RH/T
             rht_results = do_work_rht(list_of_devices)
-            if DEBUG:
-                print(f"Result   : {rht_results}")
             if rht_results:
-                do_add_to_database(rht_results, fdatabase, sqlcmd_rht)
+                for element in rht_results:
+                    sql_db_rht.queue(element)
             # AC
             ac_results = do_work_ac(list_of_aircos)
-            if DEBUG:
-                print(f"Result   : {ac_results}")
             # report samples
             if ac_results:
-                do_add_to_database(ac_results, fdatabase, sqlcmd_ac)
+                for element in ac_results:
+                    sql_db_ac.queue(element)
 
             if DEBUG:
                 print(f" >>> Time to get results: {time.time() - start_time}")
+
+            try:
+                sql_db_rht.insert(method="replace")
+                sql_db_ac.insert(method="replace")
+                sql_health.insert(method="replace", index="room_id")
+            except Exception as her:  # pylint: disable=W0703
+                err_date = dt.datetime.now()
+                mf.syslog_trace(
+                    f"*** While trying to insert data into the database error {her} "
+                    f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+                    syslog.LOG_CRIT,
+                    DEBUG,
+                )
+                mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
+                raise  # may be changed to pass if errors can be corrected.
 
             pause_time = sample_time - (time.time() - start_time) - (start_time % sample_time)
             next_time = time.time() + pause_time
@@ -111,7 +145,15 @@ def main():  # noqa: C901
 
 
 def do_work_rht(dev_list):
-    """Scan the devices to get current readings."""
+    """Scan the devices to get current readings.
+
+    Args:
+        dev_list: list of device IDs
+
+    Returns:
+        (list) containing dicts with data
+    """
+
     # possible outcomes for health_score
     # success       +5; current battery level will limit max. score
     # fail+success  -5
@@ -121,7 +163,7 @@ def do_work_rht(dev_list):
     for dev in dev_list:
         health_score = 0
         succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-        data[2] = dev[1]  # replace mac-address by room-id
+        data["room_id"] = dev[1]  # replace mac-address by room-id
         if succes:
             health_score += 5
             set_led(dev[1], "green")
@@ -130,7 +172,9 @@ def do_work_rht(dev_list):
             health_score -= 5
             set_led(dev[1], "orange")
             retry_list.append(dev)
-        log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
+        log_health_score(
+            room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
+        )
 
     if retry_list:
         if DEBUG:
@@ -139,7 +183,7 @@ def do_work_rht(dev_list):
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-            data[2] = dev[1]  # replace mac-address by room-id
+            data["room_id"] = dev[1]  # replace mac-address by room-id
             if succes:
                 health_score += 0
                 set_led(dev[1], "green")
@@ -147,7 +191,9 @@ def do_work_rht(dev_list):
             else:
                 health_score -= 5
                 set_led(dev[1], "red")
-            log_health_score(room_id=dev[1], state_change=health_score, battery=data[5])
+            log_health_score(
+                room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
+            )
     return data_list
 
 
@@ -159,15 +205,22 @@ def log_health_score(room_id, state_change, battery):
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
-    update_cmd = constants.HEALTH_UPDATE["sql_command"] % (state, room_id)
     if DEBUG:
         print(f"{room_id} : previous state = {old_state}; new state = {state}")
-        print(f"{update_cmd}")
-    do_update_database(fdatabase=constants.KIMNATY["database"], sql_cmd=update_cmd)
+    sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
 def get_rht_data(addr, dev_id):
-    """Fetch data from a device."""
+    """Fetch data from a device.
+
+    Args:
+        addr
+        dev_id
+
+    Returns:
+        (bool)  to indicate success or failure to read a device's data
+        (dict)  device's data; keys match fieldnames in the database
+    """
     temperature = 0.0
     humidity = 0
     voltage = 0.0
@@ -214,8 +267,8 @@ def get_rht_data(addr, dev_id):
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({addr}) error {her} of type of type"
-            f" {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to {dev_id} ({addr}) error {her} "
+            f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
         )
@@ -227,18 +280,24 @@ def get_rht_data(addr, dev_id):
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
-    return success, [
-        out_date.strftime(constants.DT_FORMAT),
-        out_epoch,
-        addr,
-        temperature,
-        humidity,
-        voltage,
-    ]
+    return success, {
+        "sample_time": out_date.strftime(constants.DT_FORMAT),
+        "sample_epoch": out_epoch,
+        "room_id": addr,
+        "temperature": temperature,
+        "humidity": humidity,
+        "voltage": voltage,
+    }
 
 
 def do_work_ac(dev_list):
-    """Scan the devices to get current readings."""
+    """Scan the devices to get current readings.
+    Args:
+        dev_list: list of device objects
+
+    Returns:
+        (list) containing dicts with data
+    """
     data_list = []
     retry_list = []
     for airco in dev_list:
@@ -260,7 +319,15 @@ def do_work_ac(dev_list):
 
 
 def get_ac_data(airco):
-    """Fetch data from an AC device."""
+    """Fetch data from an AC device.
+
+    Args:
+        airco:  device object
+
+    Returns:
+        (bool)  to indicate success or failure to read a device's data
+        (dict)  device's data; keys match fieldnames in the database
+    """
     ac_pwr = ac_mode = ac_cmp = None
     ac_t_in = ac_t_tgt = ac_t_out = None
     success = False
@@ -301,142 +368,17 @@ def get_ac_data(airco):
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
-    return success, [
-        out_date.strftime(constants.DT_FORMAT),
-        out_epoch,
-        airco["name"],
-        ac_pwr,
-        ac_mode,
-        ac_t_in,
-        ac_t_tgt,
-        ac_t_out,
-        ac_cmp,
-    ]
-
-
-def do_add_to_database(results, fdatabase, sql_cmd):
-    """Commit the results to the database."""
-    conn = None
-    cursor = None
-    t0 = time.time()
-    for data in results:
-        result = tuple(data)
-        if DEBUG:
-            print(f"    : {result}")
-
-        err_flag = True
-        while err_flag:
-            try:
-                conn = create_db_connection(fdatabase)
-                cursor = conn.cursor()
-                cursor.execute(sql_cmd, result)
-                cursor.close()
-                conn.commit()
-                conn.close()
-                err_flag = False
-            except s3.OperationalError:
-                if cursor:
-                    cursor.close()
-                if conn:
-                    conn.close()
-            except Exception as her:  # pylint: disable=W0703
-                err_date = dt.datetime.now()
-                mf.syslog_trace(
-                    f"*** Error {her} of type {type(her).__name__} occured on"
-                    f" {err_date.strftime(constants.DT_FORMAT)}",
-                    syslog.LOG_CRIT,
-                    DEBUG,
-                )
-                mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
-    if DEBUG:
-        print(f"{time.time() - t0:.2f} seconds\n")
-
-
-def do_update_database(fdatabase, sql_cmd):
-    """Commit the results to the database."""
-    conn = None
-    cursor = None
-    # t0 = time.time()
-    try:
-        conn = create_db_connection(fdatabase)
-        cursor = conn.cursor()
-        cursor.execute(sql_cmd)
-        cursor.close()
-        conn.commit()
-        conn.close()
-    except s3.OperationalError:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
-    except Exception as her:  # pylint: disable=W0703
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"*** Error {her} of type {type(her).__name__} occured on"
-            f" {err_date.strftime(constants.DT_FORMAT)}",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
-    # if DEBUG:
-    #     print(f"{time.time() - t0:.2f} seconds\n")
-
-
-def create_db_connection(database_file):
-    """
-    Create a database connection to the SQLite3 database specified
-    by database_file.
-    """
-    consql = None
-    if DEBUG:
-        print(f"Connecting to: {database_file}")
-    try:
-        consql = s3.connect(database_file, timeout=9000)
-        return consql
-    except s3.Error as her:
-        mf.syslog_trace(
-            f"Unexpected SQLite3 error {her} of type {type(her).__name__} when connecting to"
-            " server.",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
-        if consql:  # attempt to close connection to SQLite3 server
-            consql.close()
-            mf.syslog_trace(" ** Closed SQLite3 connection. **", syslog.LOG_CRIT, DEBUG)
-        raise
-
-
-def test_db_connection(fdatabase):
-    """
-    Test & log database engine connection.
-    """
-    try:
-        conn = create_db_connection(fdatabase)
-        cursor = conn.cursor()
-        cursor.execute("SELECT sqlite_version();")
-        versql = cursor.fetchone()
-        cursor.close()
-        conn.commit()
-        conn.close()
-        syslog.syslog(syslog.LOG_INFO, f"Attached to SQLite3 server: {versql}")
-    except s3.Error as her:
-        mf.syslog_trace(
-            f"Unexpected SQLite3 error {her} of type {type(her).__name__} during test.",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
-        raise
-    except Exception as her:  # pylint: disable=W0703
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"*** Error {her} of type {type(her).__name__} occured on"
-            f" {err_date.strftime(constants.DT_FORMAT)}",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
+    return success, {
+        "sample_time": out_date.strftime(constants.DT_FORMAT),
+        "sample_epoch": out_epoch,
+        "room_id": airco["name"],
+        "ac_power": ac_pwr,
+        "ac_mode": ac_mode,
+        "temperature_ac": ac_t_in,
+        "temperature_target": ac_t_tgt,
+        "temperature_outside": ac_t_out,
+        "cmp_freq": ac_cmp,
+    }
 
 
 def set_led(dev, colour):
@@ -459,6 +401,7 @@ if __name__ == "__main__":
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
+
     if OPTION.debug:
         DEBUG = True
         mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)

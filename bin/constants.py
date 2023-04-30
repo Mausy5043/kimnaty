@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import os
+import pprint as pp
 import sqlite3 as s3
 import sys
+import subprocess  # nosec B404
 
 import pandas as pd
 
@@ -10,6 +12,11 @@ _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site"
+_HERE = os.path.realpath(__file__).split("/") # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
+_HERE = "/".join(_HERE[0:-2])
+
+ROOMS = dict()
+BAT_HEALTH = dict()
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"/srv/databases/{_DATABASE_FILENAME}"
@@ -25,6 +32,8 @@ if not os.path.isfile(_DATABASE):
     print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
+    # _DATABASE_FILENAME = "unknown"
+    # _DATABASE = None
     sys.exit(1)
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -42,14 +51,14 @@ TREND = {
 }
 
 DEVICES = [
-    ["A4:C1:38:A5:71:D0", "0.1"],
-    ["A4:C1:38:99:AC:4D", "0.5"],
-    ["A4:C1:38:6F:E7:CA", "1.1"],
-    ["A4:C1:38:50:D7:2D", "1.2"],
-    ["A4:C1:38:91:D9:47", "1.3"],
-    ["A4:C1:38:59:9A:9B", "1.4"],
-    ["A4:C1:38:76:59:43", "2.1"],
-    ["A4:C1:38:58:23:E1", "2.2"],
+    ["A4:C1:38:A5:71:D0", "0.1", "woonkamer"],
+    ["A4:C1:38:99:AC:4D", "0.5", "keuken"],
+    ["A4:C1:38:6F:E7:CA", "1.1", "slaapkamer 1"],
+    ["A4:C1:38:50:D7:2D", "1.2", "badkamer"],
+    ["A4:C1:38:91:D9:47", "1.3", "slaapkamer 2"],
+    ["A4:C1:38:59:9A:9B", "1.4", "slaapkamer 3"],
+    ["A4:C1:38:76:59:43", "2.1", "zolder"],
+    ["A4:C1:38:58:23:E1", "2.2", "slaapkamer 4"],
 ]
 
 AIRCO = [
@@ -109,18 +118,17 @@ AC = {
 # Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
 HEALTH_UPDATE = {
     "database": _DATABASE,
-    "sql_command": "UPDATE rooms SET health = %s WHERE room_id = %s",
+    "sql_command": "INSERT INTO rooms (room_id, name, health) VALUES (?, ?, ?)",
     "sql_table": "rooms",
 }
 
-
-_s3_query = "SELECT * FROM rooms;"
+_health_query = "SELECT * FROM rooms;"
 
 
 def get_health(room_id):
-    # _s3_query = "SELECT * FROM rooms;"
+    _health = 0
     with s3.connect(_DATABASE) as _con:
-        _table_data = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
+        _table_data = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
     try:
         _health = _table_data["health"][room_id]
     except KeyError:
@@ -129,19 +137,105 @@ def get_health(room_id):
     return _health
 
 
-with s3.connect(_DATABASE) as _con:
-    _ROOMS_TBL = pd.read_sql_query(_s3_query, _con, index_col="room_id").to_dict()
-try:
-    ROOMS = _ROOMS_TBL["name"]
-    BAT_HEALTH = _ROOMS_TBL["health"]
-except KeyError:
-    print("*** KeyError when retrieving ROOMS or BAT_HEALTH")
-    print(_ROOMS_TBL)
+def get_kimnaty_version() -> str:
+    """Retrieve information of current version of kimnaty.
 
+    Returns:
+        versionstring
+    """
+    # git log -n1 --format="%h"
+    # git --no-pager log -1 --format="%ai"
+    args = ["git", "log", "-1", "--format='%h'"]
+    _exit_h = (
+        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
+        .strip("\n")
+        .strip("'")
+    )
+    args[3] = "--format='%ai'"
+    _exit_ai = (
+        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
+        .strip("\n")
+        .strip("'")
+    )
+    return f"{_exit_h}  -  {_exit_ai}"
+
+
+def get_pypkg_version(package) -> str:
+    # pip list | grep bluepy3
+    args = ["pip", "list"]
+    _exit_code = (
+        subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.DEVNULL)  # nosec B603
+        .strip("\n")
+        .strip("'")
+    ).split("\n")
+    for element in _exit_code:
+        element_list = element.split()
+        if element_list[0] == package:
+            return element_list[1]
+    return f"unknown package {package}"
+
+
+def get_btctl_version():
+    # bluetoothctl version
+    args = ["bluetoothctl", "version"]
+    try:
+        _exit_code = (
+            subprocess.check_output(args, shell=False, encoding="utf-8", )  # nosec B603
+            .strip("\n")
+            .strip("'")
+            ).split()
+    except FileNotFoundError:
+        return "not installed"
+    return f"{_exit_code[1]}"
+
+
+def get_helper_version():
+    helper_list = find_all("bluepy3-helper", "/")
+    for helper in helper_list:
+        args = [helper, "version"]
+        try:
+            _exit_code = (
+                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # nosec B603
+                    .strip("\n")
+                    .strip("'")
+                ).split()
+        except subprocess.CalledProcessError as exc:
+            _exit_code = exc.output.split('\n')[0]
+    return _exit_code
+
+
+def find_all(name, path):
+    result = []
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            result.append(os.path.join(root, name))
+    return result
+
+if _DATABASE:
+    with s3.connect(_DATABASE) as _con:
+        _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
+    try:
+        ROOMS = _ROOMS_TBL["name"]
+    except KeyError:
+        print("*** KeyError when retrieving ROOMS")
+        print(_ROOMS_TBL)
+        raise
+    try:
+        BAT_HEALTH = _ROOMS_TBL["health"]
+    except KeyError:
+        print("*** KeyError when retrieving BAT_HEALTH")
+        print(_ROOMS_TBL)
+        raise
 
 if __name__ == "__main__":
+
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
+    print(f"rooms             =\n{pp.pformat(ROOMS, indent=20)}")
+    print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
-    print(f"rooms             = {ROOMS}")
-    print(f"battery health    = {BAT_HEALTH}")
+    print(f"bluetoothctl      = {get_btctl_version()}")
+    print(f"bluepy3-helper    = {get_helper_version()}")
+    print(f"bluepy3           = {get_pypkg_version('bluepy3')}")
+    print(f"pylywsdxx         = {get_pypkg_version('pylywsdxx')}")
+    print(f"kimnaty (me)      = {get_kimnaty_version()}")
