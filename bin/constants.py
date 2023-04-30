@@ -200,7 +200,7 @@ def get_helper_version():
                     .strip("'")
                 ).split()
         except subprocess.CalledProcessError as exc:
-            _exit_code = exc.output_exit_code.split('\n')[0]
+            _exit_code = exc.output.split('\n')[0]
     return "unknown"
 
 
