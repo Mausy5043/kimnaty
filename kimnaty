@@ -8,7 +8,7 @@ PARENT_COMMAND=$(ps $PPID | tail -n 1 | awk "{print \$5}")
 echo "*** kimnaty caller: ${PARENT_COMMAND}"
 
 # shellcheck disable=SC1091
-source include.sh
+source ./bin/include.sh
 
 # check commandline parameters
 for i in "$@"; do
