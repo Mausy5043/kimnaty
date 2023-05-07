@@ -38,7 +38,7 @@ if not os.path.isfile(_DATABASE):
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-# The paths defined here must match the paths defined in constants.sh
+# The paths defined here must match the paths defined in include.sh
 # $website_dir  and  $website_image_dir
 TREND = {
     "database": _DATABASE,
