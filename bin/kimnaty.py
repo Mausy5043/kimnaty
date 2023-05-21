@@ -227,6 +227,7 @@ def get_rht_data(addr, dev_id):
     success = False
     t0 = time.time()
     try:
+        # TODO: create dict of objects iso creating new objects every scan.
         client = pyly.Lywsd03client(mac=addr, debug=DEBUG_HW)
         if DEBUG:
             print("")
