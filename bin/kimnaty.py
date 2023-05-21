@@ -202,6 +202,11 @@ def log_health_score(room_id, state_change, battery):
     bat_hi = 3.2
     bat_lo = 2.2
     old_state = constants.get_health(room_id)
+    if DEBUG:
+        print(f"room {room_id}; battery level : {battery} ")
+    # LYWS02D devices do not report battery level.
+    if not battery:
+        battery = bat_lo - 0.01
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
