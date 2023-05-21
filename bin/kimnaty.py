@@ -262,14 +262,14 @@ def get_rht_data(addr, dev_id):
     #         syslog.LOG_CRIT,
     #         DEBUG,
     #     )
-    # except pyly.btle.BTLEConnectTimeout:
-    #     err_date = dt.datetime.now()
-    #     mf.syslog_trace(
-    #         f"BTLEConnectTimeout on {err_date.strftime(constants.DT_FORMAT)} "
-    #         f"for {dev_id} ({addr}) ",
-    #         syslog.LOG_CRIT,
-    #         DEBUG,
-    #     )
+    except pyly.PyLyTimeout:
+        err_date = dt.datetime.now()
+        mf.syslog_trace(
+            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
+            f"for {dev_id} ({addr}) ",
+            syslog.LOG_CRIT,
+            DEBUG,
+        )
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
