@@ -180,7 +180,7 @@ def do_work_rht(dev_list):
         if DEBUG:
             print("Retrying failed connections...")
         # TODO: have pylywsdxx do this when appropriate
-        pyly.bt_hardware.ble_reset()
+        # pyly.bt_hardware.ble_reset()
         for dev in retry_list:
             health_score = 0
             succes, data = get_rht_data(dev[0], f"room {dev[1]}")
