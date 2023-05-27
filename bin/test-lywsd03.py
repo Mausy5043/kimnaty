@@ -10,13 +10,13 @@ args = parser.parse_args()
 
 for mac in args.mac:
     try:
-        client = pyly.Lywsd03client(mac=mac, debug=True)
+        device = pyly.Lywsd03(mac=mac, debug=True)
     except Exception as e:  # pylint: disable=W0703
         print(e)
 
     try:
         print(f"Fetching data from {mac}")
-        data = client.data
+        data = device.data
         print(f"Temperature       : {data.temperature}°C")
         print(f"Humidity          : {data.humidity}%")
         print(f"Battery           : {data.battery}% ({data.voltage}V)")
