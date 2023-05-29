@@ -66,7 +66,8 @@ AIRCO = [
     {"name": "airco1", "ip": "192.168.2.31", "device": None},
 ]
 
-# Reading a LYWSD03 sensor takes 11.5 sec on average.
+# Reading a LYWSD03 sensor takes 11.5 sec on average. You may get
+# down to 6 seconds on a good day.
 # `KIMNATY['report_time']` is determined by the number of devices
 # to be interogated * 12 sec/device
 # and allowing for all to misread every cycle.
