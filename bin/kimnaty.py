@@ -202,7 +202,7 @@ def log_health_score(room_id, state_change, battery):
     bat_lo = 2.2
     old_state = constants.get_health(room_id)
     if DEBUG:
-        print(f"room {room_id}; battery level : {battery} ")
+        print(f"         battery level : {battery} ")
     # LYWS02D devices do not report battery level.
     if not battery:
         battery = bat_lo - 0.01
@@ -210,7 +210,7 @@ def log_health_score(room_id, state_change, battery):
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
     if DEBUG:
-        print(f"{room_id} : previous state = {old_state}; new state = {state}")
+        print(f"         previous state = {old_state}; new state = {state}")
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
@@ -235,11 +235,12 @@ def get_rht_data(dev_dict):
         if DEBUG:
             print("")
             print(f"Fetching data from {dev_dict['mac']}")
+            print("+------------------------------------")
         data = device.data
         if DEBUG:
-            print(f"Temperature       : {data.temperature}°C")
-            print(f"Humidity          : {data.humidity}%")
-            print(f"Battery           : {data.battery}% ({data.voltage}V)")
+            print(f"| Temperature       : {data.temperature}°C")
+            print(f"| Humidity          : {data.humidity}%")
+            print(f"| Battery           : {data.battery}% ({data.voltage}V)")
         temperature = data.temperature
         humidity = data.humidity
         voltage = data.voltage
@@ -270,8 +271,8 @@ def get_rht_data(dev_dict):
         # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
-        print(f"{time.time() - t0:.2f} seconds")
-        print("")
+        print(f"+-  {time.time() - t0:.2f} seconds")
+        print("+------------------------------------")
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
@@ -377,7 +378,7 @@ def get_ac_data(airco):
 
 
 def set_led(dev, colour):
-    mf.syslog_trace(f"{dev} is {colour}", False, DEBUG)
+    mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
