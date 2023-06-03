@@ -82,17 +82,13 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         df.index = (
             pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         )
+        # conserve memory; we dont need these.
+        df.drop(["ac_mode", "ac_power", "room_id"], axis=1, inplace=True, errors="ignore")
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
-        # FIXME: ValueError in pandas 2.0.0
-        # pandas 2.0.0: ValueError: Invalid fill method.
-        #                           Expecting pad (ffill) or backfill (bfill).
-        #                           Got slinear
-        df = df.interpolate(method="slinear")
+        df = df.interpolate()
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan
-        # conserve memory; we dont need the these.
-        df.drop(["ac_mode", "ac_power", "room_id"], axis=1, inplace=True, errors="ignore")
         df_cmp = collate(
             df_cmp,
             df,
@@ -185,7 +181,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         )
         # resample to monotonic timeline
         df = df.resample(f"{aggregation}").mean()
-        df = df.interpolate(method="slinear")
+        df = df.interpolate()
         try:
             new_name = ROOMS[room_id]
         except KeyError:
