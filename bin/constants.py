@@ -52,15 +52,26 @@ TREND = {
     "year_graph": f"{_WEBSITE}/img/kim_months",
 }
 
+# DEVICES = [
+#     ["A4:C1:38:A5:71:D0", "0.1", "woonkamer"],
+#     ["A4:C1:38:99:AC:4D", "0.5", "keuken"],
+#     ["A4:C1:38:6F:E7:CA", "1.1", "slaapkamer 1"],
+#     ["A4:C1:38:50:D7:2D", "1.2", "badkamer"],
+#     ["A4:C1:38:91:D9:47", "1.3", "slaapkamer 2"],
+#     ["A4:C1:38:59:9A:9B", "1.4", "slaapkamer 3"],
+#     ["A4:C1:38:76:59:43", "2.1", "zolder"],
+#     ["A4:C1:38:58:23:E1", "2.2", "slaapkamer 4"],
+# ]
+
 DEVICES = [
-    ["A4:C1:38:A5:71:D0", "0.1", "woonkamer"],
-    ["A4:C1:38:99:AC:4D", "0.5", "keuken"],
-    ["A4:C1:38:6F:E7:CA", "1.1", "slaapkamer 1"],
-    ["A4:C1:38:50:D7:2D", "1.2", "badkamer"],
-    ["A4:C1:38:91:D9:47", "1.3", "slaapkamer 2"],
-    ["A4:C1:38:59:9A:9B", "1.4", "slaapkamer 3"],
-    ["A4:C1:38:76:59:43", "2.1", "zolder"],
-    ["A4:C1:38:58:23:E1", "2.2", "slaapkamer 4"],
+    {"mac": "A4:C1:38:A5:71:D0", "id": "0.1", "name": "woonkamer", "device": None},
+    {"mac": "A4:C1:38:99:AC:4D", "id": "0.5", "name": "keuken", "device": None},
+    {"mac": "A4:C1:38:6F:E7:CA", "id": "1.1", "name": "slaapkamer 1", "device": None},
+    {"mac": "A4:C1:38:50:D7:2D", "id": "1.2", "name": "badkamer", "device": None},
+    {"mac": "A4:C1:38:91:D9:47", "id": "1.3", "name": "slaapkamer 2", "device": None},
+    {"mac": "A4:C1:38:59:9A:9B", "id": "1.4", "name": "slaapkamer 3", "device": None},
+    {"mac": "A4:C1:38:76:59:43", "id": "2.1", "name": "zolder", "device": None},
+    {"mac": "A4:C1:38:58:23:E1", "id": "2.2", "name": "slaapkamer 4", "device": None},
 ]
 
 AIRCO = [
