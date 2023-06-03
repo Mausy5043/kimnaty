@@ -254,7 +254,8 @@ def get_rht_data(dev_dict, dev_id):
     except pyly.PyLyTimeout:
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} " f"for {dev_id} ({dev_dict['mac']}) ",
+            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
+            f"for {dev_id} ({dev_dict['mac']}) ",
             syslog.LOG_CRIT,
             DEBUG,
         )
@@ -277,7 +278,7 @@ def get_rht_data(dev_dict, dev_id):
     return success, {
         "sample_time": out_date.strftime(constants.DT_FORMAT),
         "sample_epoch": out_epoch,
-        "room_id": dev_dict['id'],
+        "room_id": dev_dict["id"],
         "temperature": temperature,
         "humidity": humidity,
         "voltage": voltage,
