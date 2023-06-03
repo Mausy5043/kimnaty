@@ -86,6 +86,8 @@ def main():  # noqa: C901
     report_time = int(constants.KIMNATY["report_time"])
     sample_time = report_time / int(constants.KIMNATY["samplespercycle"])
     list_of_devices = constants.DEVICES
+    for bt_dev in list_of_devices:
+        bt_dev["device"] = pyly.Lywsd03(mac=bt_dev["mac"], reusable=True, debug=DEBUG_HW)
     if DEBUG:
         print(f"report_time : {report_time} s")
         print(list_of_devices)
@@ -148,7 +150,7 @@ def do_work_rht(dev_list):
     """Scan the devices to get current readings.
 
     Args:
-        dev_list: list of device IDs
+        dev_list: list of dicts with device info
 
     Returns:
         (list) containing dicts with data
@@ -162,15 +164,14 @@ def do_work_rht(dev_list):
     retry_list = []
     for dev in dev_list:
         health_score = 0
-        succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-        data["room_id"] = dev[1]  # replace mac-address by room-id
+        succes, data = get_rht_data(dev)
         if succes:
             health_score += 5
-            set_led(dev[1], "green")
+            set_led(dev["id"], "green")
             data_list.append(data)
         else:
             health_score -= 5
-            set_led(dev[1], "orange")
+            set_led(dev["id"], "orange")
             retry_list.append(dev)
         log_health_score(
             room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
@@ -179,19 +180,16 @@ def do_work_rht(dev_list):
     if retry_list:
         if DEBUG:
             print("Retrying failed connections...")
-        # TODO: have pylywsdxx do this when appropriate
-        # pyly.bt_hardware.ble_reset()
         for dev in retry_list:
             health_score = 0
-            succes, data = get_rht_data(dev[0], f"room {dev[1]}")
-            data["room_id"] = dev[1]  # replace mac-address by room-id
+            succes, data = get_rht_data(dev)
             if succes:
                 health_score += 0
-                set_led(dev[1], "green")
+                set_led(dev["id"], "green")
                 data_list.append(data)
             else:
                 health_score -= 5
-                set_led(dev[1], "red")
+                set_led(dev["id"], "red")
             log_health_score(
                 room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
             )
@@ -204,7 +202,7 @@ def log_health_score(room_id, state_change, battery):
     bat_lo = 2.2
     old_state = constants.get_health(room_id)
     if DEBUG:
-        print(f"room {room_id}; battery level : {battery} ")
+        print(f"         battery level  = {battery} ")
     # LYWS02D devices do not report battery level.
     if not battery:
         battery = bat_lo - 0.01
@@ -212,11 +210,11 @@ def log_health_score(room_id, state_change, battery):
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
     if DEBUG:
-        print(f"{room_id} : previous state = {old_state}; new state = {state}")
+        print(f"         previous state = {old_state}; new state = {state}")
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
-def get_rht_data(addr, dev_id):
+def get_rht_data(dev_dict):
     """Fetch data from a device.
 
     Args:
@@ -233,16 +231,16 @@ def get_rht_data(addr, dev_id):
     success = False
     t0 = time.time()
     try:
-        # TODO: create dict of objects iso creating new objects every scan.
-        device = pyly.Lywsd03(mac=addr, reusable=True, debug=DEBUG_HW)
+        device = dev_dict["device"]
         if DEBUG:
             print("")
-            print(f"Fetching data from {addr}")
+            print(f"Fetching data from {dev_dict['mac']}")
+            print("+------------------------------------")
         data = device.data
         if DEBUG:
-            print(f"Temperature       : {data.temperature}°C")
-            print(f"Humidity          : {data.humidity}%")
-            print(f"Battery           : {data.battery}% ({data.voltage}V)")
+            print(f"| Temperature       : {data.temperature}°C")
+            print(f"| Humidity          : {data.humidity}%")
+            print(f"| Battery           : {data.battery}% ({data.voltage}V)")
         temperature = data.temperature
         humidity = data.humidity
         voltage = data.voltage
@@ -254,26 +252,18 @@ def get_rht_data(addr, dev_id):
             syslog.LOG_CRIT,
             DEBUG,
         )
-    # TODO: catch upstream
-    # except pyly.btle.BTLEConnectError:
-    #     err_date = dt.datetime.now()
-    #     mf.syslog_trace(
-    #         f"BTLEConnectError on {err_date.strftime(constants.DT_FORMAT)} "
-    #         f"for {dev_id} ({addr}) ",
-    #         syslog.LOG_CRIT,
-    #         DEBUG,
-    #     )
     except pyly.PyLyTimeout:
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} " f"for {dev_id} ({addr}) ",
+            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
+            f"for room {dev_dict['id']} ({dev_dict['mac']}) ",
             syslog.LOG_CRIT,
             DEBUG,
         )
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({addr}) error {her} "
+            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) error {her} "
             f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
@@ -281,15 +271,15 @@ def get_rht_data(addr, dev_id):
         # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
-        print(f"{time.time() - t0:.2f} seconds")
-        print("")
+        print(f"|              Time : {time.time() - t0:.2f} seconds")
+        print("+------------------------------------")
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
     return success, {
         "sample_time": out_date.strftime(constants.DT_FORMAT),
         "sample_epoch": out_epoch,
-        "room_id": addr,
+        "room_id": dev_dict["id"],
         "temperature": temperature,
         "humidity": humidity,
         "voltage": voltage,
@@ -388,7 +378,7 @@ def get_ac_data(airco):
 
 
 def set_led(dev, colour):
-    mf.syslog_trace(f"{dev} is {colour}", False, DEBUG)
+    mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
@@ -403,7 +393,7 @@ if __name__ == "__main__":
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     # set-up LEDs
     for device in constants.DEVICES:
-        set_led(device[1], "orange")
+        set_led(device["id"], "orange")
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
