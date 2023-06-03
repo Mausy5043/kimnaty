@@ -200,7 +200,7 @@ def get_helper_version():
                 subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # nosec B603
                 .strip("\n")
                 .strip("'")
-                ).split()
+            ).split()
         except subprocess.CalledProcessError as exc:
             _exit_code = exc.output.split('\n')[0]
     return _exit_code
