@@ -271,7 +271,7 @@ def get_rht_data(dev_dict):
         # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
         mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
-        print(f"+-  {time.time() - t0:.2f} seconds")
+        print(f"|              Time : {time.time() - t0:.2f} seconds")
         print("+------------------------------------")
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
