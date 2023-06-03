@@ -266,8 +266,7 @@ def get_rht_data(addr, dev_id):
     except pyly.PyLyTimeout:
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
-            f"for {dev_id} ({addr}) ",
+            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} " f"for {dev_id} ({addr}) ",
             syslog.LOG_CRIT,
             DEBUG,
         )
