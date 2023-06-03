@@ -8,6 +8,8 @@ import subprocess  # nosec B404
 
 import pandas as pd
 
+# fmt: off
+
 _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
@@ -212,6 +214,7 @@ def find_all(name, path):
             result.append(os.path.join(root, name))
     return result
 
+
 if _DATABASE:
     with s3.connect(_DATABASE) as _con:
         _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
@@ -228,8 +231,9 @@ if _DATABASE:
         print(_ROOMS_TBL)
         raise
 
-if __name__ == "__main__":
+# fmt: on
 
+if __name__ == "__main__":
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
     print(f"rooms             =\n{pp.pformat(ROOMS, indent=20)}")
