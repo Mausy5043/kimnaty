@@ -3,8 +3,8 @@
 import os
 import pprint as pp
 import sqlite3 as s3
-import sys
 import subprocess  # nosec B404
+import sys
 
 import pandas as pd
 
@@ -14,7 +14,7 @@ _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site"
-_HERE = os.path.realpath(__file__).split("/") # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
+_HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
 
 ROOMS = dict()
@@ -182,11 +182,10 @@ def get_btctl_version():
     # bluetoothctl version
     args = ["bluetoothctl", "version"]
     try:
-        _exit_code = (
-            subprocess.check_output(args, shell=False, encoding="utf-8", )  # nosec B603
-            .strip("\n")
-            .strip("'")
-            ).split()
+        _exit_code = (subprocess.check_output(args, shell=False, encoding="utf-8", )  # nosec B603
+                      .strip("\n")
+                      .strip("'")
+                      ).split()
     except FileNotFoundError:
         return "not installed"
     return f"{_exit_code[1]}"
@@ -199,8 +198,8 @@ def get_helper_version():
         try:
             _exit_code = (
                 subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # nosec B603
-                    .strip("\n")
-                    .strip("'")
+                .strip("\n")
+                .strip("'")
                 ).split()
         except subprocess.CalledProcessError as exc:
             _exit_code = exc.output.split('\n')[0]
