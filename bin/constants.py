@@ -17,8 +17,8 @@ _WEBSITE = "/run/kimnaty/site"
 _HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
 
-ROOMS = dict()
-BAT_HEALTH = dict()
+ROOMS = {}
+BAT_HEALTH = {}
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"/srv/databases/{_DATABASE_FILENAME}"
