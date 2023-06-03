@@ -218,8 +218,7 @@ def get_rht_data(dev_dict):
     """Fetch data from a device.
 
     Args:
-        addr
-        dev_id
+        dev_dict (dict)
 
     Returns:
         (bool)  to indicate success or failure to read a device's data
