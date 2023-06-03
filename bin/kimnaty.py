@@ -164,7 +164,7 @@ def do_work_rht(dev_list):
     retry_list = []
     for dev in dev_list:
         health_score = 0
-        succes, data = get_rht_data(dev["mac"], f"room {dev['id']}")
+        succes, data = get_rht_data(dev)
         if succes:
             health_score += 5
             set_led(dev["id"], "green")
@@ -182,7 +182,7 @@ def do_work_rht(dev_list):
             print("Retrying failed connections...")
         for dev in retry_list:
             health_score = 0
-            succes, data = get_rht_data(dev, f"room {dev['id']}")
+            succes, data = get_rht_data(dev)
             if succes:
                 health_score += 0
                 set_led(dev["id"], "green")
@@ -214,7 +214,7 @@ def log_health_score(room_id, state_change, battery):
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
-def get_rht_data(dev_dict, dev_id):
+def get_rht_data(dev_dict):
     """Fetch data from a device.
 
     Args:
@@ -255,14 +255,14 @@ def get_rht_data(dev_dict, dev_id):
         err_date = dt.datetime.now()
         mf.syslog_trace(
             f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
-            f"for {dev_id} ({dev_dict['mac']}) ",
+            f"for room {dev_dict['id']} ({dev_dict['mac']}) ",
             syslog.LOG_CRIT,
             DEBUG,
         )
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {dev_id} ({dev_dict['mac']}) error {her} "
+            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) error {her} "
             f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
             syslog.LOG_CRIT,
             DEBUG,
