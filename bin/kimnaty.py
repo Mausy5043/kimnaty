@@ -230,12 +230,12 @@ def get_rht_data(dev_dict):
     success = False
     t0 = time.time()
     try:
-        device = dev_dict["device"]
+        client = dev_dict["device"]
         if DEBUG:
             print("")
             print(f"Fetching data from {dev_dict['mac']}")
             print("+------------------------------------")
-        data = device.data
+        data = client.data
         if DEBUG:
             print(f"| Temperature       : {data.temperature}°C")
             print(f"| Humidity          : {data.humidity}%")
@@ -391,8 +391,8 @@ if __name__ == "__main__":
     # initialise logging
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     # set-up LEDs
-    for device in constants.DEVICES:
-        set_led(device["id"], "orange")
+    for _device in constants.DEVICES:
+        set_led(_device["id"], "orange")
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
