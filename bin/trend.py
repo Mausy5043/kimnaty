@@ -163,7 +163,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         print("*** fetching RHT ***")
     df_t = df_h = df_v = None
     for device in DEVICE_LIST:
-        room_id = device[1]
+        room_id = device["id"]
         where_condition = (
             f" (sample_time >= datetime('now', '-{hours_to_fetch + 1} hours'))"
             f" AND (room_id LIKE '{room_id}')"
