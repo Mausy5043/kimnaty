@@ -30,7 +30,7 @@ if not os.path.isfile(_DATABASE):
     _DATABASE = f".local/{_DATABASE_FILENAME}"
     print("Searching for database in .local")
 if not os.path.isfile(_DATABASE):
-    _DATABASE = f"{_MYHOME}/.sqlite3/{_DATABASE_FILENAME}"
+    _DATABASE = f"{_MYHOME}/.sqlite3/kimnaty/{_DATABASE_FILENAME}"
     print(f"Searching for database in {_MYHOME}/.sqlite3")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
@@ -192,7 +192,11 @@ def get_btctl_version():
 
 
 def get_helper_version():
+    wait_string = "Please wait while searching for helper..."
+    _exit_code = None
+    print(wait_string, end="\r")
     helper_list = find_all("bluepy3-helper", "/")
+    print(" " * len(wait_string), end="\r")
     for helper in helper_list:
         args = [helper, "version"]
         try:
@@ -235,7 +239,8 @@ if _DATABASE:
 if __name__ == "__main__":
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
-    print(f"rooms             =\n{pp.pformat(ROOMS, indent=20)}")
+    print(f"devices           =\n{pp.pformat(DEVICES, indent=10)}")
+    print(f"rooms (DB)        =\n{pp.pformat(ROOMS, indent=20)}")
     print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
     print(f"bluetoothctl      = {get_btctl_version()}")
