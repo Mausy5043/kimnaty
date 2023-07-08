@@ -29,8 +29,8 @@ constants_sh_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)
 # list of timers provided
 declare -a kimnaty_timers=("kimnaty.trend.day.timer"
         "kimnaty.trend.month.timer"
-        "kimnaty.trend.year.timer"
-        "kimnaty.update.timer")
+        "kimnaty.trend.year.timer")
+        # "kimnaty.update.timer" (incl. the .service) is not installed
 # list of services provided
 declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy3-helper-killer.service")
 
@@ -136,8 +136,8 @@ restart_kimnaty() {
     fi
 
     # re-install services and timers in case they were changed
-    sudo cp "${ROOT_DIR}"/services/*.service /etc/systemd/system/
-    sudo cp "${ROOT_DIR}"/services/*.timer /etc/systemd/system/
+    sudo cp "${ROOT_DIR}"/services/*.service /usr/lib/systemd/system/
+    sudo cp "${ROOT_DIR}"/services/*.timer /usr/lib/systemd/system/
     sudo systemctl daemon-reload
     sudo systemctl reset-failed
     echo "...systemd updated"; sleep 60
@@ -203,8 +203,8 @@ install_kimnaty() {
     echo "Installing timers & services."
     # remove execute-bit from services and timers
     sudo chmod -x "${ROOT_DIR}"/services/*
-    sudo cp "${ROOT_DIR}"/services/*.service /etc/systemd/system/
-    sudo cp "${ROOT_DIR}"/services/*.timer /etc/systemd/system/
+    sudo cp "${ROOT_DIR}"/services/*.service /usr/lib/systemd/system/
+    sudo cp "${ROOT_DIR}"/services/*.timer /usr/lib/systemd/system/
     sudo systemctl daemon-reload
     action_timers enable
     action_services enable
@@ -241,7 +241,7 @@ action_timers() {
         if [ "${ACTION}" != "rm" ]; then
             sudo systemctl "${ACTION}" "${TMR}"
         else
-            sudo rm "/etc/systemd/system/${TMR}"
+            sudo rm "/usr/lib/systemd/system/${TMR}"
         fi
     done
     sudo systemctl daemon-reload
@@ -256,7 +256,7 @@ action_services() {
         if [ "${ACTION}" != "rm" ]; then
             sudo systemctl "${ACTION}" "${SRVC}"
         else
-            sudo rm "/etc/systemd/system/${SRVC}"
+            sudo rm "/usr/lib/systemd/system/${SRVC}"
         fi
     done
     sudo systemctl daemon-reload
