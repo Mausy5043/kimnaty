@@ -84,9 +84,9 @@ _report_time = (
     + (_sample_time_per_ac * (len(AIRCO)))
     + _pause_time
 )
-# The minimum report_time is 900 seconds, to prevent unrealistic scantimes,
+# The minimum report_time is 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
-_report_time = max(_report_time, 900.0)
+_report_time = max(_report_time, 1200.0)
 
 KIMNATY = {
     "database": _DATABASE,
