@@ -53,12 +53,12 @@ TREND = {
 }
 
 DEVICES = [
-    {"mac": "A4:C1:38:A5:71:D0", "id": "0.1", "name": "woonkamer", "device": None},
+    {"mac": "A4:C1:38:59:9A:9B", "id": "0.1", "name": "woonkamer", "device": None},
     {"mac": "A4:C1:38:99:AC:4D", "id": "0.5", "name": "keuken", "device": None},
     {"mac": "A4:C1:38:6F:E7:CA", "id": "1.1", "name": "slaapkamer 1", "device": None},
     {"mac": "A4:C1:38:50:D7:2D", "id": "1.2", "name": "slaapkamer 2", "device": None},
     {"mac": "A4:C1:38:91:D9:47", "id": "1.3", "name": "slaapkamer 3", "device": None},
-    {"mac": "A4:C1:38:59:9A:9B", "id": "1.4", "name": "badkamer", "device": None},
+    {"mac": "A4:C1:38:A5:71:D0", "id": "1.4", "name": "badkamer", "device": None},
     {"mac": "A4:C1:38:76:59:43", "id": "2.1", "name": "zolder", "device": None},
     {"mac": "A4:C1:38:58:23:E1", "id": "2.2", "name": "slaapkamer 4", "device": None},
 ]
