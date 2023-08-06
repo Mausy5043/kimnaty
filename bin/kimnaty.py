@@ -275,6 +275,9 @@ def get_rht_data(dev_dict):
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
+    if voltage == 0.0 or voltage == None:
+        success = False
+
     return success, {
         "sample_time": out_date.strftime(constants.DT_FORMAT),
         "sample_epoch": out_epoch,
