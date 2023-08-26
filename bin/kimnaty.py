@@ -275,7 +275,7 @@ def get_rht_data(dev_dict):
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
 
-    if voltage == 0.0 or voltage == None:
+    if voltage in (0.0, None):
         success = False
 
     return success, {
