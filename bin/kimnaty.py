@@ -34,22 +34,12 @@ OPTION = parser.parse_args()
 # constants
 DEBUG = False
 DEBUG_HW = False
-HERE = os.path.realpath(__file__).split("/")
-# runlist id :
-MYID = HERE[-1]
-# app_name :
-MYAPP = HERE[-3]
-MYROOT = "/".join(HERE[0:-3])
-APPROOT = "/".join(HERE[0:-2])
-# host_name :
-NODE = os.uname()[1]
-
-# example values:
-# HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
-# MYID: 'kimnaty.py
-# MYAPP: kimnaty
-# MYROOT: /home/pi
-# NODE: rbair
+HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
+MYID = HERE[-1]  # 'kimnaty.py'
+MYAPP = HERE[-3]  # kimnaty
+MYROOT = "/".join(HERE[0:-3])   # /home/pi
+APPROOT = "/".join(HERE[0:-2])  # /home/pi/kimnaty
+NODE = os.uname()[1]  # rbair
 
 # class SensorDevice():
 #     """..."""
