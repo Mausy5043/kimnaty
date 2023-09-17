@@ -349,12 +349,15 @@ def main():
 
 
 if __name__ == "__main__":
+    # use hardcoded default if CLI value is 0
     if OPTION.hours == 0:
         OPTION.hours = 80
     if OPTION.days == 0:
         OPTION.days = 80
     if OPTION.months == 0:
         OPTION.months = 38
+
+    # TODO: check if user options should override.
 
     if OPTION.debug:
         print(OPTION)
