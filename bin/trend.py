@@ -16,15 +16,24 @@ import constants
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
 
+# fmt: off
+parser = argparse.ArgumentParser(description="Create a trendgraph")
+parser.add_argument("-hr", "--hours", type=int, help="create hour-trend for last <HOURS> hours")
+parser.add_argument("-d", "--days", type=int, help="create day-trend for last <DAYS> days")
+parser.add_argument("-m", "--months", type=int, help="number of months of data to use for the graph")
+parser.add_argument("-o", "--outside", action="store_true", help="plot outside temperature")
+parser_group = parser.add_mutually_exclusive_group(required=False)
+parser_group.add_argument("--debug", action="store_true", help="start in debugging mode")
+OPTION = parser.parse_args()
+# fmt: on
+
 DATABASE = constants.TREND["database"]
 TABLE_RHT = constants.TREND["sql_table_rht"]
 TABLE_AC = constants.TREND["sql_table_ac"]
 ROOMS = constants.ROOMS
 DEVICE_LIST = constants.DEVICES
 AIRCO_LIST = constants.AIRCO
-OPTION = ""
 DEBUG = False
-
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
@@ -339,24 +348,7 @@ def main():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Create a trendgraph")
-    parser.add_argument(
-        "-hr",
-        "--hours",
-        type=int,
-        help="create hour-trend for last <HOURS> hours",
-    )
-    parser.add_argument("-d", "--days", type=int, help="create day-trend for last <DAYS> days")
-    parser.add_argument(
-        "-m",
-        "--months",
-        type=int,
-        help="number of months of data to use for the graph",
-    )
-    parser.add_argument("-o", "--outside", action="store_true", help="plot outside temperature")
-    parser_group = parser.add_mutually_exclusive_group(required=False)
-    parser_group.add_argument("--debug", action="store_true", help="start in debugging mode")
-    OPTION = parser.parse_args()
+
     if OPTION.hours == 0:
         OPTION.hours = 80
     if OPTION.days == 0:
