@@ -362,6 +362,8 @@ if __name__ == "__main__":
         OPTION.days = constants.TREND['option_days']
     if OPTION.months == 0:
         OPTION.months = constants.TREND['option_months']
+    if not OPTION.outside:
+        OPTION.outside = constants.TREND['option_outside']
 
     if OPTION.debug:
         print(OPTION)
