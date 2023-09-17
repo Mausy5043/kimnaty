@@ -28,10 +28,10 @@ if not os.path.isfile(_DATABASE):
     _DATABASE = f"/mnt/data/{_DATABASE_FILENAME}"
 if not os.path.isfile(_DATABASE):
     _DATABASE = f".local/{_DATABASE_FILENAME}"
-    print("Searching for database in .local")
+    print(f"Searching for {_DATABASE}")
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"{_MYHOME}/.sqlite3/kimnaty/{_DATABASE_FILENAME}"
-    print(f"Searching for database in {_MYHOME}/.sqlite3")
+    print(f"Searching for {_DATABASE}")
 if not os.path.isfile(_DATABASE):
     print("Database is missing.")
     # _DATABASE_FILENAME = "unknown"
