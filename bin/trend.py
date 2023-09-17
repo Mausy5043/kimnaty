@@ -349,7 +349,6 @@ def main():
 
 
 if __name__ == "__main__":
-
     if OPTION.debug:
         print(OPTION)
         DEBUG = True
@@ -357,13 +356,13 @@ if __name__ == "__main__":
 
     # use hardcoded default if CLI value is 0
     if OPTION.hours == 0:
-        OPTION.hours = constants.TREND['option_hours']
+        OPTION.hours = constants.TREND["option_hours"]
     if OPTION.days == 0:
-        OPTION.days = constants.TREND['option_days']
+        OPTION.days = constants.TREND["option_days"]
     if OPTION.months == 0:
-        OPTION.months = constants.TREND['option_months']
+        OPTION.months = constants.TREND["option_months"]
     if not OPTION.outside:
-        OPTION.outside = constants.TREND['option_outside']
+        OPTION.outside = constants.TREND["option_outside"]
 
     if OPTION.debug:
         print(OPTION)
