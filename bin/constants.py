@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import pprint as pp
 import sqlite3 as s3
@@ -16,6 +17,7 @@ _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _WEBSITE = "/run/kimnaty/site/img"
 _HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
+_OPTION_OVERRIDE_FILE = f"{_MYHOME}/.config/kimnaty.json"
 
 ROOMS = {}
 BAT_HEALTH = {}
@@ -39,7 +41,7 @@ if not os.path.isfile(_DATABASE):
     sys.exit(1)
 
 if not os.path.isdir(_WEBSITE):
-    print("Output diverted to /tmp")
+    print("Graphics will be diverted to /tmp")
     _WEBSITE = "/tmp"
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -240,12 +242,23 @@ if _DATABASE:
 
 # fmt: on
 
+with open(_OPTION_OVERRIDE_FILE, "r", encoding="utf-8") as j:
+    """order of overrides:
+    1. hardcoded default
+    2. OPTION_OVERRIDE setting
+    3. CLI OPTION setting
+    """
+    OPTION_OVERRIDE = json.load(j, parse_float=float, parse_int=int)
+
 if __name__ == "__main__":
+    print("")
     print(f"home              = {_MYHOME}")
     print(f"database location = {_DATABASE}")
     print(f"devices           =\n{pp.pformat(DEVICES, indent=10)}")
     print(f"rooms (DB)        =\n{pp.pformat(ROOMS, indent=20)}")
     print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
+    print("")
+    print(f"user options      =\n{pp.pformat(OPTION_OVERRIDE, indent=10, width=1)}")
     print("")
     print(f"bluetoothctl      = {get_btctl_version()}")
     print(f"bluepy3-helper    = {get_helper_version()}")
