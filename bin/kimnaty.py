@@ -29,27 +29,17 @@ parser_group.add_argument("--start", action="store_true", help="start the daemon
 parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")
 parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")
 OPTION = parser.parse_args()
-# fmt: on
 
 # constants
 DEBUG = False
 DEBUG_HW = False
-HERE = os.path.realpath(__file__).split("/")
-# runlist id :
-MYID = HERE[-1]
-# app_name :
-MYAPP = HERE[-3]
-MYROOT = "/".join(HERE[0:-3])
-APPROOT = "/".join(HERE[0:-2])
-# host_name :
-NODE = os.uname()[1]
-
-# example values:
-# HERE: ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
-# MYID: 'kimnaty.py
-# MYAPP: kimnaty
-# MYROOT: /home/pi
-# NODE: rbair
+HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
+MYID = HERE[-1]  # 'kimnaty.py'
+MYAPP = HERE[-3]  # kimnaty
+MYROOT = "/".join(HERE[0:-3])  # /home/pi
+APPROOT = "/".join(HERE[0:-2])  # /home/pi/kimnaty
+NODE = os.uname()[1]  # rbair
+# fmt: on
 
 # class SensorDevice():
 #     """..."""
@@ -383,7 +373,7 @@ def set_led(dev, colour):
     mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
-    out_dirfile = f'{constants.TREND["website"]}/img/{dev}.png'
+    out_dirfile = f'{constants.TREND["website"]}{dev}.png'
     try:
         shutil.copy(f"{in_dirfile}", out_dirfile)
     except FileNotFoundError:

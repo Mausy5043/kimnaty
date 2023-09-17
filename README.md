@@ -25,6 +25,16 @@ The app uses [`pylywsdxx`](https://pypi.org/project/pylywsdxx/) which in turn
 needs [`bluepy3`](https://pypi.org/project/bluepy3/). Both are automagically installed during the installation
 of the app together with any Bluetooth support needed.
 
+## user defaults
+User can set defaults for trending graphs in `~.local/kimnaty.json` as follows:
+```(json)
+{
+  "trend": {"hours": 25,
+            "months": 25,
+            "days": 14}
+}
+```
+All entries are case-sensitive(!) and optional. The application will use default values for options that are not present.
 
 ## acknowledgements
 ### libdaikin
