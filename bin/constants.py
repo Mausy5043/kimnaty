@@ -13,7 +13,7 @@ import pandas as pd
 _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
-_WEBSITE = "/run/kimnaty/site"
+_WEBSITE = "/run/kimnaty/site/img"
 _HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
 
@@ -38,6 +38,10 @@ if not os.path.isfile(_DATABASE):
     # _DATABASE = None
     sys.exit(1)
 
+if not os.path.isdir(_WEBSITE):
+    print("Output diverted to /tmp")
+    _WEBSITE = "/tmp"
+
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # The paths defined here must match the paths defined in include.sh
@@ -47,9 +51,9 @@ TREND = {
     "sql_table_rht": "data",
     "sql_table_ac": "aircon",
     "website": _WEBSITE,
-    "day_graph": f"{_WEBSITE}/img/kim_hours",
-    "month_graph": f"{_WEBSITE}/img/kim_days",
-    "year_graph": f"{_WEBSITE}/img/kim_months",
+    "day_graph": f"{_WEBSITE}/kim_hours",
+    "month_graph": f"{_WEBSITE}/kim_days",
+    "year_graph": f"{_WEBSITE}/kim_months",
 }
 
 DEVICES = [
