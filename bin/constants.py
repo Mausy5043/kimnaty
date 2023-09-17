@@ -10,17 +10,14 @@ import sys
 import pandas as pd
 
 # fmt: off
-
+# define paths
 _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
-_WEBSITE = "/run/kimnaty/site/img"
 _HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
 _OPTION_OVERRIDE_FILE = f"{_MYHOME}/.config/kimnaty.json"
-
-ROOMS = {}
-BAT_HEALTH = {}
+_WEBSITE = "/run/kimnaty/site/img"
 
 if not os.path.isfile(_DATABASE):
     _DATABASE = f"/srv/databases/{_DATABASE_FILENAME}"
@@ -46,6 +43,19 @@ if not os.path.isdir(_WEBSITE):
 
 DT_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+ROOMS = {}
+BAT_HEALTH = {}
+OPTION_OVERRIDE = {}
+
+if os.path.isfile(_OPTION_OVERRIDE_FILE):
+    with open(_OPTION_OVERRIDE_FILE, "r", encoding="utf-8") as j:
+        """order of overrides:
+        1. hardcoded default
+        2. OPTION_OVERRIDE setting
+        3. CLI OPTION setting
+        """
+        OPTION_OVERRIDE = json.load(j, parse_float=float, parse_int=int)
+
 # The paths defined here must match the paths defined in include.sh
 # $website_dir  and  $website_image_dir
 TREND = {
@@ -56,6 +66,9 @@ TREND = {
     "day_graph": f"{_WEBSITE}/kim_hours",
     "month_graph": f"{_WEBSITE}/kim_days",
     "year_graph": f"{_WEBSITE}/kim_months",
+    "option_hours": OPTION_OVERRIDE.get('trend',{}).get('hours', 80),
+    "option_day": OPTION_OVERRIDE.get('trend',{}).get('days', 80),
+    "option_months": OPTION_OVERRIDE.get('trend',{}).get('months', 38)
 }
 
 DEVICES = [
@@ -242,13 +255,6 @@ if _DATABASE:
 
 # fmt: on
 
-with open(_OPTION_OVERRIDE_FILE, "r", encoding="utf-8") as j:
-    """order of overrides:
-    1. hardcoded default
-    2. OPTION_OVERRIDE setting
-    3. CLI OPTION setting
-    """
-    OPTION_OVERRIDE = json.load(j, parse_float=float, parse_int=int)
 
 if __name__ == "__main__":
     print("")
@@ -259,6 +265,7 @@ if __name__ == "__main__":
     print(f"battery health    =\n{pp.pformat(BAT_HEALTH, indent=20)}")
     print("")
     print(f"user options      =\n{pp.pformat(OPTION_OVERRIDE, indent=10, width=1)}")
+    print(f"trend options     =\n{pp.pformat(TREND, indent=10, width=1)}")
     print("")
     print(f"bluetoothctl      = {get_btctl_version()}")
     print(f"bluepy3-helper    = {get_helper_version()}")
