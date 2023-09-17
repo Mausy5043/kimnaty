@@ -29,7 +29,6 @@ parser_group.add_argument("--start", action="store_true", help="start the daemon
 parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")
 parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")
 OPTION = parser.parse_args()
-# fmt: on
 
 # constants
 DEBUG = False
@@ -37,9 +36,10 @@ DEBUG_HW = False
 HERE = os.path.realpath(__file__).split("/")  # ['', 'home', 'pi', 'kimnaty', 'bin', 'kimnaty.py']
 MYID = HERE[-1]  # 'kimnaty.py'
 MYAPP = HERE[-3]  # kimnaty
-MYROOT = "/".join(HERE[0:-3])   # /home/pi
+MYROOT = "/".join(HERE[0:-3])  # /home/pi
 APPROOT = "/".join(HERE[0:-2])  # /home/pi/kimnaty
 NODE = os.uname()[1]  # rbair
+# fmt: on
 
 # class SensorDevice():
 #     """..."""

@@ -35,6 +35,7 @@ DEVICE_LIST = constants.DEVICES
 AIRCO_LIST = constants.AIRCO
 DEBUG = False
 
+
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
