@@ -375,7 +375,7 @@ def set_led(dev, colour):
     mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
-    out_dirfile = f'{constants.TREND["website"]}{dev}.png'
+    out_dirfile = f'{constants.TREND["website"]}/{dev}.png'
     try:
         shutil.copy(f"{in_dirfile}", out_dirfile)
     except FileNotFoundError:
