@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Create trendbargraphs of the data for various periods."""
+"""Create graphs of the data for various periods."""
 
 import warnings
 
