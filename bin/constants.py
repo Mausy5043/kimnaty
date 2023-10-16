@@ -160,7 +160,7 @@ def get_health(room_id):
     return _health
 
 
-def get_kimnaty_version() -> str:
+def get_app_version() -> str:
     """Retrieve information of current version of kimnaty.
 
     Returns:
@@ -272,4 +272,4 @@ if __name__ == "__main__":
     print(f"bluepy3-helper    = {get_helper_version()}")
     print(f"bluepy3           = {get_pypkg_version('bluepy3')}")
     print(f"pylywsdxx         = {get_pypkg_version('pylywsdxx')}")
-    print(f"kimnaty (me)      = {get_kimnaty_version()}")
+    print(f"kimnaty (me)      = {get_app_version()}")
