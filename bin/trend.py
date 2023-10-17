@@ -152,15 +152,15 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     # create a new column containing the max value of both aircos, then remove the airco_ columns
     df_cmp["cmp_freq"] = df_cmp[["airco0", "airco1"]].apply(np.max, axis=1)
     df_cmp.drop(["airco0", "airco1"], axis=1, inplace=True, errors="ignore")
-    if DEBUG:
-        print(df_cmp)
+    # if DEBUG:
+    #     print(df_cmp)
     # rename the column to something shorter or drop it
     if OPTION.outside:
         df_t.rename(columns={"temperature_outside": "T(out)"}, inplace=True)
     else:
         df_t.drop(["temperature_outside"], axis=1, inplace=True, errors="ignore")
-    if DEBUG:
-        print(df_t)
+    # if DEBUG:
+    #     print(df_t)
 
     ac_data_dict = {"temperature_ac": df_t, "compressor": df_cmp}
     return ac_data_dict
@@ -233,9 +233,10 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         )
 
     if DEBUG:
-        print(f"TEMPERATURE\n{df_t}")
-        print(f"HUMIDITY\n{df_h}")
-        print(f"VOLTAGE\n{df_v}")
+        print(f"TEMPERATURE\n{df_t.head()}")
+        print(f"TEMPERATURE\n{df_t.tail()}")
+    #     print(f"HUMIDITY\n{df_h}")
+    #     print(f"VOLTAGE\n{df_v}")
     rht_data_dict = {"temperature": df_t, "humidity": df_h, "voltage": df_v}
     return rht_data_dict
 
@@ -257,8 +258,8 @@ def collate(prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_
         data_frame = pd.merge(
             prev_df, data_frame, left_index=True, right_index=True, how="outer"
         )
-    if DEBUG:
-        print(data_frame)
+    # if DEBUG:
+    #     print(data_frame)
     return data_frame
 
 
