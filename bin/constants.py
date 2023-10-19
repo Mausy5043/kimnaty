@@ -66,10 +66,10 @@ TREND = {
     "day_graph": f"{_WEBSITE}/kim_hours",
     "month_graph": f"{_WEBSITE}/kim_days",
     "year_graph": f"{_WEBSITE}/kim_months",
-    "option_hours": OPTION_OVERRIDE.get('trend',{}).get('hours', 84),  # 3.5 days
-    "option_days": OPTION_OVERRIDE.get('trend',{}).get('days', 77),  # 2.5 months
-    "option_months": OPTION_OVERRIDE.get('trend',{}).get('months', 38),  # 3 years & 2 months
-    "option_outside": OPTION_OVERRIDE.get('trend',{}).get('outside', False),
+    "option_hours": OPTION_OVERRIDE.get('trend', {}).get('hours', 84),  # 3.5 days
+    "option_days": OPTION_OVERRIDE.get('trend', {}).get('days', 77),  # 2.5 months
+    "option_months": OPTION_OVERRIDE.get('trend', {}).get('months', 38),  # 3 years & 2 months
+    "option_outside": OPTION_OVERRIDE.get('trend', {}).get('outside', False),
 }
 
 DEVICES = [
