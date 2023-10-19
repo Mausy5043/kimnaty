@@ -14,12 +14,11 @@ import syslog
 import time
 import traceback
 
+import constants
+import libdaikin
 import mausy5043_common.funfile as mf
 import mausy5043_common.libsignals as ml
 import mausy5043_common.libsqlite3 as m3
-
-import constants
-import libdaikin
 import pylywsdxx as pyly  # noqa
 
 # fmt: off
@@ -181,7 +180,9 @@ def do_work_rht(dev_list):
                 health_score -= 5
                 set_led(dev["id"], "red")
             log_health_score(
-                room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
+                room_id=data["room_id"],
+                state_change=health_score,
+                battery=data["voltage"],
             )
     return data_list
 

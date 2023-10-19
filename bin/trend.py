@@ -255,9 +255,7 @@ def collate(prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_
     #     print(data_frame)
     # collate both dataframes
     if prev_df is not None:
-        data_frame = pd.merge(
-            prev_df, data_frame, left_index=True, right_index=True, how="outer"
-        )
+        data_frame = pd.merge(prev_df, data_frame, left_index=True, right_index=True, how="outer")
     # if DEBUG:
     #     print(data_frame)
     return data_frame
