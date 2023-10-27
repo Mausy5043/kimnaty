@@ -1,3 +1,5 @@
+# When making changes to this file update environment.yml also !!
+
 matplotlib
 mausy5043-common
 numpy
