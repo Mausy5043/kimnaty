@@ -150,8 +150,8 @@ _health_query = "SELECT * FROM rooms;"
 
 def get_health(room_id):
     _health = 0
-    with s3.connect(_DATABASE) as _con:
-        _table_data = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
+    with s3.connect(_DATABASE) as conn:
+        _table_data = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
     try:
         _health = _table_data["health"][room_id]
     except KeyError:
