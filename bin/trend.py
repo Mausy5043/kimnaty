@@ -110,11 +110,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         df_cmp = collate(
             df_cmp,
             df,
-            columns_to_drop=[
-                "temperature_ac",
-                "temperature_target",
-                "temperature_outside",
-            ],
+            columns_to_drop=["temperature_ac", "temperature_target", "temperature_outside"],
             column_to_rename="cmp_freq",
             new_name=airco_id,
         )
