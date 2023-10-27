@@ -187,7 +187,7 @@ def get_pypkg_version(package) -> str:
     # pip list | grep bluepy3
     args = ["pip", "list"]
     _exit_code = (
-        subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.DEVNULL)  # nosec B603
+        subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.DEVNULL)  # noqa # nosec B603
         .strip("\n")
         .strip("'")
     ).split("\n")
@@ -221,7 +221,7 @@ def get_helper_version():
         args = [helper, "version"]
         try:
             _exit_code = (
-                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # nosec B603
+                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
                 .strip("\n")
                 .strip("'")
             ).split()
