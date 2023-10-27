@@ -3,12 +3,14 @@
 name: kimnaty
 
 channels:
+  - conda-forge
   - defaults
 
 dependencies:
   - matplotlib
   - numpy
   - pandas
+  - pip
   - requests
   - scipy
   # Not on conda channels:
