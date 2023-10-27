@@ -180,9 +180,7 @@ def do_work_rht(dev_list):
                 health_score -= 5
                 set_led(dev["id"], "red")
             log_health_score(
-                room_id=data["room_id"],
-                state_change=health_score,
-                battery=data["voltage"],
+                room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
             )
     return data_list
 
