@@ -238,9 +238,7 @@ def get_rht_data(dev_dict):
     except BrokenPipeError:
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}",
-            syslog.LOG_CRIT,
-            DEBUG,
+            f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}", syslog.LOG_CRIT, DEBUG
         )
     except pyly.PyLyTimeout:
         err_date = dt.datetime.now()
