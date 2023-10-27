@@ -49,11 +49,10 @@ OPTION_OVERRIDE = {}
 
 if os.path.isfile(_OPTION_OVERRIDE_FILE):
     with open(_OPTION_OVERRIDE_FILE, "r", encoding="utf-8") as j:
-        """order of overrides:
-        1. hardcoded default
-        2. OPTION_OVERRIDE setting
-        3. CLI OPTION setting
-        """
+        # order of overrides:
+        # 1. hardcoded default
+        # 2. OPTION_OVERRIDE setting
+        # 3. CLI OPTION setting
         OPTION_OVERRIDE = json.load(j, parse_float=float, parse_int=int)
 
 # The paths defined here must match the paths defined in include.sh
