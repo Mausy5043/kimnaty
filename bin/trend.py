@@ -39,7 +39,7 @@ EDATETIME = "'now'"
 
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
-    global EDATETIME
+    global EDATETIME  # pylint: disable=W0603
     if OPTION.edate:
         print("NOT NOW")
         EDATETIME = f"'{OPTION.edate}'"
