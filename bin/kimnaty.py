@@ -24,9 +24,9 @@ import pylywsdxx as pyly  # noqa
 # fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
 parser_group = parser.add_mutually_exclusive_group(required=True)
-parser_group.add_argument("--start", action="store_true", help="start the daemon as a service")
-parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")
-parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")
+parser_group.add_argument("--start", action="store_true", help="start the daemon as a service")  # noqa
+parser_group.add_argument("--debug", action="store_true", help="start the daemon in debugging mode")  # noqa
+parser_group.add_argument("--debughw", action="store_true", help="start the daemon in hardware debugging mode")  # noqa
 OPTION = parser.parse_args()
 
 # constants
@@ -113,7 +113,8 @@ def main():  # noqa: C901
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
                     f"*** While trying to insert data into the database error {her} "
-                    f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+                    f"of type {type(her).__name__} occured "
+                    f"on {err_date.strftime(constants.DT_FORMAT)}",
                     syslog.LOG_CRIT,
                     DEBUG,
                 )
