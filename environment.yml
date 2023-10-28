@@ -1,7 +1,5 @@
 # When making changes to this file update requirements.txt also !!
 
-name: kimnaty
-
 channels:
   - conda-forge
   - defaults
