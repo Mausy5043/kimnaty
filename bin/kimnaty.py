@@ -8,13 +8,13 @@ Store data from the devices in an sqlite3 database.
 
 import argparse
 import datetime as dt
-import numpy as np
 import os
 import shutil
 import syslog
 import time
 import traceback
 
+import numpy as np
 
 import constants
 import libdaikin
@@ -103,7 +103,7 @@ def main():  # noqa: C901
             next_sample[0] = cycle_time[0] + start_time
         if time.time() > next_sample[1]:
             start_time = time.time()
-           # AC
+            # AC
             ac_results = do_work_ac(list_of_aircos)
             # report samples
             if ac_results:
