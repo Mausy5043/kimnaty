@@ -116,6 +116,7 @@ def main():  # noqa: C901
             try:
                 sql_db_rht.insert(method="replace")
                 sql_health.insert(method="replace", index="room_id")
+                next_report[0] = report_time[0] + time.time()
             except Exception as her:  # pylint: disable=W0703
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
@@ -130,6 +131,7 @@ def main():  # noqa: C901
         if time.time() > next_report[1]:
             try:
                 sql_db_ac.insert(method="replace")
+                next_report[1] = report_time[1] + time.time()
             except Exception as her:  # pylint: disable=W0703
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
