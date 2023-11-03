@@ -99,8 +99,8 @@ def main():  # noqa: C901
                 for element in rht_results:
                     sql_db_rht.queue(element)
             if DEBUG:
-                print(f" >>> Time to get LYWSD results: {time.time() - start_time}")
-            next_sample[0] = time.time() + cycle_time[0]
+                print(f" >>> Time to get LYWSD results: {time.time() - start_time:.2f}")
+            next_sample[0] = cycle_time[0] + start_time
         if time.time() > next_sample[1]:
             start_time = time.time()
            # AC
@@ -110,8 +110,8 @@ def main():  # noqa: C901
                 for element in ac_results:
                     sql_db_ac.queue(element)
             if DEBUG:
-                print(f" >>> Time to get AC results: {time.time() - start_time}")
-            next_sample[1] = time.time() + cycle_time[1]
+                print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
+            next_sample[1] = cycle_time[1] + start_time
         if time.time() > next_report[0]:
             try:
                 sql_db_rht.insert(method="replace")
