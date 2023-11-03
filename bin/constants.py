@@ -83,30 +83,21 @@ DEVICES = [
     {"mac": "A4:C1:38:58:23:E1", "id": "2.2", "name": "slaapkamer 4", "device": None},
 ]
 
-AIRCO = [
-    {"name": "airco0", "ip": "192.168.2.30", "device": None},
-    {"name": "airco1", "ip": "192.168.2.31", "device": None},
-]
+# - sample_time = time to get one reading from a device
+# - cycle_time = time between samples
+# - report_time = time between DB writes
 
 # Reading a LYWSD03 sensor takes 11.5 sec on average. You may get
 # down to 6 seconds on a good day.
 # `KIMNATY['report_time']` is determined by the number of devices
 # to be interogated * 12 sec/device
+_sample_time_lyw = 11.5 + 8.0
 # and allowing for all to misread every cycle.
-# Also the aircos are read. Reading those takes on average 1 sec/AC.
-# Here too, we allow for 1 misread.
-_sample_time_per_device = 12.0 + 8.0
-_sample_time_per_ac = 5.0
-# Set a minimum pause time between scans
-_pause_time = 30.0
-_report_time = (
-    (_sample_time_per_device * (len(DEVICES) * 2))
-    + (_sample_time_per_ac * (len(AIRCO)))
-    + _pause_time
-)
-# The minimum report_time is 1200 seconds, to prevent unrealistic scantimes,
+_sample_time_lyws = (_sample_time_lyw * len(DEVICES) * 2)
+# The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
-_report_time = max(_report_time, 1200.0)
+_cycle_time = 1200.0 - _sample_time_lyws
+_report_time = 20 * 60.0
 
 KIMNATY = {
     "database": _DATABASE,
@@ -120,9 +111,22 @@ KIMNATY = {
     ),
     "sql_table": "data",
     "report_time": _report_time,
-    "cycles": 1,
-    "samplespercycle": 1,
+    "cycle_time": _cycle_time,
+    "aggregate": "raw",
 }
+
+AIRCO = [
+    {"name": "airco0", "ip": "192.168.2.30", "device": None},
+    {"name": "airco1", "ip": "192.168.2.31", "device": None},
+]
+
+# Also the aircos are read. Reading those takes on average 2 sec/AC.
+# Here too, we allow for 1 misread.
+_sample_time_ac = 5.0
+_sample_time_acs = _sample_time_ac * len(AIRCO)
+# Set a minimum pause time between scans
+_cycle_time_ac = 60.0 - _sample_time_acs
+_report_time_ac =  10 * 60.0
 
 AC = {
     "database": _DATABASE,
@@ -136,6 +140,9 @@ AC = {
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     "sql_table": "aircon",
+    "report_time": _report_time_ac,
+    "cycle_time": _cycle_time_ac,
+    "aggregate": "avg",
 }
 
 # Example: UPDATE rooms SET health=40 WHERE room_id=0.1;
