@@ -93,7 +93,7 @@ DEVICES = [
 # to be interogated * 12 sec/device
 _sample_time_lyw = 11.5 + 8.0
 # and allowing for all to misread every cycle.
-_sample_time_lyws = sample_time_lyw * len(DEVICES) * 2
+_sample_time_lyws = _sample_time_lyw * len(DEVICES) * 2
 # The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
 _cycle_time = 600.0
