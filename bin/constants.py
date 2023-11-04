@@ -99,7 +99,7 @@ _sample_time_lyws = _sample_time_lyw * len(DEVICES) * 2
 # The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
 _cycle_time = 1200.0
-_report_time = _cycle_time
+_report_time = _cycle_time + 60.0
 
 KIMNATY = {
     "database": _DATABASE,
@@ -128,7 +128,7 @@ _sample_time_ac = 5.0
 _sample_time_acs = _sample_time_ac * len(AIRCO)
 # Set a minimum pause time between scans
 _cycle_time_ac = 120.0
-_report_time_ac = 10 * 60.0
+_report_time_ac = 10 * 60.0 + 6.0
 
 AC = {
     "database": _DATABASE,
