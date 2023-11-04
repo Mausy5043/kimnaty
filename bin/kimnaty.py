@@ -14,6 +14,8 @@ import syslog
 import time
 import traceback
 
+import numpy as np
+
 import constants
 import libdaikin
 import mausy5043_common.funfile as mf
@@ -72,8 +74,8 @@ def main():  # noqa: C901
     # fdatabase = constants.KIMNATY["database"]
     # sqlcmd_rht = constants.KIMNATY["sql_command"]
     # sqlcmd_ac = constants.AC["sql_command"]
-    report_time = int(constants.KIMNATY["report_time"])
-    sample_time = report_time / int(constants.KIMNATY["samplespercycle"])
+    report_time = np.array([constants.KIMNATY["report_time"], constants.AC["report_time"]])
+    cycle_time = np.array([constants.KIMNATY["cycle_time"], constants.AC["cycle_time"]])
     list_of_devices = constants.DEVICES
     for bt_dev in list_of_devices:
         bt_dev["device"] = pyly.Lywsd03(mac=bt_dev["mac"], reusable=True, debug=DEBUG_HW)
@@ -86,29 +88,35 @@ def main():  # noqa: C901
     if DEBUG:
         print(list_of_aircos)
 
-    next_time = time.time()
+    next_sample = np.array([time.time(), time.time()])
+    next_report = report_time + time.time()
     while not killer.kill_now:
-        if time.time() > next_time:
+        if time.time() > next_sample[0]:
             start_time = time.time()
             # RH/T
             rht_results = do_work_rht(list_of_devices)
             if rht_results:
                 for element in rht_results:
                     sql_db_rht.queue(element)
+            if DEBUG:
+                print(f" >>> Time to get LYWSD results: {time.time() - start_time:.2f}")
+            next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
+        if time.time() > next_sample[1]:
+            start_time = time.time()
             # AC
             ac_results = do_work_ac(list_of_aircos)
             # report samples
             if ac_results:
                 for element in ac_results:
                     sql_db_ac.queue(element)
-
             if DEBUG:
-                print(f" >>> Time to get results: {time.time() - start_time}")
-
+                print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
+            next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
+        if time.time() > next_report[0]:
             try:
                 sql_db_rht.insert(method="replace")
-                sql_db_ac.insert(method="replace")
                 sql_health.insert(method="replace", index="room_id")
+                next_report[0] = report_time[0] + time.time()
             except Exception as her:  # pylint: disable=W0703
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
@@ -120,20 +128,22 @@ def main():  # noqa: C901
                 )
                 mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
-
-            pause_time = sample_time - (time.time() - start_time) - (start_time % sample_time)
-            next_time = time.time() + pause_time
-            if pause_time > 0:
-                if DEBUG:
-                    print(f"Waiting  : {pause_time:.1f}s")
-                    print("................................")
-                time.sleep(1.0)
-            else:
-                if DEBUG:
-                    print(f"Behind   : {pause_time:.1f}s")
-                    print("................................")
-        else:
-            time.sleep(1.0)
+        if time.time() > next_report[1]:
+            try:
+                sql_db_ac.insert(method="replace")
+                next_report[1] = report_time[1] + time.time()
+            except Exception as her:  # pylint: disable=W0703
+                err_date = dt.datetime.now()
+                mf.syslog_trace(
+                    f"*** While trying to insert data into the database error {her} "
+                    f"of type {type(her).__name__} occured "
+                    f"on {err_date.strftime(constants.DT_FORMAT)}",
+                    syslog.LOG_CRIT,
+                    DEBUG,
+                )
+                mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
+                raise  # may be changed to pass if errors can be corrected.
+        time.sleep(1.0)
 
 
 def do_work_rht(dev_list):
