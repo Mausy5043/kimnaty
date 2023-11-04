@@ -1,5 +1,4 @@
-# SQLite3 script
-
+#!/usr/bin/env sqlite3
 
 --TABLE data is used to store RH/T data from Mija LYWSD03MMC devices
 -- DROP TABLE IF EXISTS data;
