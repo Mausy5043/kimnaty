@@ -6,8 +6,10 @@ import pprint as pp
 import sqlite3 as s3
 import subprocess  # nosec B404
 import sys
+import time
 
 import pandas as pd
+from pandas.errors import DatabaseError
 
 # fmt: off
 # define paths
@@ -246,20 +248,29 @@ def find_all(name, path):
 
 
 if _DATABASE:
-    with s3.connect(_DATABASE) as _con:
-        _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
-    try:
-        ROOMS = _ROOMS_TBL["name"]
-    except KeyError:
-        print("*** KeyError when retrieving ROOMS")
-        print(_ROOMS_TBL)
-        raise
-    try:
-        BAT_HEALTH = _ROOMS_TBL["health"]
-    except KeyError:
-        print("*** KeyError when retrieving BAT_HEALTH")
-        print(_ROOMS_TBL)
-        raise
+    _locked = True
+    while _locked:
+        with s3.connect(_DATABASE) as _con:
+            try:
+                _ROOMS_TBL = pd.read_sql_query(_health_query, _con, index_col="room_id").to_dict()
+                _locked = False
+                try:
+                    ROOMS = _ROOMS_TBL["name"]
+                except KeyError:
+                    print("*** KeyError when retrieving ROOMS")
+                    print(_ROOMS_TBL)
+                    raise
+                try:
+                    BAT_HEALTH = _ROOMS_TBL["health"]
+                except KeyError:
+                    print("*** KeyError when retrieving BAT_HEALTH")
+                    print(_ROOMS_TBL)
+                    raise
+            except DatabaseError:
+                # database is locked
+                # print("database is locked; waiting...")
+                time.sleep(10.0)
+
 
 # fmt: on
 
