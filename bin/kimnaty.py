@@ -91,27 +91,29 @@ def main():  # noqa: C901
     next_sample = np.array([time.time(), time.time()])
     next_report = report_time + time.time()
     while not killer.kill_now:
+        # get RH/T data
         if time.time() > next_sample[0]:
             start_time = time.time()
-            # RH/T
             rht_results = do_work_rht(list_of_devices)
+            # queue RH/T sample data
             if rht_results:
                 for element in rht_results:
                     sql_db_rht.queue(element)
             if DEBUG:
                 print(f" >>> Time to get LYWSD results: {time.time() - start_time:.2f}")
             next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
+        # get AC data
         if time.time() > next_sample[1]:
             start_time = time.time()
-            # AC
             ac_results = do_work_ac(list_of_aircos)
-            # report samples
+            # queue AC sample data
             if ac_results:
                 for element in ac_results:
                     sql_db_ac.queue(element)
             if DEBUG:
                 print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
             next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
+        # report queued RH/T results
         if time.time() > next_report[0]:
             try:
                 sql_db_rht.insert(method="replace")
@@ -128,6 +130,7 @@ def main():  # noqa: C901
                 )
                 mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
+        # report queued AC results
         if time.time() > next_report[1]:
             try:
                 sql_db_ac.insert(method="replace")
@@ -144,6 +147,10 @@ def main():  # noqa: C901
                 mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
         time.sleep(1.0)
+    # report any still queued results
+    sql_db_rht.insert(method="replace")
+    sql_health.insert(method="replace", index="room_id")
+    sql_db_ac.insert(method="replace")
 
 
 def do_work_rht(dev_list):
