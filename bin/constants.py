@@ -159,6 +159,7 @@ _health_query = "SELECT * FROM rooms;"
 
 def get_health(room_id):
     _health = 0
+    # fixme: database may be locked
     with s3.connect(_DATABASE) as conn:
         _table_data = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
     try:
