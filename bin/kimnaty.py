@@ -122,13 +122,11 @@ def main():  # noqa: C901
             except Exception as her:  # pylint: disable=W0703
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
-                    f"*** While trying to insert data into the database error {her} "
-                    f"of type {type(her).__name__} occured "
-                    f"on {err_date.strftime(constants.DT_FORMAT)}",
+                    f"*** While trying to insert data into the database  {type(her).__name__} {her} ",
                     syslog.LOG_CRIT,
                     DEBUG,
                 )
-                mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
+                mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
         # report queued AC results
         if time.time() > next_report[1]:
@@ -138,13 +136,11 @@ def main():  # noqa: C901
             except Exception as her:  # pylint: disable=W0703
                 err_date = dt.datetime.now()
                 mf.syslog_trace(
-                    f"*** While trying to insert data into the database error {her} "
-                    f"of type {type(her).__name__} occured "
-                    f"on {err_date.strftime(constants.DT_FORMAT)}",
+                    f"*** While trying to insert data into the database {type(her).__name__} {her} ",
                     syslog.LOG_CRIT,
                     DEBUG,
                 )
-                mf.syslog_trace(traceback.format_exc(), syslog.LOG_ALERT, DEBUG)
+                mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
         time.sleep(1.0)
     # report any still queued results
@@ -269,13 +265,12 @@ def get_rht_data(dev_dict):
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) error {her} "
-            f"of type {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}",
+            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) {type(her).__name__} {her} ",
             syslog.LOG_CRIT,
             DEBUG,
         )
         # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
+        mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
         print(f"|              Time : {time.time() - t0:.2f} seconds")
         print("+------------------------------------")
@@ -355,12 +350,12 @@ def get_ac_data(airco):
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to {airco['name']} error {her} of type"
-            f" {type(her).__name__} occured on {err_date.strftime(constants.DT_FORMAT)}:",
+            f"*** While talking to {airco['name']} {type(her).__name__} {her}",
             syslog.LOG_CRIT,
             DEBUG,
         )
-        mf.syslog_trace(traceback.format_exc(), syslog.LOG_DEBUG, DEBUG)
+
+        mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
         print(f"+----------------Room {airco['name']} Data----")
         print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC state = {ac_pwr}")
@@ -396,6 +391,8 @@ def set_led(dev, colour):
     except FileNotFoundError:
         pass
 
+def traceprint(lines):
+    return lines
 
 if __name__ == "__main__":
     # initialise logging
