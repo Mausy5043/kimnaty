@@ -395,7 +395,7 @@ def traceprint(trace: str) -> str:
     received_lines: list[str] = trace.split('\n')
     filtered_lines: list[str] = []
     for line in received_lines:
-        if line[0] == " ":
+        if line and line[0] == " ":
             if "File" in line:
                 filtered_lines.append(line)
         else:
