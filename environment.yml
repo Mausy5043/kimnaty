@@ -1,4 +1,5 @@
 # When making changes to this file update requirements.txt also !!
+# conda -v env update -n kimnaty --file environment.yml
 
 channels:
   - conda-forge
@@ -12,6 +13,7 @@ dependencies:
   - pip
   - requests
   - scipy
+  - sh
   # Not on conda channels:
   - pip:
       - mausy5043-common

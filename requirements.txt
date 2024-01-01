@@ -7,3 +7,4 @@ pandas
 pylywsdxx
 requests
 scipy
+sh

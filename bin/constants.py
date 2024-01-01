@@ -4,12 +4,13 @@ import json
 import os
 import pprint as pp
 import sqlite3 as s3
-import subprocess  # nosec B404
 import sys
 import time
 
 import pandas as pd
 from pandas.errors import DatabaseError
+from sh import CommandNotFound
+import sh
 
 # fmt: off
 # define paths
@@ -178,65 +179,59 @@ def get_app_version() -> str:
     """
     # git log -n1 --format="%h"
     # git --no-pager log -1 --format="%ai"
-    args = ["git", "log", "-1", "--format='%h'"]
-    _exit_h = (
-        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
-        .strip("\n")
-        .strip("'")
-    )
-    args[3] = "--format='%ai'"
-    _exit_ai = (
-        subprocess.check_output(args, cwd=_HERE, shell=False, encoding="utf-8")  # nosec B603
-        .strip("\n")
-        .strip("'")
-    )
+    # git log -n1 --format="%h"
+    # git --no-pager log -1 --format="%ai"
+    git_args = ["-C", f"{_HERE}", "--no-pager", "log", "-1", "--format='%h'"]
+    try:
+        _exit_h = sh.git(git_args).strip("\n").strip("'")
+    except CommandNotFound as e:
+        print(f"Error executing command: {e}")
+        _exit_h = None
+    git_args[5] = "--format='%ai'"
+    _exit_ai = sh.git(git_args).strip("\n").strip("'")
     return f"{_exit_h}  -  {_exit_ai}"
 
 
 def get_pypkg_version(package) -> str:
     # pip list | grep bluepy3
-    args = ["pip", "list"]
-    _exit_code = (
-        subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.DEVNULL)  # noqa # nosec B603
-        .strip("\n")
-        .strip("'")
-    ).split("\n")
+    args = ["list"]
+    try:
+        _exit_code = sh.pip(args).split("\n")
+    except CommandNotFound as e:
+        print(f"Error executing command: {e}")
+        _exit_code = None
     for element in _exit_code:
-        element_list = element.split()
-        if element_list[0] == package:
-            return element_list[1]
-    return f"unknown package {package}"
+        if element:
+            element_list = element.split()
+            if element_list[0] == package:
+                return element_list[1]
+    return f"not installed"
 
 
 def get_btctl_version():
     # bluetoothctl version
-    args = ["bluetoothctl", "version"]
+    args = ["version"]
     try:
-        _exit_code = (subprocess.check_output(args, shell=False, encoding="utf-8", )  # nosec B603
-                      .strip("\n")
-                      .strip("'")
-                      ).split()
-    except FileNotFoundError:
+        _exit_code = sh.bluetootctl(args).strip("\n").strip("'")
+    except CommandNotFound as e:
+        print(f"Error executing command: {e}")
         return "not installed"
     return f"{_exit_code[1]}"
 
 
 def get_helper_version():
     wait_string = "Please wait while searching for helper..."
-    _exit_code = None
+    _exit_code = "not installed"
     print(wait_string, end="\r")
     helper_list = find_all("bluepy3-helper", "/")
     print(" " * len(wait_string), end="\r")
     for helper in helper_list:
         args = [helper, "version"]
         try:
-            _exit_code = (
-                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
-                .strip("\n")
-                .strip("'")
-            ).split()
-        except subprocess.CalledProcessError as exc:
-            _exit_code = exc.output.split('\n')[0]
+            _exit_code = sh.sh(args).strip("\n").strip("'")
+        except CommandNotFound as e:
+            print(f"Error executing command: {e}")
+            _exit_code = "not installed"
     return _exit_code
 
 
