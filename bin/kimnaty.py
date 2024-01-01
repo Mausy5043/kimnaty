@@ -391,8 +391,9 @@ def set_led(dev, colour):
     except FileNotFoundError:
         pass
 
+
 def traceprint(trace: str) -> str:
-    received_lines: list[str] = trace.split('\n')
+    received_lines: list[str] = trace.split("\n")
     filtered_lines: list[str] = []
     for line in received_lines:
         if line and line[0] == " ":
@@ -400,8 +401,9 @@ def traceprint(trace: str) -> str:
                 filtered_lines.append(line)
         else:
             filtered_lines.append(line)
-    returned_lines: str = '\n'.join(filtered_lines)
+    returned_lines: str = "\n".join(filtered_lines)
     return returned_lines
+
 
 if __name__ == "__main__":
     # initialise logging
