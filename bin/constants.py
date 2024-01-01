@@ -199,13 +199,13 @@ def get_pypkg_version(package) -> str:
         _exit_code = sh.pip(args).split("\n")
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
-        _exit_code = None
+        _exit_code = [""]
     for element in _exit_code:
         if element:
             element_list = element.split()
             if element_list[0] == package:
                 return element_list[1]
-    return f"not installed"
+    return "not installed"
 
 
 def get_btctl_version():
