@@ -21,7 +21,7 @@ import libdaikin
 import mausy5043_common.funfile as mf
 import mausy5043_common.libsignals as ml
 import mausy5043_common.libsqlite3 as m3
-import pylywsdxx as pyly  # noqa
+import pylywsdxx as pyly  # noqa  # type: ignore
 
 # fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
@@ -120,9 +120,8 @@ def main():  # noqa: C901
                 sql_health.insert(method="replace", index="room_id")
                 next_report[0] = report_time[0] + time.time()
             except Exception as her:  # pylint: disable=W0703
-                err_date = dt.datetime.now()
                 mf.syslog_trace(
-                    f"*** While trying to insert data into the database  {type(her).__name__} {her} ",
+                    f"*** While trying to insert data into the database  {type(her).__name__} {her} ",  # noqa: E501
                     syslog.LOG_CRIT,
                     DEBUG,
                 )
@@ -134,9 +133,8 @@ def main():  # noqa: C901
                 sql_db_ac.insert(method="replace")
                 next_report[1] = report_time[1] + time.time()
             except Exception as her:  # pylint: disable=W0703
-                err_date = dt.datetime.now()
                 mf.syslog_trace(
-                    f"*** While trying to insert data into the database {type(her).__name__} {her} ",
+                    f"*** While trying to insert data into the database {type(her).__name__} {her} ",  # noqa: E501
                     syslog.LOG_CRIT,
                     DEBUG,
                 )
@@ -265,7 +263,7 @@ def get_rht_data(dev_dict):
     except Exception as her:  # pylint: disable=W0703
         err_date = dt.datetime.now()
         mf.syslog_trace(
-            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) {type(her).__name__} {her} ",
+            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) {type(her).__name__} {her} ",  # noqa: E501
             syslog.LOG_CRIT,
             DEBUG,
         )
@@ -348,7 +346,6 @@ def get_ac_data(airco):
         ac_t_tgt = ac_t_in
         success = True
     except Exception as her:  # pylint: disable=W0703
-        err_date = dt.datetime.now()
         mf.syslog_trace(
             f"*** While talking to {airco['name']} {type(her).__name__} {her}",
             syslog.LOG_CRIT,
