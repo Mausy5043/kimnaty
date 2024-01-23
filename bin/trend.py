@@ -2,7 +2,11 @@
 
 """Create graphs of the data for various periods."""
 
+
 import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
+# DeprecationWarning: Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0)
+warnings.simplefilter(action="ignore", category=DeprecationWarning)
 
 import argparse
 from datetime import datetime as dt
@@ -14,7 +18,6 @@ import numpy as np
 
 import constants
 
-warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # fmt: off
 parser = argparse.ArgumentParser(description="Create a trendgraph")
