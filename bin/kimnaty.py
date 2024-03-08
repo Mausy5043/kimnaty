@@ -210,7 +210,7 @@ def log_health_score(room_id, state_change, battery):
     bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
     state = min(bat_state, old_state) + state_change
     state = int(max(0, min(state, 100)))
-    if state <= 25:
+    if state <= 22:
         set_led(room_id, "orange")
     if DEBUG:
         print(f"         previous state = {old_state}; new state = {state}")
