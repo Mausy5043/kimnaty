@@ -16,7 +16,7 @@ import sh
 # define paths
 _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
-_DATABASE = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
+_DATABASE: str = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
 _HERE = os.path.realpath(__file__).split("/")
 # example: HERE = ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
 _HERE = "/".join(_HERE[0:-2])
