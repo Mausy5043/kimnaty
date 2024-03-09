@@ -83,8 +83,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
-    df_cmp: pd.DataFrame
-    df_t: pd.DataFrame
+    df_cmp = None
+    df_t = None
     if DEBUG:
         print("*** fetching AC ***")
     for airco in AIRCO_LIST:
@@ -179,7 +179,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     """
     if DEBUG:
         print("*** fetching RHT ***")
-    df_t = df_h = df_v = None
+    df_t = df_h = df_v = pd.DataFrame()
     for device in DEVICE_LIST:
         room_id = device["id"]
         where_condition = (
@@ -245,9 +245,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     return rht_data_dict
 
 
-def collate(prev_df, data_frame, columns_to_drop=None, column_to_rename="", new_name="room_id"):
-    if columns_to_drop is None:
-        columns_to_drop = []
+def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename="", new_name="room_id"):
     # drop the 'columns_to_drop'
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1, errors="ignore")
