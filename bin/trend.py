@@ -56,10 +56,9 @@ def fetch_data(hours_to_fetch=48, aggregation="10min"):
     #             data_dict_rht["temperature"]["T(out)"] = data_dict_ac[d]["T(out)"]
     #             data_dict_ac[d].drop(["T(out)"], axis=1, inplace=True, errors="ignore")s
     for key, value in data_dict_ac.items():
-        if "T(out)" in value:
-            # pylint: disable-next=R1733
+        if 'T(out)' in value:
+            # pylint: disable=R1733
             data_dict_rht["temperature"]["T(out)"] = data_dict_ac[key]["T(out)"]
-            # pylint: disable-next=R1733
             data_dict_ac[key].drop(["T(out)"], axis=1, inplace=True, errors="ignore")
     # for d in data_dict_rht:
     #     data_dict[d] = data_dict_rht[d]
@@ -79,8 +78,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
-    df_cmp = None
-    df_t = None
+    df_cmp: pd.DataFrame
+    df_t: pd.DataFrame
     if DEBUG:
         print("*** fetching AC ***")
     for airco in AIRCO_LIST:
@@ -94,7 +93,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
-            df = pd.read_sql_query(
+            df: pd.DataFrame = pd.read_sql_query(
                 s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
             )
         for c in df.columns:
@@ -162,7 +161,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     # if DEBUG:
     #     print(df_t)
 
-    ac_data_dict = {"temperature_ac": df_t, "compressor": df_cmp}
+    ac_data_dict: dict[str, pd.DataFrame] = {"temperature_ac": df_t, "compressor": df_cmp}
     return ac_data_dict
 
 
