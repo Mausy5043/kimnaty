@@ -95,7 +95,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             print(s3_query)
         with s3.connect(DATABASE) as con:
             df = pd.read_sql_query(
-                s3_query, con, parse_dates="sample_time", index_col="sample_epoch"
+                s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
             )
         for c in df.columns:
             if c not in ["sample_time"]:
@@ -188,7 +188,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
             print(s3_query)
         with s3.connect(DATABASE) as con:
             df = pd.read_sql_query(
-                s3_query, con, parse_dates="sample_time", index_col="sample_epoch"
+                s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
             )
         # conserve memory; we dont need the room_id repeated in every row.
         df.drop("room_id", axis=1, inplace=True, errors="ignore")
