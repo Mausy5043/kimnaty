@@ -83,8 +83,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
-    df_cmp = None
-    df_t = None
+    df_cmp = pd.DataFrame()
+    df_t = pd.DataFrame()
     if DEBUG:
         print("*** fetching AC ***")
     for airco in AIRCO_LIST:
@@ -179,7 +179,9 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     """
     if DEBUG:
         print("*** fetching RHT ***")
-    df_t = df_h = df_v = pd.DataFrame()
+    df_t = pd.DataFrame()
+    df_h = pd.DataFrame()
+    df_v = pd.DataFrame()
     for device in DEVICE_LIST:
         room_id = device["id"]
         where_condition = (
@@ -191,7 +193,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         if DEBUG:
             print(s3_query)
         with s3.connect(DATABASE) as con:
-            df = pd.read_sql_query(
+            df: pd.DataFrame = pd.read_sql_query(
                 s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
             )
         # conserve memory; we dont need the room_id repeated in every row.
@@ -241,11 +243,17 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
         print(f"TEMPERATURE\n{df_t.tail()}")
     #     print(f"HUMIDITY\n{df_h}")
     #     print(f"VOLTAGE\n{df_v}")
-    rht_data_dict = {"temperature": df_t, "humidity": df_h, "voltage": df_v}
+    rht_data_dict: dict[str, pd.DataFrame] = {
+        "temperature": df_t,
+        "humidity": df_h,
+        "voltage": df_v,
+    }
     return rht_data_dict
 
 
-def collate(prev_df, data_frame, columns_to_drop=[], column_to_rename="", new_name="room_id"):
+def collate(
+    prev_df, data_frame: pd.DataFrame, columns_to_drop=[], column_to_rename="", new_name="room_id"
+):
     # drop the 'columns_to_drop'
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1, errors="ignore")
