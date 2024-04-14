@@ -217,7 +217,7 @@ def get_btctl_version():
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         return "not installed"
-    return f"{_exit_code[1]}"
+    return f"{_exit_code}"
 
 
 def get_helper_version() -> str:
