@@ -4,6 +4,7 @@ import json
 import os
 import pprint as pp
 import sqlite3 as s3
+import subprocess
 import sys
 import time
 
@@ -219,7 +220,7 @@ def get_btctl_version():
     return f"{_exit_code[1]}"
 
 
-def get_helper_version():
+def get_helper_version() -> str:
     wait_string = "Please wait while searching for helper..."
     _exit_code = "not installed"
     print(wait_string, end="\r")
@@ -228,11 +229,23 @@ def get_helper_version():
     for helper in helper_list:
         args = [helper, "version"]
         try:
-            _exit_code = sh.sh(args).strip("\n").strip("'")
+            # bluepy3_helper will print its version and then return an error
+            # because 'version' is not a valid parameter value.
+            _: list[str] = (
+                subprocess.check_output(args, shell=False, encoding="utf-8", stderr=subprocess.STDOUT)  # noqa # nosec B603
+                .strip("\n")
+                .strip("'")
+            ).split()
+        except subprocess.CalledProcessError as exc:
+            _exit_code = str(exc.output.split("\n")[0])
+            _exit_code = _exit_code.replace("# ", "")
+        # try:
+        #     _exit_code = sh.sh(args).strip("\n").strip("'")
         except CommandNotFound as e:
             print(f"Error executing command: {e}")
             _exit_code = "not installed"
     return _exit_code
+# fmt: on
 
 
 def find_all(name, path):
