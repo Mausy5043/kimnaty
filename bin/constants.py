@@ -213,7 +213,7 @@ def get_btctl_version():
     # bluetoothctl version
     args = ["version"]
     try:
-        _exit_code = sh.bluetootctl(args).strip("\n").strip("'")
+        _exit_code = sh.bluetoothctl(args).strip("\n").strip("'")
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         return "not installed"
