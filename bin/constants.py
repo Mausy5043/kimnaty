@@ -100,7 +100,7 @@ _sample_time_lyw = 11.5 + 8.0
 _sample_time_lyws = _sample_time_lyw * len(DEVICES) * 2
 # The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
-_cycle_time = 1200.0
+_cycle_time = 2100.0
 _report_time = _cycle_time + 60.0
 
 KIMNATY = {
