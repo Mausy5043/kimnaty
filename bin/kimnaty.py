@@ -42,9 +42,6 @@ APPROOT = "/".join(HERE[0:-2])  # /home/pi/kimnaty
 NODE = os.uname()[1]  # rbair
 # fmt: on
 
-# class SensorDevice():
-#     """..."""
-
 sql_health = m3.SqlDatabase(
     database=constants.HEALTH_UPDATE["database"],
     table=constants.HEALTH_UPDATE["sql_table"],
