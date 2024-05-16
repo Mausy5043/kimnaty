@@ -183,7 +183,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     df_h = pd.DataFrame()
     df_v = pd.DataFrame()
     for device in DEVICE_LIST:
-        room_id = device["id"]
+        room_id = device["room_id"]
         where_condition = (
             f" ( sample_time >= datetime({EDATETIME}, '-{hours_to_fetch + 1} hours')"
             f" AND sample_time <= datetime({EDATETIME}, '+2 hours') )"
