@@ -78,10 +78,9 @@ def main():  # noqa: C901
     list_of_devices = constants.DEVICES
     if DEBUG:
         print(f"report_time : {report_time} s")
-        print(list_of_devices)
     for bt_dev in list_of_devices:
-        pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["id"])
-        print(f"subcribed to {bt_dev['mac']} as {bt_dev['id']}")
+        pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["room_id"])
+        print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
     list_of_aircos = constants.AIRCO
     if DEBUG:
         print(list_of_aircos)
@@ -100,7 +99,7 @@ def main():  # noqa: C901
             if DEBUG:
                 print(f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors")
             for device in list_of_devices:
-                dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["id"]))
+                dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
                 sql_db_rht.queue(dev_data)
                 record_qos(dev_qos, dev_data["room_id"])
 
@@ -208,7 +207,7 @@ def get_rht_data(dev_dict):
     success = True
     if DEBUG:
         print("")
-        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['id']})")
+        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['dev_id']})")
         print(f"+------------------------------------------ {out_date} --")
         print(f"| Temperature       : {temperature}°C")
         print(f"| Humidity          : {humidity}%")
@@ -241,7 +240,7 @@ def get_rht_data(dev_dict):
     return qos, {
         "sample_time": out_date,
         "sample_epoch": out_epoch,
-        "room_id": dev_dict["id"],
+        "room_id": dev_dict["dev_id"],
         "temperature": temperature,
         "humidity": humidity,
         "voltage": voltage,
