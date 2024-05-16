@@ -94,6 +94,8 @@ def main():  # noqa: C901
         # get RH/T data
         if time.time() > next_sample[0]:
             start_time = time.time()
+            if DEBUG:
+                print("Updating sensor data...")
             pylyman.update_all()
             if DEBUG:
                 print(f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors")
