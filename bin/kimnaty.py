@@ -81,7 +81,7 @@ def main():  # noqa: C901
         print(list_of_devices)
     for bt_dev in list_of_devices:
         pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["id"])
-        print(f"subcribed to {bt_dev['mac']} as bt_dev['id']")
+        print(f"subcribed to {bt_dev['mac']} as {bt_dev['id']}")
     list_of_aircos = constants.AIRCO
     if DEBUG:
         print(list_of_aircos)
