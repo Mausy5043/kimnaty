@@ -80,7 +80,8 @@ def main():  # noqa: C901
         print(f"report_time : {report_time} s")
         print(list_of_devices)
     for bt_dev in list_of_devices:
-        pylyman.subscribe_to(mac=bt_dev["mac"], name=bt_dev["name"])
+        pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["id"])
+        print(f"subcribed to {bt_dev['mac']} as bt_dev['id']")
     list_of_aircos = constants.AIRCO
     if DEBUG:
         print(list_of_aircos)
@@ -97,9 +98,9 @@ def main():  # noqa: C901
             if DEBUG:
                 print(f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors")
             for device in list_of_devices:
-                dev_qos, data_dict = get_rht_data(pylyman.get_state_of(device["name"]))
-                sql_db_rht.queue(data_dict)
-                record_qos(dev_qos, data_dict["room_id"])
+                dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["id"]))
+                sql_db_rht.queue(dev_data)
+                record_qos(dev_qos, dev_data["room_id"])
 
             next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
         # get AC data
@@ -175,9 +176,9 @@ def log_health_score(room_id, state):
 
 def get_rht_data(dev_dict):
     """Fetch data from a device.
-{
+        {
         "mac": mac,             # MAC address provided by the client
-        "name": name,           # (optional) device name provided by the client for easier identification
+        "id": dev_id,           # (optional) device id provided by the client for easier identification
         "quality": 100,         # (int) 0...100, expresses the devices QoS
         "temperature": degC,    # (float) latest temperature
         "humidity": percent,    # (int) latest humidity
@@ -205,7 +206,7 @@ def get_rht_data(dev_dict):
     success = True
     if DEBUG:
         print("")
-        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['name']})")
+        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['id']})")
         print(f"+------------------------------------------ {out_date} --")
         print(f"| Temperature       : {temperature}°C")
         print(f"| Humidity          : {humidity}%")
@@ -238,7 +239,7 @@ def get_rht_data(dev_dict):
     return qos, {
         "sample_time": out_date,
         "sample_epoch": out_epoch,
-        "room_id": dev_dict["name"],
+        "room_id": dev_dict["id"],
         "temperature": temperature,
         "humidity": humidity,
         "voltage": voltage,
