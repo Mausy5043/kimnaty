@@ -159,9 +159,8 @@ def record_qos(dev_qos: int, room_id: str):
     Returns:
         Nothing
     """
-    set_led(room_id, "red")
-    if dev_qos > 20:
-        set_led(room_id, "orange")
+    if dev_qos < 20:
+        set_led(room_id, "red")
     if dev_qos > 30:
         set_led(room_id, "green")
     log_health_score(room_id, dev_qos)
@@ -366,7 +365,7 @@ if __name__ == "__main__":
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     # set-up LEDs
     for _device in constants.DEVICES:
-        set_led(_device["id"], "orange")
+        set_led(_device["room_id"], "orange")
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
