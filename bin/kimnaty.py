@@ -99,7 +99,7 @@ def main():  # noqa: C901
             for device in list_of_devices:
                 dev_qos, data_dict = get_rht_data(pylyman.get_state_of(device["name"]))
                 sql_db_rht.queue(data_dict)
-                record_qos(dev_qos, data_dict["name"])
+                record_qos(dev_qos, data_dict["room_id"])
 
             next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
         # get AC data
