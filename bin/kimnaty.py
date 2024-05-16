@@ -159,9 +159,9 @@ def record_qos(dev_qos: int, room_id: str):
     Returns:
         Nothing
     """
-    if dev_qos < 20:
+    if dev_qos < 10:
         set_led(room_id, "red")
-    if dev_qos > 30:
+    if dev_qos > 16:
         set_led(room_id, "green")
     log_health_score(room_id, dev_qos)
 
