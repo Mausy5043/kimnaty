@@ -100,6 +100,8 @@ def main():  # noqa: C901
                 dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
                 if dev_qos > 0:
                    sql_db_rht.queue(dev_data)
+                else:
+                    mf.syslog_trace(f"!!! No data for room {dev_data["room_id"]}", syslog.LOG_ALERT, DEBUG)
                 record_qos(dev_qos, dev_data["room_id"])
             # store the data in the DB
             try:
