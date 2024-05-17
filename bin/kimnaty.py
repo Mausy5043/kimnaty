@@ -197,7 +197,7 @@ def get_rht_data(dev_dict):
 
     qos: int = dev_dict["quality"]
     if qos == 0:
-        return qos, {}
+        return qos, {"room_id": dev_dict["dev_id"],}
 
     temperature: float = dev_dict["temperature"]
     humidity: int = dev_dict["humidity"]
