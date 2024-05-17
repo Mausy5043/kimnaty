@@ -77,7 +77,8 @@ def main():  # noqa: C901
     list_of_devices = constants.DEVICES
     for bt_dev in list_of_devices:
         pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["room_id"])
-        print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
+        if DEBUG:
+            print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
     list_of_aircos = constants.AIRCO
     if DEBUG:
         print(list_of_aircos)
@@ -97,7 +98,8 @@ def main():  # noqa: C901
             # get the data from the devices
             for device in list_of_devices:
                 dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
-                sql_db_rht.queue(dev_data)
+                if dev_qos > 0:
+                   sql_db_rht.queue(dev_data)
                 record_qos(dev_qos, dev_data["room_id"])
             # store the data in the DB
             try:
@@ -190,11 +192,17 @@ def get_rht_data(dev_dict):
         (int)   to indicate the QoS of the device
         (dict)  device's data; keys match fieldnames in the database
     """
+    if DEBUG:
+        print(dev_dict)
+
+    qos: int = dev_dict["quality"]
+    if qos == 0:
+        return qos, {}
+
     temperature: float = dev_dict["temperature"]
     humidity: int = dev_dict["humidity"]
     voltage: float = dev_dict["voltage"]
     battery: float = dev_dict["battery"]
-    qos: int = dev_dict["quality"]
     out_date = dev_dict["datetime"].strftime(constants.DT_FORMAT)
     out_epoch = dev_dict["epoch"]
 
