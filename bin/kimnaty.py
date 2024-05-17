@@ -73,11 +73,8 @@ def main():  # noqa: C901
     # create an object for the management of the BT devices
     pylyman = pyly.PyLyManager(debug=DEBUG_HW)
 
-    report_time = np.array([constants.KIMNATY["report_time"], constants.AC["report_time"]])
     cycle_time = np.array([constants.KIMNATY["cycle_time"], constants.AC["cycle_time"]])
     list_of_devices = constants.DEVICES
-    if DEBUG:
-        print(f"report_time : {report_time} s")
     for bt_dev in list_of_devices:
         pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["room_id"])
         print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
@@ -88,7 +85,6 @@ def main():  # noqa: C901
         airco["device"] = libdaikin.Daikin(airco["ip"])
 
     next_sample = np.array([time.time(), time.time()])
-    next_report = report_time + time.time()
     while not killer.kill_now:
         # get RH/T data
         if time.time() > next_sample[0]:
@@ -98,29 +94,15 @@ def main():  # noqa: C901
             pylyman.update_all()
             if DEBUG:
                 print(f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors")
+            # get the data from the devices
             for device in list_of_devices:
                 dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
                 sql_db_rht.queue(dev_data)
                 record_qos(dev_qos, dev_data["room_id"])
-
-            next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
-        # get AC data
-        if time.time() > next_sample[1]:
-            start_time = time.time()
-            ac_results = do_work_ac(list_of_aircos)
-            # queue AC sample data
-            if ac_results:
-                for element in ac_results:
-                    sql_db_ac.queue(element)
-            if DEBUG:
-                print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
-            next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
-        # report queued RH/T results
-        if time.time() > next_report[0]:
+            # store the data in the DB
             try:
                 sql_db_rht.insert(method="replace")
                 sql_health.insert(method="replace", index="room_id")
-                next_report[0] = report_time[0] + time.time()
             except Exception as her:  # pylint: disable=W0703
                 mf.syslog_trace(
                     f"*** While trying to insert data into the database  {type(her).__name__} {her} ",  # noqa: E501
@@ -129,11 +111,22 @@ def main():  # noqa: C901
                 )
                 mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
-        # report queued AC results
-        if time.time() > next_report[1]:
+            next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
+
+        # get AC data
+        if time.time() > next_sample[1]:
+            start_time = time.time()
+            # get the data from the devices
+            ac_results = do_work_ac(list_of_aircos)
+            # queue AC sample data
+            if ac_results:
+                for element in ac_results:
+                    sql_db_ac.queue(element)
+            if DEBUG:
+                print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
+            # store the data in the DB
             try:
                 sql_db_ac.insert(method="replace")
-                next_report[1] = report_time[1] + time.time()
             except Exception as her:  # pylint: disable=W0703
                 mf.syslog_trace(
                     f"*** While trying to insert data into the database {type(her).__name__} {her} ",  # noqa: E501
@@ -142,8 +135,10 @@ def main():  # noqa: C901
                 )
                 mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
                 raise  # may be changed to pass if errors can be corrected.
+            next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
+
         time.sleep(1.0)
-    # report any still queued results
+    # store any still queued results
     sql_db_rht.insert(method="replace")
     sql_health.insert(method="replace", index="room_id")
     sql_db_ac.insert(method="replace")

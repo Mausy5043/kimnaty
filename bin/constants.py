@@ -89,19 +89,15 @@ DEVICES = [
 
 # - sample_time = time to get one reading from a device
 # - cycle_time = time between samples
-# - report_time = time between DB writes
 
 # Reading a LYWSD03 sensor takes 11.5 sec on average. You may get
 # down to 6 seconds on a good day.
-# `KIMNATY['report_time']` is determined by the number of devices
-# to be interogated * 12 sec/device
 _sample_time_lyw = 11.5 + 8.0
 # and allowing for all to misread every cycle.
 _sample_time_lyws = _sample_time_lyw * len(DEVICES) * 2
 # The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
 _cycle_time = 2100.0
-_report_time = _cycle_time + 60.0
 
 KIMNATY = {
     "database": _DATABASE,
@@ -114,7 +110,6 @@ KIMNATY = {
         "VALUES (?, ?, ?, ?, ?, ?)"
     ),
     "sql_table": "data",
-    "report_time": _report_time,
     "cycle_time": _cycle_time,
     "aggregate": "raw",
 }
@@ -130,7 +125,6 @@ _sample_time_ac = 5.0
 _sample_time_acs = _sample_time_ac * len(AIRCO)
 # Set a minimum pause time between scans
 _cycle_time_ac = 120.0
-_report_time_ac = 10 * 60.0 + 6.0
 
 AC = {
     "database": _DATABASE,
@@ -144,7 +138,6 @@ AC = {
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     "sql_table": "aircon",
-    "report_time": _report_time_ac,
     "cycle_time": _cycle_time_ac,
     "aggregate": "avg",
 }
