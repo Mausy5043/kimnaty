@@ -101,7 +101,7 @@ def main():  # noqa: C901
                 if dev_qos > 0:
                    sql_db_rht.queue(dev_data)
                 else:
-                    mf.syslog_trace(f"!!! No data for room {dev_data["room_id"]}", syslog.LOG_ALERT, DEBUG)
+                    mf.syslog_trace(f"!!! No data for room {dev_data['room_id']}", syslog.LOG_ALERT, DEBUG)
                 record_qos(dev_qos, dev_data["room_id"])
             # store the data in the DB
             try:
