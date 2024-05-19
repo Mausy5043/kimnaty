@@ -94,14 +94,18 @@ def main():  # noqa: C901
                 print("Updating sensor data...")
             pylyman.update_all()
             if DEBUG:
-                print(f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors")
+                print(
+                    f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors"
+                )
             # get the data from the devices
             for device in list_of_devices:
                 dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
                 if dev_qos > 0:
-                   sql_db_rht.queue(dev_data)
+                    sql_db_rht.queue(dev_data)
                 else:
-                    mf.syslog_trace(f"!!! No data for room {dev_data['room_id']}", syslog.LOG_ALERT, DEBUG)
+                    mf.syslog_trace(
+                        f"!!! No data for room {dev_data['room_id']}", syslog.LOG_ALERT, DEBUG
+                    )
                 record_qos(dev_qos, dev_data["room_id"])
             # store the data in the DB
             try:
@@ -199,7 +203,9 @@ def get_rht_data(dev_dict):
 
     qos: int = dev_dict["quality"]
     if qos == 0:
-        return qos, {"room_id": dev_dict["dev_id"],}
+        return qos, {
+            "room_id": dev_dict["dev_id"],
+        }
 
     temperature: float = dev_dict["temperature"]
     humidity: int = dev_dict["humidity"]
