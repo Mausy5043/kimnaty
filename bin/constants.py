@@ -152,11 +152,18 @@ HEALTH_UPDATE = {
 _health_query = "SELECT * FROM rooms;"
 
 
-def get_health(room_id):
-    _health = 0
-    # fixme: database may be locked
-    with s3.connect(_DATABASE) as conn:
-        _table_data = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
+def get_health(room_id) -> int:
+    _health: int = 0
+    locked = True
+    while locked:
+        try:
+            with s3.connect(_DATABASE) as conn:
+                _table_data: dict = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
+                locked = False
+        except DatabaseError:
+            locked = True
+            # wait for the database to become unlocked
+            time.sleep(12.3)
     try:
         _health = _table_data["health"][room_id]
     except KeyError:
