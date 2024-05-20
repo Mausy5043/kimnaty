@@ -178,7 +178,7 @@ def log_health_score(room_id, state):
 
 
 def get_rht_data(dev_dict):
-    """Fetch data from a device.
+    """Process data from a device.
         {
         "mac": mac,             # MAC address provided by the client
         "id": dev_id,           # (optional) device id provided by the client for easier identification
@@ -214,7 +214,6 @@ def get_rht_data(dev_dict):
     out_date = dev_dict["datetime"].strftime(constants.DT_FORMAT)
     out_epoch = dev_dict["epoch"]
 
-    success = True
     if DEBUG:
         print("")
         print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['dev_id']})")
@@ -223,29 +222,6 @@ def get_rht_data(dev_dict):
         print(f"| Humidity          : {humidity}%")
         print(f"| Battery           : {battery}% ({voltage}V)")
         print("+------------------------------------")
-
-    # except BrokenPipeError:
-    #     err_date = dt.datetime.now()
-    #     mf.syslog_trace(
-    #         f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}", syslog.LOG_CRIT, DEBUG
-    #     )
-    # except pyly.PyLyTimeout:
-    #     err_date = dt.datetime.now()
-    #     mf.syslog_trace(
-    #         f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
-    #         f"for room {dev_dict['id']} ({dev_dict['mac']}) ",
-    #         syslog.LOG_CRIT,
-    #         DEBUG,
-    #     )
-    # except Exception as her:  # pylint: disable=W0703
-    #     err_date = dt.datetime.now()
-    #     mf.syslog_trace(
-    #         f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) {type(her).__name__} {her} ",  # noqa: E501
-    #         syslog.LOG_CRIT,
-    #         DEBUG,
-    #     )
-    #     # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
-    #     mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_DEBUG, DEBUG)
 
     return qos, {
         "sample_time": out_date,
