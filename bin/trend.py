@@ -355,7 +355,7 @@ def main():
         # aggr = int(float(OPTION.days) * 24. * 60. / 5760.)
         # if aggr < 1:
         #     aggr = 30
-        aggr = "H"
+        aggr = "h"
         plot_graph(
             constants.TREND["month_graph"],
             fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=aggr),
@@ -365,7 +365,7 @@ def main():
         # aggr = int(float(OPTION.months) * 30.5 * 24. * 60. / 9900.)
         # if aggr < 1:
         #     aggr = 30
-        aggr = "6H"
+        aggr = "6h"
         plot_graph(
             constants.TREND["year_graph"],
             fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=aggr),
