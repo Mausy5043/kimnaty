@@ -4,6 +4,7 @@ matplotlib
 mausy5043-common
 numpy
 pandas
+pyarrow
 pylywsdxx
 requests
 scipy

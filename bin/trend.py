@@ -11,8 +11,10 @@ import warnings
 #   df = df.resample(f"{aggregation}").mean()
 # fixed 2024-05-21
 # warnings.simplefilter(action="ignore", category=FutureWarning)
+
 # DeprecationWarning: Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0)
-warnings.simplefilter(action="ignore", category=DeprecationWarning)
+# warnings.simplefilter(action="ignore", category=DeprecationWarning)
+
 # UserWarning: Could not infer format, so each element will be parsed individually,
 # falling back to `dateutil`. To ensure parsing is consistent and as-expected,
 # please specify a format.
