@@ -9,9 +9,17 @@ import warnings
 # In a future version, numeric_only will default to False. Either specify numeric_only or
 # select only columns which should be valid for the function.
 #   df = df.resample(f"{aggregation}").mean()
-warnings.simplefilter(action="ignore", category=FutureWarning)
+# fixed 2024-05-21
+# warnings.simplefilter(action="ignore", category=FutureWarning)
 # DeprecationWarning: Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0)
 warnings.simplefilter(action="ignore", category=DeprecationWarning)
+# UserWarning: Could not infer format, so each element will be parsed individually,
+# falling back to `dateutil`. To ensure parsing is consistent and as-expected,
+# please specify a format.
+#   df: pd.DataFrame = pd.read_sql_query(
+#             s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
+#         )
+warnings.simplefilter(action="ignore", category=UserWarning)
 
 # pylint: disable=C0413
 import argparse
@@ -109,7 +117,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         )
         df.drop("sample_time", axis=1, inplace=True, errors="ignore")
         # resample to monotonic timeline
-        df = df.resample(f"{aggregation}").mean()
+        df = df.resample(f"{aggregation}").mean(numeric_only=True)
         df = df.interpolate()
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan
@@ -205,7 +213,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
             pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         )
         # resample to monotonic timeline
-        df = df.resample(f"{aggregation}").mean()
+        df = df.resample(f"{aggregation}").mean(numeric_only=True)
         df = df.interpolate()
         try:
             new_name = ROOMS[room_id]
