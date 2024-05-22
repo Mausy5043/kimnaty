@@ -162,10 +162,12 @@ def record_qos(dev_qos: int, room_id: str):
     Returns:
         Nothing
     """
+    led_colour = "orange"
     if dev_qos < 10:
-        set_led(room_id, "red")
+        led_colour = "red"
     if dev_qos > 16:
-        set_led(room_id, "green")
+        led_colour = "green"
+    set_led(room_id, led_colour)
     log_health_score(room_id, dev_qos)
 
 
