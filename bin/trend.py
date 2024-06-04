@@ -327,6 +327,8 @@ def plot_graph(output_file, data_dict, plot_title):
         ax1.set_ylabel(parameter)
         if parameter == "temperature_ac":
             ax1.set_ylim([12, 28])
+        if parameter == "voltage":
+            ax1.set_ylim([2.2, 3.3])
         ax1.legend(loc="lower left", ncol=8, framealpha=0.2)
         ax1.set_xlabel("Datetime")
         ax1.grid(which="major", axis="y", color="k", linestyle="--", linewidth=0.5)
