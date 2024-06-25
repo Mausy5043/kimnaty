@@ -132,23 +132,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             column_to_rename="cmp_freq",
             new_name=airco_id,
         )
-        if df_t is None:
-            df = collate(
-                None,
-                df,
-                columns_to_drop=["cmp_freq"],
-                column_to_rename="temperature_ac",
-                new_name=airco_id,
-            )
-            df_t = collate(
-                df_t,
-                df,
-                columns_to_drop=[],
-                column_to_rename="temperature_target",
-                new_name=f"{airco_id}_tgt",
-            )
-        else:
-            df = collate(
+        if df_t.empty:
+            df1 = collate(
                 None,
                 df,
                 columns_to_drop=["cmp_freq", "temperature_outside"],
@@ -157,7 +142,22 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             )
             df_t = collate(
                 df_t,
+                df1,
+                columns_to_drop=[],
+                column_to_rename="temperature_target",
+                new_name=f"{airco_id}_tgt",
+            )
+        else:
+            df2 = collate(
+                None,
                 df,
+                columns_to_drop=["cmp_freq"],
+                column_to_rename="temperature_ac",
+                new_name=airco_id,
+            )
+            df_t = collate(
+                df_t,
+                df2,
                 columns_to_drop=[],
                 column_to_rename="temperature_target",
                 new_name=f"{airco_id}_tgt",
@@ -173,8 +173,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         df_t.rename(columns={"temperature_outside": "T(out)"}, inplace=True)
     else:
         df_t.drop(["temperature_outside"], axis=1, inplace=True, errors="ignore")
-    # if DEBUG:
-    #     print(df_t)
+    if DEBUG:
+        print(df_t)
 
     ac_data_dict: dict[str, pd.DataFrame] = {"temperature_ac": df_t, "compressor": df_cmp}
     return ac_data_dict
