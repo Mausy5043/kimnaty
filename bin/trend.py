@@ -262,9 +262,15 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
 
 
 def collate(
-    prev_df, data_frame: pd.DataFrame, columns_to_drop=[], column_to_rename="", new_name="room_id"
+    prev_df,
+    data_frame: pd.DataFrame,
+    columns_to_drop: list,
+    column_to_rename: str,
+    new_name="room_id",
 ):
     # drop the 'columns_to_drop'
+    if not columns_to_drop:
+        columns_to_drop = []
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1, errors="ignore")
     # rename the 'column_to_rename'
