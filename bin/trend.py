@@ -9,9 +9,19 @@ import warnings
 # In a future version, numeric_only will default to False. Either specify numeric_only or
 # select only columns which should be valid for the function.
 #   df = df.resample(f"{aggregation}").mean()
-warnings.simplefilter(action="ignore", category=FutureWarning)
+# fixed 2024-05-21
+# warnings.simplefilter(action="ignore", category=FutureWarning)
+
 # DeprecationWarning: Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0)
-warnings.simplefilter(action="ignore", category=DeprecationWarning)
+# warnings.simplefilter(action="ignore", category=DeprecationWarning)
+
+# UserWarning: Could not infer format, so each element will be parsed individually,
+# falling back to `dateutil`. To ensure parsing is consistent and as-expected,
+# please specify a format.
+#   df: pd.DataFrame = pd.read_sql_query(
+#             s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
+#         )
+warnings.simplefilter(action="ignore", category=UserWarning)
 
 # pylint: disable=C0413
 import argparse
@@ -109,7 +119,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         )
         df.drop("sample_time", axis=1, inplace=True, errors="ignore")
         # resample to monotonic timeline
-        df = df.resample(f"{aggregation}").mean()
+        df = df.resample(f"{aggregation}").mean(numeric_only=True)
         df = df.interpolate()
         # remove temperature target values for samples when the AC is turned off.
         df.loc[df.ac_power == 0, "temperature_target"] = np.nan
@@ -122,23 +132,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             column_to_rename="cmp_freq",
             new_name=airco_id,
         )
-        if df_t is None:
-            df = collate(
-                None,
-                df,
-                columns_to_drop=["cmp_freq"],
-                column_to_rename="temperature_ac",
-                new_name=airco_id,
-            )
-            df_t = collate(
-                df_t,
-                df,
-                columns_to_drop=[],
-                column_to_rename="temperature_target",
-                new_name=f"{airco_id}_tgt",
-            )
-        else:
-            df = collate(
+        if df_t.empty:
+            df1 = collate(
                 None,
                 df,
                 columns_to_drop=["cmp_freq", "temperature_outside"],
@@ -147,7 +142,22 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
             )
             df_t = collate(
                 df_t,
+                df1,
+                columns_to_drop=[],
+                column_to_rename="temperature_target",
+                new_name=f"{airco_id}_tgt",
+            )
+        else:
+            df2 = collate(
+                None,
                 df,
+                columns_to_drop=["cmp_freq"],
+                column_to_rename="temperature_ac",
+                new_name=airco_id,
+            )
+            df_t = collate(
+                df_t,
+                df2,
                 columns_to_drop=[],
                 column_to_rename="temperature_target",
                 new_name=f"{airco_id}_tgt",
@@ -163,8 +173,8 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
         df_t.rename(columns={"temperature_outside": "T(out)"}, inplace=True)
     else:
         df_t.drop(["temperature_outside"], axis=1, inplace=True, errors="ignore")
-    # if DEBUG:
-    #     print(df_t)
+    if DEBUG:
+        print(df_t)
 
     ac_data_dict: dict[str, pd.DataFrame] = {"temperature_ac": df_t, "compressor": df_cmp}
     return ac_data_dict
@@ -183,7 +193,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
     df_h = pd.DataFrame()
     df_v = pd.DataFrame()
     for device in DEVICE_LIST:
-        room_id = device["id"]
+        room_id = device["room_id"]
         where_condition = (
             f" ( sample_time >= datetime({EDATETIME}, '-{hours_to_fetch + 1} hours')"
             f" AND sample_time <= datetime({EDATETIME}, '+2 hours') )"
@@ -205,7 +215,7 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
             pd.to_datetime(df.index, unit="s").tz_localize("UTC").tz_convert("Europe/Amsterdam")
         )
         # resample to monotonic timeline
-        df = df.resample(f"{aggregation}").mean()
+        df = df.resample(f"{aggregation}").mean(numeric_only=True)
         df = df.interpolate()
         try:
             new_name = ROOMS[room_id]
@@ -252,9 +262,15 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
 
 
 def collate(
-    prev_df, data_frame: pd.DataFrame, columns_to_drop=[], column_to_rename="", new_name="room_id"
+    prev_df,
+    data_frame: pd.DataFrame,
+    columns_to_drop: list,
+    column_to_rename: str,
+    new_name="room_id",
 ):
     # drop the 'columns_to_drop'
+    if not columns_to_drop:
+        columns_to_drop = []
     for col in columns_to_drop:
         data_frame = data_frame.drop(col, axis=1, errors="ignore")
     # rename the 'column_to_rename'
@@ -317,6 +333,8 @@ def plot_graph(output_file, data_dict, plot_title):
         ax1.set_ylabel(parameter)
         if parameter == "temperature_ac":
             ax1.set_ylim([12, 28])
+        if parameter == "voltage":
+            ax1.set_ylim([2.2, 3.3])
         ax1.legend(loc="lower left", ncol=8, framealpha=0.2)
         ax1.set_xlabel("Datetime")
         ax1.grid(which="major", axis="y", color="k", linestyle="--", linewidth=0.5)
@@ -347,7 +365,7 @@ def main():
         # aggr = int(float(OPTION.days) * 24. * 60. / 5760.)
         # if aggr < 1:
         #     aggr = 30
-        aggr = "H"
+        aggr = "h"
         plot_graph(
             constants.TREND["month_graph"],
             fetch_data(hours_to_fetch=OPTION.days * 24, aggregation=aggr),
@@ -357,7 +375,7 @@ def main():
         # aggr = int(float(OPTION.months) * 30.5 * 24. * 60. / 9900.)
         # if aggr < 1:
         #     aggr = 30
-        aggr = "6H"
+        aggr = "6h"
         plot_graph(
             constants.TREND["year_graph"],
             fetch_data(hours_to_fetch=OPTION.months * 31 * 24, aggregation=aggr),

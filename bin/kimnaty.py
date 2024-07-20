@@ -42,9 +42,6 @@ APPROOT = "/".join(HERE[0:-2])  # /home/pi/kimnaty
 NODE = os.uname()[1]  # rbair
 # fmt: on
 
-# class SensorDevice():
-#     """..."""
-
 sql_health = m3.SqlDatabase(
     database=constants.HEALTH_UPDATE["database"],
     table=constants.HEALTH_UPDATE["sql_table"],
@@ -57,6 +54,7 @@ def main():  # noqa: C901
     """Execute main loop."""
     killer = ml.GracefulKiller()
 
+    # create an object for the database table for BT devices
     sql_db_rht = m3.SqlDatabase(
         database=constants.KIMNATY["database"],
         table=constants.KIMNATY["sql_table"],
@@ -64,6 +62,7 @@ def main():  # noqa: C901
         debug=DEBUG,
     )
 
+    # create an object for the database table for AC devices
     sql_db_ac = m3.SqlDatabase(
         database=constants.AC["database"],
         table=constants.AC["sql_table"],
@@ -71,219 +70,164 @@ def main():  # noqa: C901
         debug=DEBUG,
     )
 
-    # fdatabase = constants.KIMNATY["database"]
-    # sqlcmd_rht = constants.KIMNATY["sql_command"]
-    # sqlcmd_ac = constants.AC["sql_command"]
-    report_time = np.array([constants.KIMNATY["report_time"], constants.AC["report_time"]])
-    cycle_time = np.array([constants.KIMNATY["cycle_time"], constants.AC["cycle_time"]])
-    list_of_devices = constants.DEVICES
-    for bt_dev in list_of_devices:
-        bt_dev["device"] = pyly.Lywsd03(mac=bt_dev["mac"], reusable=True, debug=DEBUG_HW)
-    if DEBUG:
-        print(f"report_time : {report_time} s")
-        print(list_of_devices)
-    list_of_aircos = constants.AIRCO
-    for airco in list_of_aircos:
-        airco["device"] = libdaikin.Daikin(airco["ip"])
-    if DEBUG:
-        print(list_of_aircos)
-
-    next_sample = np.array([time.time(), time.time()])
-    next_report = report_time + time.time()
-    while not killer.kill_now:
-        # get RH/T data
-        if time.time() > next_sample[0]:
-            start_time = time.time()
-            rht_results = do_work_rht(list_of_devices)
-            # queue RH/T sample data
-            if rht_results:
-                for element in rht_results:
-                    sql_db_rht.queue(element)
+    # create an object for the management of the BT devices
+    with pyly.PyLyManager(debug=DEBUG_HW) as pylyman:
+        cycle_time = np.array([constants.KIMNATY["cycle_time"], constants.AC["cycle_time"]])
+        list_of_devices = constants.DEVICES
+        for bt_dev in list_of_devices:
+            pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["room_id"])
             if DEBUG:
-                print(f" >>> Time to get LYWSD results: {time.time() - start_time:.2f}")
-            next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
-        # get AC data
-        if time.time() > next_sample[1]:
-            start_time = time.time()
-            ac_results = do_work_ac(list_of_aircos)
-            # queue AC sample data
-            if ac_results:
-                for element in ac_results:
-                    sql_db_ac.queue(element)
-            if DEBUG:
-                print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
-            next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
-        # report queued RH/T results
-        if time.time() > next_report[0]:
-            try:
-                sql_db_rht.insert(method="replace")
-                sql_health.insert(method="replace", index="room_id")
-                next_report[0] = report_time[0] + time.time()
-            except Exception as her:  # pylint: disable=W0703
-                mf.syslog_trace(
-                    f"*** While trying to insert data into the database  {type(her).__name__} {her} ",  # noqa: E501
-                    syslog.LOG_CRIT,
-                    DEBUG,
-                )
-                mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
-                raise  # may be changed to pass if errors can be corrected.
-        # report queued AC results
-        if time.time() > next_report[1]:
-            try:
-                sql_db_ac.insert(method="replace")
-                next_report[1] = report_time[1] + time.time()
-            except Exception as her:  # pylint: disable=W0703
-                mf.syslog_trace(
-                    f"*** While trying to insert data into the database {type(her).__name__} {her} ",  # noqa: E501
-                    syslog.LOG_CRIT,
-                    DEBUG,
-                )
-                mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
-                raise  # may be changed to pass if errors can be corrected.
-        time.sleep(1.0)
-    # report any still queued results
-    sql_db_rht.insert(method="replace")
-    sql_health.insert(method="replace", index="room_id")
-    sql_db_ac.insert(method="replace")
+                print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
+        list_of_aircos = constants.AIRCO
+        if DEBUG:
+            print(list_of_aircos)
+        for airco in list_of_aircos:
+            airco["device"] = libdaikin.Daikin(airco["ip"])
+
+        next_sample = np.array([time.time(), time.time()])
+        while not killer.kill_now:
+            # get RH/T data
+            if time.time() > next_sample[0]:
+                start_time = time.time()
+                if DEBUG:
+                    print("Updating sensor data...")
+                pylyman.update_all()
+                if DEBUG:
+                    print(
+                        f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors"
+                    )
+                # get the data from the devices
+                for device in list_of_devices:
+                    dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
+                    if dev_qos > 0:
+                        sql_db_rht.queue(dev_data)
+                    else:
+                        mf.syslog_trace(
+                            f"!!! No data for room {dev_data['room_id']}", syslog.LOG_ALERT, DEBUG
+                        )
+                    record_qos(dev_qos, dev_data["room_id"])
+                # store the data in the DB
+                try:
+                    sql_db_rht.insert(method="replace")
+                    sql_health.insert(method="replace", index="room_id")
+                except Exception as her:  # pylint: disable=W0703
+                    mf.syslog_trace(
+                        f"*** While trying to insert data into the database  {type(her).__name__} {her} ",  # noqa: E501
+                        syslog.LOG_CRIT,
+                        DEBUG,
+                    )
+                    mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
+                    raise  # may be changed to pass if errors can be corrected.
+                next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
+
+            # get AC data
+            if time.time() > next_sample[1]:
+                start_time = time.time()
+                # get the data from the devices
+                ac_results = do_work_ac(list_of_aircos)
+                # queue AC sample data
+                if ac_results:
+                    for element in ac_results:
+                        sql_db_ac.queue(element)
+                if DEBUG:
+                    print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
+                # store the data in the DB
+                try:
+                    sql_db_ac.insert(method="replace")
+                except Exception as her:  # pylint: disable=W0703
+                    mf.syslog_trace(
+                        f"*** While trying to insert data into the database {type(her).__name__} {her} ",  # noqa: E501
+                        syslog.LOG_CRIT,
+                        DEBUG,
+                    )
+                    mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
+                    raise  # may be changed to pass if errors can be corrected.
+                next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
+
+            time.sleep(1.0)
+        # store any still queued results
+        sql_db_rht.insert(method="replace")
+        sql_health.insert(method="replace", index="room_id")
+        sql_db_ac.insert(method="replace")
 
 
-def do_work_rht(dev_list):
+def record_qos(dev_qos: int, room_id: str):
     """Scan the devices to get current readings.
 
     Args:
-        dev_list: list of dicts with device info
+        dev_qos: QoS score of the device
+        room_id: name of the device
 
     Returns:
-        (list) containing dicts with data
+        Nothing
     """
-
-    # possible outcomes for health_score
-    # success       +5; current battery level will limit max. score
-    # fail+success  -5
-    # fail+fail     -10
-    data_list = []
-    retry_list = []
-    for dev in dev_list:
-        health_score = 0
-        succes, data = get_rht_data(dev)
-        if succes:
-            health_score += 5
-            set_led(dev["id"], "green")
-            data_list.append(data)
-        else:
-            health_score -= 5
-            set_led(dev["id"], "orange")
-            retry_list.append(dev)
-        log_health_score(
-            room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
-        )
-
-    if retry_list:
-        if DEBUG:
-            print("Retrying failed connections...")
-        for dev in retry_list:
-            health_score = 0
-            succes, data = get_rht_data(dev)
-            if succes:
-                health_score += 0
-                set_led(dev["id"], "green")
-                data_list.append(data)
-            else:
-                health_score -= 5
-                set_led(dev["id"], "red")
-            log_health_score(
-                room_id=data["room_id"], state_change=health_score, battery=data["voltage"]
-            )
-    return data_list
+    led_colour = "orange"
+    if dev_qos < 10:
+        led_colour = "red"
+    if dev_qos > 16:
+        led_colour = "green"
+    set_led(room_id, led_colour)
+    log_health_score(room_id, dev_qos)
 
 
-def log_health_score(room_id, state_change, battery):
+def log_health_score(room_id, state):
     """Store the state of a device in the database."""
-    bat_hi = 3.2
-    bat_lo = 2.2
     old_state = constants.get_health(room_id)
-    if DEBUG:
-        print(f"         battery level  = {battery} ")
-    # LYWS02D devices do not report battery level.
-    if not battery:
-        battery = bat_lo - 0.01
-    bat_state = (min(max(bat_lo, battery), bat_hi) - bat_lo) / (bat_hi - bat_lo) * 100.0
-    state = min(bat_state, old_state) + state_change
-    state = int(max(0, min(state, 100)))
-    if state <= 16:  # 2.36 V
-        set_led(room_id, "orange")
-    if state <= 8:  # 2.23 V
-        set_led(room_id, "red")
     if DEBUG:
         print(f"         previous state = {old_state}; new state = {state}")
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
 def get_rht_data(dev_dict):
-    """Fetch data from a device.
+    """Process data from a device.
+        {
+        "mac": mac,             # MAC address provided by the client
+        "id": dev_id,           # (optional) device id provided by the client for easier identification
+        "quality": 100,         # (int) 0...100, expresses the devices QoS
+        "temperature": degC,    # (float) latest temperature
+        "humidity": percent,    # (int) latest humidity
+        "voltage": volts,       # (float) latest voltage
+        "battery": percent,     # (float) current battery SoC
+        "datetime": datetime,   # timestamp of when the above data was collected (datetime object)
+        "epoch": UN*X epoch,    # timestamp of when the above data was collected (UNIX epoch)
+        },
 
     Args:
         dev_dict (dict)
 
     Returns:
-        (bool)  to indicate success or failure to read a device's data
+        (int)   to indicate the QoS of the device
         (dict)  device's data; keys match fieldnames in the database
     """
-    temperature = 0.0
-    humidity = 0
-    voltage = 0.0
-    success = False
-    t0 = time.time()
-    try:
-        client = dev_dict["device"]
-        if DEBUG:
-            print("")
-            print(f"Fetching data from {dev_dict['mac']}")
-            print("+------------------------------------")
-        data = client.data
-        if DEBUG:
-            print(f"| Temperature       : {data.temperature}°C")
-            print(f"| Humidity          : {data.humidity}%")
-            print(f"| Battery           : {data.battery}% ({data.voltage}V)")
-        temperature = data.temperature
-        humidity = data.humidity
-        voltage = data.voltage
-        success = True
-    except BrokenPipeError:
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"BrokenPipeError on {err_date.strftime(constants.DT_FORMAT)}", syslog.LOG_CRIT, DEBUG
-        )
-    except pyly.PyLyTimeout:
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"Timeout on {err_date.strftime(constants.DT_FORMAT)} "
-            f"for room {dev_dict['id']} ({dev_dict['mac']}) ",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-    except Exception as her:  # pylint: disable=W0703
-        err_date = dt.datetime.now()
-        mf.syslog_trace(
-            f"*** While talking to room {dev_dict['id']} ({dev_dict['mac']}) {type(her).__name__} {her} ",  # noqa: E501
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
-        # mf.syslog_trace(f"    {her}", syslog.LOG_DEBUG, DEBUG)
-        mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_DEBUG, DEBUG)
     if DEBUG:
-        print(f"|              Time : {time.time() - t0:.2f} seconds")
+        print(dev_dict)
+
+    qos: int = dev_dict["quality"]
+    if qos == 0:
+        return qos, {
+            "room_id": dev_dict["dev_id"],
+        }
+
+    temperature: float = dev_dict["temperature"]
+    humidity: int = dev_dict["humidity"]
+    voltage: float = dev_dict["voltage"]
+    battery: float = dev_dict["battery"]
+    out_date = dev_dict["datetime"].strftime(constants.DT_FORMAT)
+    out_epoch = dev_dict["epoch"]
+
+    if DEBUG:
+        print("")
+        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['dev_id']})")
+        print(f"+------------------------------------------ {out_date} --")
+        print(f"| Temperature       : {temperature}°C")
+        print(f"| Humidity          : {humidity}%")
+        print(f"| Battery           : {battery}% ({voltage}V)")
         print("+------------------------------------")
-    out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
-    out_epoch = int(out_date.timestamp())
 
-    if voltage in (0.0, None):
-        success = False
-
-    return success, {
-        "sample_time": out_date.strftime(constants.DT_FORMAT),
+    return qos, {
+        "sample_time": out_date,
         "sample_epoch": out_epoch,
-        "room_id": dev_dict["id"],
+        "room_id": dev_dict["dev_id"],
         "temperature": temperature,
         "humidity": humidity,
         "voltage": voltage,
@@ -409,7 +353,7 @@ if __name__ == "__main__":
     syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
     # set-up LEDs
     for _device in constants.DEVICES:
-        set_led(_device["id"], "orange")
+        set_led(_device["room_id"], "orange")
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True

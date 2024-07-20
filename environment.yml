@@ -1,5 +1,5 @@
 # When making changes to this file update requirements.txt also !!
-# conda -v env update -n kimnaty --file environment.yml
+# Usage: conda -v env update -n kimnaty --file environment.yml
 
 channels:
   - conda-forge
@@ -7,10 +7,12 @@ channels:
 
 dependencies:
   - python=3.11
+  - jupyterlab
   - matplotlib
   - numpy
   - pandas
   - pip
+  - pyarrow
   - requests
   - scipy
   - sh

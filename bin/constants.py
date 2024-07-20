@@ -77,31 +77,27 @@ TREND = {
 }
 
 DEVICES = [
-    {"mac": "A4:C1:38:59:9A:9B", "id": "0.1", "name": "woonkamer", "device": None},
-    {"mac": "A4:C1:38:99:AC:4D", "id": "0.5", "name": "keuken", "device": None},
-    {"mac": "A4:C1:38:6F:E7:CA", "id": "1.1", "name": "slaapkamer 1", "device": None},
-    {"mac": "A4:C1:38:50:D7:2D", "id": "1.2", "name": "slaapkamer 2", "device": None},
-    {"mac": "A4:C1:38:91:D9:47", "id": "1.3", "name": "slaapkamer 3", "device": None},
-    {"mac": "A4:C1:38:A5:71:D0", "id": "1.4", "name": "badkamer", "device": None},
-    {"mac": "A4:C1:38:76:59:43", "id": "2.1", "name": "zolder", "device": None},
-    {"mac": "A4:C1:38:58:23:E1", "id": "2.2", "name": "slaapkamer 4", "device": None},
+    {"mac": "A4:C1:38:59:9A:9B", "room_id": "0.1", "name": "woonkamer", "device": None},
+    {"mac": "A4:C1:38:99:AC:4D", "room_id": "0.5", "name": "keuken", "device": None},
+    {"mac": "A4:C1:38:6F:E7:CA", "room_id": "1.1", "name": "slaapkamer 1", "device": None},
+    {"mac": "A4:C1:38:50:D7:2D", "room_id": "1.2", "name": "slaapkamer 2", "device": None},
+    {"mac": "A4:C1:38:91:D9:47", "room_id": "1.3", "name": "slaapkamer 3", "device": None},
+    {"mac": "A4:C1:38:A5:71:D0", "room_id": "1.4", "name": "badkamer", "device": None},
+    {"mac": "A4:C1:38:76:59:43", "room_id": "2.1", "name": "zolder", "device": None},
+    {"mac": "A4:C1:38:58:23:E1", "room_id": "2.2", "name": "slaapkamer 4", "device": None},
 ]
 
 # - sample_time = time to get one reading from a device
 # - cycle_time = time between samples
-# - report_time = time between DB writes
 
 # Reading a LYWSD03 sensor takes 11.5 sec on average. You may get
 # down to 6 seconds on a good day.
-# `KIMNATY['report_time']` is determined by the number of devices
-# to be interogated * 12 sec/device
 _sample_time_lyw = 11.5 + 8.0
 # and allowing for all to misread every cycle.
 _sample_time_lyws = _sample_time_lyw * len(DEVICES) * 2
 # The cycle time is about 1200 seconds, to prevent unrealistic scantimes,
 # high loads and battery drain.
 _cycle_time = 2100.0
-_report_time = _cycle_time + 60.0
 
 KIMNATY = {
     "database": _DATABASE,
@@ -114,7 +110,6 @@ KIMNATY = {
         "VALUES (?, ?, ?, ?, ?, ?)"
     ),
     "sql_table": "data",
-    "report_time": _report_time,
     "cycle_time": _cycle_time,
     "aggregate": "raw",
 }
@@ -130,7 +125,6 @@ _sample_time_ac = 5.0
 _sample_time_acs = _sample_time_ac * len(AIRCO)
 # Set a minimum pause time between scans
 _cycle_time_ac = 120.0
-_report_time_ac = 10 * 60.0 + 6.0
 
 AC = {
     "database": _DATABASE,
@@ -144,7 +138,6 @@ AC = {
         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     ),
     "sql_table": "aircon",
-    "report_time": _report_time_ac,
     "cycle_time": _cycle_time_ac,
     "aggregate": "avg",
 }
@@ -159,11 +152,18 @@ HEALTH_UPDATE = {
 _health_query = "SELECT * FROM rooms;"
 
 
-def get_health(room_id):
-    _health = 0
-    # fixme: database may be locked
-    with s3.connect(_DATABASE) as conn:
-        _table_data = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
+def get_health(room_id) -> int:
+    _health: int = 0
+    locked = True
+    while locked:
+        try:
+            with s3.connect(_DATABASE) as conn:
+                _table_data: dict = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
+                locked = False
+        except DatabaseError:
+            locked = True
+            # wait for the database to become unlocked
+            time.sleep(12.3)
     try:
         _health = _table_data["health"][room_id]
     except KeyError:
@@ -197,7 +197,7 @@ def get_pypkg_version(package) -> str:
     # pip list | grep bluepy3
     args = ["list"]
     try:
-        _exit_code = sh.pip(args).split("\n")
+        _exit_code = sh.pip(args).split("\n")  # type: ignore
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         _exit_code = [""]
@@ -213,7 +213,7 @@ def get_btctl_version():
     # bluetoothctl version
     args = ["version"]
     try:
-        _exit_code = sh.bluetoothctl(args).strip("\n").strip("'").split()
+        _exit_code = sh.bluetoothctl(args).strip("\n").strip("'").split()  # type: ignore
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         return "not installed"
