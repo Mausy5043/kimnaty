@@ -5,16 +5,6 @@
 
 import warnings
 
-# FutureWarning: The default value of numeric_only in DataFrameGroupBy.sum is deprecated.
-# In a future version, numeric_only will default to False. Either specify numeric_only or
-# select only columns which should be valid for the function.
-#   df = df.resample(f"{aggregation}").mean()
-# fixed 2024-05-21
-# warnings.simplefilter(action="ignore", category=FutureWarning)
-
-# DeprecationWarning: Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0)
-# warnings.simplefilter(action="ignore", category=DeprecationWarning)
-
 # UserWarning: Could not infer format, so each element will be parsed individually,
 # falling back to `dateutil`. To ensure parsing is consistent and as-expected,
 # please specify a format.
