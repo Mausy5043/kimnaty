@@ -2,7 +2,7 @@
 
 """Create graphs of the data for various periods."""
 
-
+import json
 import warnings
 
 # UserWarning: Could not infer format, so each element will be parsed individually,
@@ -25,6 +25,13 @@ import numpy as np
 import constants
 
 
+DATABASE = constants.TREND["database"]
+TABLE_RHT = constants.TREND["sql_table_rht"]
+TABLE_AC = constants.TREND["sql_table_ac"]
+ROOMS = constants.ROOMS
+DEVICE_LIST = constants.DEVICES
+AIRCO_LIST = constants.AIRCO
+
 # fmt: off
 parser = argparse.ArgumentParser(description="Create a trendgraph")
 parser.add_argument("-hr", "--hours", type=int, help="create hour-trend for last <HOURS> hours")
@@ -32,20 +39,23 @@ parser.add_argument("-d", "--days", type=int, help="create day-trend for last <D
 parser.add_argument("-m", "--months", type=int, help="number of months of data to use for the graph")  # noqa
 parser.add_argument("-e", "--edate", type=str, help="date of last day of the graph (default: now)")  # noqa
 parser.add_argument("-o", "--outside", action="store_true", help="plot outside temperature")
+parser.add_argument("--devlist", type=str, help="quoted python list of device-ids to show")
 parser_group = parser.add_mutually_exclusive_group(required=False)
 parser_group.add_argument("--debug", action="store_true", help="start in debugging mode")
 OPTION = parser.parse_args()
 # fmt: on
 
-DATABASE = constants.TREND["database"]
-TABLE_RHT = constants.TREND["sql_table_rht"]
-TABLE_AC = constants.TREND["sql_table_ac"]
-ROOMS = constants.ROOMS
-DEVICE_LIST = constants.DEVICES
-AIRCO_LIST = constants.AIRCO
+
 DEBUG = False
 EDATETIME = "'now'"
 
+def prune(objects):
+    """Remove all entries from `objects` that are not in OPTION.devlist"""
+    return_objects = []
+    for device in objects:
+        if str(device['room_id']) in OPTION.devlist:
+            return_objects.append(device)
+    return return_objects
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
     global EDATETIME  # pylint: disable=W0603
@@ -388,7 +398,9 @@ if __name__ == "__main__":
         OPTION.months = constants.TREND["option_months"]
     if not OPTION.outside:
         OPTION.outside = constants.TREND["option_outside"]
-
+    OPTION.devlist = json.loads(OPTION.devlist)
+    if OPTION.devlist:
+        DEVICE_LIST = prune(DEVICE_LIST)
     if OPTION.debug:
         print(OPTION)
     main()
