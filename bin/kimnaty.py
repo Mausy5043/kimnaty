@@ -19,9 +19,9 @@ import numpy as np
 import constants
 import libdaikin
 import mausy5043_common.funfile as mf
-import mausy5043_common.libsignals as ml
 import mausy5043_common.libsqlite3 as m3
 import pylywsdxx as pyly  # noqa  # type: ignore
+import GracefulKiller as gk
 
 # fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
@@ -52,7 +52,7 @@ sql_health = m3.SqlDatabase(
 
 def main():  # noqa: C901
     """Execute main loop."""
-    killer = ml.GracefulKiller()
+    killer = gk.GracefulKiller()
 
     # create an object for the database table for BT devices
     sql_db_rht = m3.SqlDatabase(

@@ -18,6 +18,7 @@ dependencies:
   - sh
   # Not on conda channels:
   - pip:
+      - gracefulkiller
       - mausy5043-common
       # This won't install on anything other than Linux:
       - pylywsdxx
