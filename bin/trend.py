@@ -398,8 +398,8 @@ if __name__ == "__main__":
         OPTION.months = constants.TREND["option_months"]
     if not OPTION.outside:
         OPTION.outside = constants.TREND["option_outside"]
-    OPTION.devlist = json.loads(OPTION.devlist)
     if OPTION.devlist:
+        OPTION.devlist = json.loads(OPTION.devlist)
         DEVICE_LIST = prune(DEVICE_LIST)
     if OPTION.debug:
         print(OPTION)
