@@ -49,13 +49,15 @@ OPTION = parser.parse_args()
 DEBUG = False
 EDATETIME = "'now'"
 
+
 def prune(objects):
     """Remove all entries from `objects` that are not in OPTION.devlist"""
     return_objects = []
     for device in objects:
-        if str(device['room_id']) in OPTION.devlist:
+        if str(device["room_id"]) in OPTION.devlist:
             return_objects.append(device)
     return return_objects
+
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
     global EDATETIME  # pylint: disable=W0603
