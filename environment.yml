@@ -1,5 +1,5 @@
 # When making changes to this file update requirements.txt also !!
-# Usage: conda -v env update -n kimnaty --file environment.yml
+# Usage: conda -v env update -n kimnaty --file environment.yml; pre-commit run --all-files
 
 channels:
   - conda-forge
@@ -12,6 +12,7 @@ dependencies:
   - numpy
   - pandas
   - pip
+  - pre-commit
   - pyarrow
   - requests
   - scipy
