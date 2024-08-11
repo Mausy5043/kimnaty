@@ -15,15 +15,13 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 
 # pylint: disable=C0413
 import argparse
-from datetime import datetime as dt
 import sqlite3 as s3
-import pandas as pd
-
-import matplotlib.pyplot as plt
-import numpy as np
+from datetime import datetime as dt
 
 import constants
-
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 DATABASE = constants.TREND["database"]
 TABLE_RHT = constants.TREND["sql_table_rht"]

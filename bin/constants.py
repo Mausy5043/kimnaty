@@ -9,9 +9,9 @@ import sys
 import time
 
 import pandas as pd
+import sh
 from pandas.errors import DatabaseError
 from sh import CommandNotFound
-import sh
 
 # fmt: off
 # define paths
