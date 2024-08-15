@@ -4,7 +4,7 @@ import json
 import os
 import pprint as pp
 import sqlite3 as s3
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 
