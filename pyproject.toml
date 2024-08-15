@@ -1,4 +1,19 @@
 # Project: kimnaty
+
+
+[tool.autopep8]
+max_line_length = 98
+in-place = true
+recursive = true
+aggressive = 1
+
+[tool.bandit]
+skips = []
+
+[tool.black]
+line-length = 98
+target-version = ["py39", "py310", "py311", "py312"]
+
 [tool.flake8]
 max_line_length = 98
 ignore = [
@@ -37,10 +52,3 @@ ignore_errors = true
 # ; disallow_incomplete_defs = true
 # ; disallow_untyped_defs = true
 # ; no_implicit_reexport = true
-
-[tool.bandit]
-skips = []
-
-[tool.black]
-line-length = 98
-target-version = ["py39", "py310", "py311", "py312"]
