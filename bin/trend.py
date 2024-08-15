@@ -2,8 +2,16 @@
 
 """Create graphs of the data for various periods."""
 
+import argparse
 import json
+import sqlite3 as s3
 import warnings
+from datetime import datetime as dt
+
+import constants
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 # UserWarning: Could not infer format, so each element will be parsed individually,
 # falling back to `dateutil`. To ensure parsing is consistent and as-expected,
@@ -12,16 +20,6 @@ import warnings
 #             s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
 #         )
 warnings.simplefilter(action="ignore", category=UserWarning)
-
-# pylint: disable=C0413
-import argparse
-import sqlite3 as s3
-from datetime import datetime as dt
-
-import constants
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 
 DATABASE = constants.TREND["database"]
 TABLE_RHT = constants.TREND["sql_table_rht"]
