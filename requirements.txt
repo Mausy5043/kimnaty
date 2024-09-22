@@ -1,12 +1,12 @@
 # When making changes to this file update environment.yml also !!
 
-gracefulkiller
-matplotlib
-mausy5043-common
-numpy
-pandas
-pyarrow
-pylywsdxx
-requests
-scipy
-sh
+gracefulkiller==0.4.7
+matplotlib==3.9.1.post1
+mausy5043-common==1.8.2
+numpy==2.1.1
+pandas==2.2.2
+pyarrow==17.0.0
+pylywsdxx==2.2.1
+pyserial==3.5
+requests==2.32.3
+sh==2.0.7

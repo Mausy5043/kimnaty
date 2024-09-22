@@ -10,20 +10,25 @@ channels:
 
 dependencies:
   - python=3.11
-  - jupyterlab
-  - matplotlib
-  - numpy
-  - pandas
   - pip
-  - pipdeptree
-  - pre-commit
-  - pyarrow
-  - requests
-  - scipy
-  - sh
+
+  # imported deps
+  - matplotlib=3.9.1.post1
+  - numpy=2.1.1
+  - pandas=2.2.2
+  - pyarrow=17.0.0
+  - requests=2.32.3
+  - sh=2.0.7
+
   # Not on conda channels:
   - pip:
-      - gracefulkiller
-      - mausy5043-common
+      - gracefulkiller=0.4.7
+      - mausy5043-common=1.8.2
       # This won't install on anything other than Linux:
-      - pylywsdxx
+      - pylywsdxx=2.2.1
+
+  # dev deps
+  - jupyterlab
+  - pipdeptree
+  - pre-commit
+  - scipy
