@@ -1,7 +1,7 @@
 # When making changes to this file update environment.yml also !!
 
 gracefulkiller==0.4.7
-matplotlib==3.9.1.post1
+matplotlib==3.9.2
 mausy5043-common==1.8.2
 numpy==2.1.1
 pandas==2.2.2
