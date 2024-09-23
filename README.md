@@ -4,7 +4,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Mausy5043/kimnaty/latest.svg)](https://results.pre-commit.ci/latest/github/Mausy5043/kimnaty/latest)
 
-# kimnaty (??????????????)
+# kimnaty (кімнати))
 
 ## introduction
 
@@ -44,12 +44,6 @@ All entries are case-sensitive(!) and optional. The application will use default
 
 Code for reading the state of compatible Daikin airconditioners stolen in 2021
 from: https://github.com/arska/python-daikinapi
-
-## the name
-
-kimnaty (or ??????????????) is Ukranian for "rooms". Given the current state of the world (MAR2022) I thought a Ukranian name
-for this repo to be a fitting tribute to the heroic people of Ukraine.
-?????????? ?????????????? !
 
 ## Disclaimer & License
 As of September 2024 `pylywsdxx` is distributed under [AGPL-3.0-or-later](LICENSE).
