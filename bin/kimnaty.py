@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# kimnaty
+# Copyright (C) 2024  Maurice (mausy5043) Hendrix
+# AGPL-3.0-or-later  - see LICENSE
+
 """
 Communicate with the LYWSD03MMC devices.
 

@@ -1,7 +1,10 @@
+
+[![License](https://img.shields.io/github/license/mausy5043/kimnaty)](LICENSE)
 ![Static Badge](https://img.shields.io/badge/release-rolling-lightgreen)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Mausy5043/kimnaty/latest.svg)](https://results.pre-commit.ci/latest/github/Mausy5043/kimnaty/latest)
 
-# kimnaty (кімнати)
+# kimnaty (??????????????)
 
 ## introduction
 
@@ -44,6 +47,9 @@ from: https://github.com/arska/python-daikinapi
 
 ## the name
 
-kimnaty (or кімнати) is Ukranian for "rooms". Given the current state of the world (MAR2022) I thought a Ukranian name
+kimnaty (or ??????????????) is Ukranian for "rooms". Given the current state of the world (MAR2022) I thought a Ukranian name
 for this repo to be a fitting tribute to the heroic people of Ukraine.
-слава україні !
+?????????? ?????????????? !
+
+## Disclaimer & License
+As of September 2024 `pylywsdxx` is distributed under [AGPL-3.0-or-later](LICENSE).
