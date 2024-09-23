@@ -91,10 +91,10 @@ def main():  # noqa: C901
                 if DEBUG:
                     print("Updating sensor data...")
                 pylyman.update_all()
+                # fmt: off
                 if DEBUG:
-                    print(
-                        f">>> {time.time()-start_time:.1f} s to update {len(list_of_devices)} sensors"
-                    )
+                    print(f">>> {time.time() - start_time:.1f} s to update {len(list_of_devices)} sensors")
+                # fmt: on
                 # get the data from the devices
                 for device in list_of_devices:
                     dev_qos, dev_data = get_rht_data(pylyman.get_state_of(device["room_id"]))
