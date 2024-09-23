@@ -6,7 +6,7 @@ mausy5043-common==1.8.2
 numpy==2.1.1
 pandas==2.2.3
 pyarrow==17.0.0
-pylywsdxx==2.2.1
+pylywsdxx==2.2.2
 pyserial==3.5
 requests==2.32.3
 sh==2.0.7
