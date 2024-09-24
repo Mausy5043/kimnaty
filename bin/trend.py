@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+import sys
+
 # UserWarning: Could not infer format, so each element will be parsed individually,
 # falling back to `dateutil`. To ensure parsing is consistent and as-expected,
 # please specify a format.
@@ -390,6 +392,8 @@ if __name__ == "__main__":
         print(OPTION)
         DEBUG = True
         print("DEBUG-mode started")
+
+    print(f"Trending with Python {sys.version}")
 
     # use hardcoded default if CLI value is 0
     if OPTION.hours == 0:

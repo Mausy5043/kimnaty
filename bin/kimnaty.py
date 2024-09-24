@@ -14,6 +14,7 @@ import argparse
 import datetime as dt
 import os
 import shutil
+import sys
 import syslog
 import time
 import traceback
@@ -360,6 +361,8 @@ if __name__ == "__main__":
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
+
+    mf.syslog_trace("Using Python {sys.version}", syslog.LOG_ERR, OPTION.debug)
 
     if OPTION.debug:
         DEBUG = True
