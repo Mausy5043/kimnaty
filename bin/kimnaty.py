@@ -362,7 +362,7 @@ if __name__ == "__main__":
         DEBUG_HW = True
         OPTION.debug = True
 
-    mf.syslog_trace("Using Python {sys.version}", syslog.LOG_ERR, OPTION.debug)
+    mf.syslog_trace(f"Using Python {sys.version}", syslog.LOG_ERR, OPTION.debug)
 
     if OPTION.debug:
         DEBUG = True
