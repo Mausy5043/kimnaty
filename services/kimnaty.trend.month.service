@@ -7,4 +7,5 @@ Wants=kimnaty.trend.month.timer
 [Service]
 Type=oneshot
 User=pi
+EnvironmentFile=/home/pi/.pyenvpaths
 ExecStart=/home/pi/kimnaty/bin/pastmonth.sh -

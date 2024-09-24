@@ -7,4 +7,5 @@ Wants=kimnaty.trend.day.timer
 [Service]
 Type=oneshot
 User=pi
+EnvironmentFile=/home/pi/.pyenvpaths
 ExecStart=/home/pi/kimnaty/bin/pastday.sh -

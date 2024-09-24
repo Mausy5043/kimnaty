@@ -9,5 +9,6 @@ Wants=kimnaty.update.timer
 [Service]
 Type=oneshot
 User=pi
+EnvironmentFile=/home/pi/.pyenvpaths
 ExecStart=/home/pi/kimnaty/kimnaty --systemd
 TimeoutStopSec=900
