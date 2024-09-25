@@ -1,5 +1,31 @@
 # Project: kimnaty
 
+# when changing dependencies also consider `requirements.txt` and `environment.yml`
+
+[project]
+name = "kimnaty"
+version = "0.0.0"   # rolling release has no version
+description = "monitoring room temperature/humidity"
+dependencies = [
+    "gracefulkiller==0.4.7",
+    "matplotlib==3.9.2",
+    "mausy5043-common==1.8.2",
+    "numpy==2.1.1",
+    "pandas==2.2.3",
+    "pyarrow==17.0.0",
+    "pylywsdxx==2.2.2",
+    "python-dateutil==2.9.0.post0",
+    "pytz==2024.2",
+    "requests==2.32.3",
+    "sh==2.0.7",
+    ]
+license = {file = "LICENSE"}
+authors = [
+  { name="Mausy5043" },
+  ]
+readme = "README.md"
+requires-python = "3.12"
+
 
 [tool.autopep8]
 max_line_length = 98
