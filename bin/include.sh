@@ -36,7 +36,6 @@ declare -a kimnaty_services=("kimnaty.kimnaty.service" "kimnaty.bluepy3-helper-k
 
 # Install python3 and develop packages
 # Support for matplotlib & numpy needs to be installed seperately
-# Support for serial port
 # SQLite3 support (incl python3)
 declare -a kimnaty_apt_packages=("build-essential" "python3" "python3-dev" "python3-pip"
         "libatlas-base-dev" "libxcb1" "libopenjp2-7" "libtiff5" "libglib2.0-dev"
