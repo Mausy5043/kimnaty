@@ -9,6 +9,7 @@
 import argparse
 import json
 import sqlite3 as s3
+import sys
 import warnings
 from datetime import datetime as dt
 
@@ -16,8 +17,6 @@ import constants
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-import sys
 
 # UserWarning: Could not infer format, so each element will be parsed individually,
 # falling back to `dateutil`. To ensure parsing is consistent and as-expected,
