@@ -61,10 +61,7 @@ def prune(objects):
 
 
 def fetch_data(hours_to_fetch=48, aggregation="10min"):
-    global EDATETIME  # pylint: disable=W0603
-    if OPTION.edate:
-        print("NOT NOW")
-        EDATETIME = f"'{OPTION.edate}'"
+    """..."""
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict = {}
@@ -410,6 +407,9 @@ if __name__ == "__main__":
     if OPTION.devlist:
         OPTION.devlist = json.loads(OPTION.devlist)
         DEVICE_LIST = prune(DEVICE_LIST)
+    if OPTION.edate:
+        print("NOT NOW")
+        EDATETIME = f"'{OPTION.edate}'"
     if OPTION.debug:
         print(OPTION)
     main()
