@@ -37,8 +37,8 @@ AIRCO_LIST = constants.AIRCO
 parser = argparse.ArgumentParser(description="Create a trendgraph")
 parser.add_argument("-hr", "--hours", type=int, help="create hour-trend for last <HOURS> hours")
 parser.add_argument("-d", "--days", type=int, help="create day-trend for last <DAYS> days")
-parser.add_argument("-m", "--months", type=int, help="number of months of data to use for the graph")  # noqa
-parser.add_argument("-e", "--edate", type=str, help="date of last day of the graph (default: now)")  # noqa
+parser.add_argument("-m", "--months", type=int, help="number of months of data to use for the graph")
+parser.add_argument("-e", "--edate", type=str, help="date of last day of the graph (default: now)")
 parser.add_argument("-o", "--outside", action="store_true", help="plot outside temperature")
 parser.add_argument("--devlist", type=str, help="quoted python list of device-ids to show; example: \'[\"1.1\", \"0.1\"]\'")
 parser_group = parser.add_mutually_exclusive_group(required=False)
