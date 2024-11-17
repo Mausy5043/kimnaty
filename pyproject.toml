@@ -77,4 +77,4 @@ ignore_errors = true
 # ; disallow_untyped_calls = true
 # ; disallow_incomplete_defs = true
 # ; disallow_untyped_defs = true
-# ; no_implicit_reexport = true
+no_implicit_reexport = true
