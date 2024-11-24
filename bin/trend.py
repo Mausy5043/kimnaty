@@ -46,7 +46,6 @@ parser_group.add_argument("--debug", action="store_true", help="start in debuggi
 OPTION = parser.parse_args()
 # fmt: on
 
-
 DEBUG = False
 EDATETIME = "'now'"
 
@@ -405,6 +404,7 @@ if __name__ == "__main__":
     if not OPTION.outside:
         OPTION.outside = constants.TREND["option_outside"]
     if OPTION.devlist:
+        # convert parameter to Python list()
         OPTION.devlist = json.loads(OPTION.devlist)
         DEVICE_LIST = prune(DEVICE_LIST)
     if OPTION.edate:
