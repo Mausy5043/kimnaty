@@ -12,7 +12,7 @@ dependencies = [
     "mausy5043-common==1.8.2",
     "numpy==2.1.1",
     "pandas==2.2.3",
-    "pyarrow==17.0.0",
+    "pyarrow==18.0.0",
     "pylywsdxx==2.2.2",
     "python-dateutil==2.9.0.post0",
     "pytz==2024.2",
