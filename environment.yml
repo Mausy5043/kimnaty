@@ -14,11 +14,11 @@ dependencies:
 
   # imported deps
   - matplotlib=3.9.3
-  - numpy=2.1.1
+  - numpy=2.2.0
   - pandas=2.2.3
-  - pyarrow=17.0.0
+  - pyarrow=18.1.0
   - requests=2.32.3
-  - sh=2.0.7
+  - sh=2.1.0
 
   # Not on conda channels:
   - pip:
