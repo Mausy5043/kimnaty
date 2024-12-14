@@ -26,59 +26,67 @@ authors = [
 readme = "README.md"
 requires-python = "3.12"
 
-
 [tool.autopep8]
 max_line_length = 98
 in-place = true
 recursive = true
-aggressive = 1
+aggressive = 2
 ignore = [
-# line too long; is handled by `pylint`
-    "E501",
-]
+    # whitespace before ':': is enforced by black
+    "E203",
+    # line too long; is handled by `pylint`
+    # "E501",
+    ]
 
 [tool.bandit]
 skips = []
 
 [tool.black]
 line-length = 98
-target-version = ["py39", "py310", "py311", "py312"]
+target-version = ["py39", "py310", "py311", "py312", "py313"]
+
+[tool.isort]
+profile = "black"
+py_version="auto"
 
 [tool.flake8]
 max_line_length = 98
 ignore = [
-# <M> is too complex; we don't care about complexity,
+    # function too complex: is what we do ;-)
     "C901",
-# whitespace before ':'; `black` enforces white-space before and after ':', so can be ignored.
+    # whitespace before ':': is enforced by black
     "E203",
-# module level import not at top of file; handled by `pylint`
+    # module level import not at top of file; handled by `pylint`
     "E402",
-# line too long; is handled by `pylint`
+    # line too long: is checked by pylint
     "E501",
-# line break before binary operator; `black` enforces this
+    # line break before binary: is against policy.
     "W503",
-]
-
-[tool.pydocstyle]
-inherit = false
-convention = 'google'
-match = '.*\\.py'
-add-ignore = 'D'
+    ]
 
 [tool.mypy]
-ignore_errors = true
+# ; ignore_errors = true
 # ; strict = false
-# ; warn_return_any = true
-# ; warn_unused_configs = true
-# ; warn_redundant_casts = true
-# ; warn_unused_ignores = true
-# ; strict_equality = true
-# ; extra_checks = true
-# ; check_untyped_defs = true
-# ; disallow_subclassing_any = true
-# ; disallow_untyped_decorators = true
+warn_return_any = true
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+strict_equality = true
+check_untyped_defs = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
 # ; disallow_any_generics = true
-# ; disallow_untyped_calls = true
+disallow_untyped_calls = true
 # ; disallow_incomplete_defs = true
 # ; disallow_untyped_defs = true
 no_implicit_reexport = true
+extra_checks = true
+
+[tool.pydocstyle]
+inherit = false
+convention = "google"
+match = ".*\\.py"
+add-ignore = "D"
+
+
+# pylint is controlled by .pylintrc
