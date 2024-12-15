@@ -101,7 +101,7 @@ class Daikin:
             host (str): hostname or IP address to connect to
         """
         self._host = host
-        self.data_timestamp = 0
+        self.data_timestamp: float = 0.0
 
     def _get(self, path):
         """Internal function to connect to and get any information
@@ -130,7 +130,7 @@ class Daikin:
     def _set(self, path, data):
         """Internal function to connect to and update information"""
         logging.debug(data)
-        response = requests.get("http://" + self._host + path, data, timeout=3)
+        response = requests.get(f"http://{self._host}{path}", data, timeout=3)
         response.raise_for_status()
         logging.debug(response.text)
 

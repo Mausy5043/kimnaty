@@ -194,7 +194,7 @@ def get_app_version() -> str:
     return f"{_exit_h}  -  {_exit_ai}"
 
 
-def get_pypkg_version(package) -> str:
+def get_pypkg_version(package: str) -> str:
     # pip list | grep bluepy3
     args = ["list"]
     try:
@@ -204,7 +204,7 @@ def get_pypkg_version(package) -> str:
         _exit_code = [""]
     for element in _exit_code:
         if element:
-            element_list = element.split()
+            element_list: list[str] = element.split()
             if element_list[0] == package:
                 return element_list[1]
     return "not installed"
