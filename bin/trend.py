@@ -50,7 +50,7 @@ DEBUG = False
 EDATETIME = "'now'"
 
 
-def prune(objects):
+def prune(objects: list) -> list:
     """Remove all entries from `objects` that are not in OPTION.devlist"""
     return_objects = []
     for device in objects:
@@ -59,7 +59,7 @@ def prune(objects):
     return return_objects
 
 
-def fetch_data(hours_to_fetch=48, aggregation="10min"):
+def fetch_data(hours_to_fetch=48, aggregation="10min") -> dict:
     """..."""
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
@@ -85,7 +85,7 @@ def fetch_data(hours_to_fetch=48, aggregation="10min"):
     return data_dict
 
 
-def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
+def fetch_data_ac(hours_to_fetch=48, aggregation="10min") -> dict:
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -179,7 +179,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min"):
     return ac_data_dict
 
 
-def fetch_data_rht(hours_to_fetch=48, aggregation="10min"):
+def fetch_data_rht(hours_to_fetch=48, aggregation="10min") -> dict:
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -266,7 +266,7 @@ def collate(
     columns_to_drop: list,
     column_to_rename: str,
     new_name="room_id",
-):
+) -> pd.DataFrame:
     # drop the 'columns_to_drop'
     if not columns_to_drop:
         columns_to_drop = []
