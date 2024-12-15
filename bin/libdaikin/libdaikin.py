@@ -59,6 +59,9 @@ Traveltime H-louvre (L-R-L): 31.8s ± 0.2s
 Traveltime V-louvre (U-D-U): 54.0s ± 0.2s
 """
 
+# No error checking here for now
+# mypy: ignore-errors
+
 import logging
 import time
 import urllib.parse

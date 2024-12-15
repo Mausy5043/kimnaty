@@ -25,7 +25,7 @@ import libdaikin
 import mausy5043_common.funfile as mf
 import mausy5043_common.libsqlite3 as m3
 import numpy as np
-import pylywsdxx as pyly  # noqa  # type: ignore
+import pylywsdxx as pyly  # noqa  # type: ignore[import-untyped]
 
 # fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
@@ -86,7 +86,7 @@ def main() -> None:  # noqa: C901
         if DEBUG:
             print(list_of_aircos)
         for airco in list_of_aircos:
-            airco["device"] = libdaikin.Daikin(airco["ip"])
+            airco["device"] = libdaikin.Daikin(airco["ip"])  # type: ignore[no-untyped-call]
 
         next_sample = np.array([time.time(), time.time()])
         while not killer.kill_now:
@@ -174,7 +174,7 @@ def record_qos(dev_qos: int, room_id: str) -> None:
     log_health_score(room_id, dev_qos)
 
 
-def log_health_score(room_id, state) -> None:
+def log_health_score(room_id: str, state: int) -> None:
     """Store the state of a device in the database."""
     old_state = constants.get_health(room_id)
     if DEBUG:
@@ -182,7 +182,7 @@ def log_health_score(room_id, state) -> None:
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
-def get_rht_data(dev_dict) -> tuple[int, dict]:
+def get_rht_data(dev_dict: dict) -> tuple[int, dict]:
     """Process data from a device.
         {
         "mac": mac,             # MAC address provided by the client
@@ -238,7 +238,7 @@ def get_rht_data(dev_dict) -> tuple[int, dict]:
     }
 
 
-def do_work_ac(dev_list) -> list:
+def do_work_ac(dev_list: list) -> list:
     """Scan the devices to get current readings.
     Args:
         dev_list: list of device objects
@@ -266,7 +266,7 @@ def do_work_ac(dev_list) -> list:
     return data_list
 
 
-def get_ac_data(airco) -> tuple[bool, dict]:
+def get_ac_data(airco) -> tuple[bool, dict]:  # type: ignore[no-untyped-def]
     """Fetch data from an AC device.
 
     Args:
@@ -328,7 +328,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
     }
 
 
-def set_led(dev, colour) -> None:
+def set_led(dev: str, colour: str) -> None:
     mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"

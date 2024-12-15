@@ -153,13 +153,14 @@ HEALTH_UPDATE = {
 _health_query = "SELECT * FROM rooms;"
 
 
-def get_health(room_id) -> int:
+def get_health(room_id: str) -> int:
     _health: int = 0
     locked = True
+    _table_data: dict = {}
     while locked:
         try:
             with s3.connect(_DATABASE) as conn:
-                _table_data: dict = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
+                _table_data = pd.read_sql_query(_health_query, conn, index_col="room_id").to_dict()
                 locked = False
         except DatabaseError:
             locked = True
@@ -210,7 +211,7 @@ def get_pypkg_version(package: str) -> str:
     return "not installed"
 
 
-def get_btctl_version():
+def get_btctl_version() -> str:
     # bluetoothctl version
     args = ["version"]
     try:
@@ -249,7 +250,7 @@ def get_helper_version() -> str:
 # fmt: on
 
 
-def find_all(name, path):
+def find_all(name: str, path: str) -> list[str]:
     result = []
     for root, _, files in os.walk(path):
         if name in files:

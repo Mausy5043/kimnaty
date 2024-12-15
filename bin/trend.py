@@ -12,6 +12,7 @@ import sqlite3 as s3
 import sys
 import warnings
 from datetime import datetime as dt
+from typing import Union
 
 import constants
 import matplotlib.pyplot as plt
@@ -59,7 +60,7 @@ def prune(objects: list) -> list:
     return return_objects
 
 
-def fetch_data(hours_to_fetch=48, aggregation="10min") -> dict:
+def fetch_data(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
     """..."""
     data_dict_rht = fetch_data_rht(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
     data_dict_ac = fetch_data_ac(hours_to_fetch=hours_to_fetch, aggregation=aggregation)
@@ -85,7 +86,7 @@ def fetch_data(hours_to_fetch=48, aggregation="10min") -> dict:
     return data_dict
 
 
-def fetch_data_ac(hours_to_fetch=48, aggregation="10min") -> dict:
+def fetch_data_ac(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -179,7 +180,7 @@ def fetch_data_ac(hours_to_fetch=48, aggregation="10min") -> dict:
     return ac_data_dict
 
 
-def fetch_data_rht(hours_to_fetch=48, aggregation="10min") -> dict:
+def fetch_data_rht(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
     """
     Query the database to fetch the requested data
     :param hours_to_fetch:      (int) number of hours of data to fetch
@@ -261,11 +262,11 @@ def fetch_data_rht(hours_to_fetch=48, aggregation="10min") -> dict:
 
 
 def collate(
-    prev_df,
+    prev_df: Union[pd.DataFrame, None],
     data_frame: pd.DataFrame,
     columns_to_drop: list,
     column_to_rename: str,
-    new_name="room_id",
+    new_name: str = "room_id",
 ) -> pd.DataFrame:
     # drop the 'columns_to_drop'
     if not columns_to_drop:
@@ -286,7 +287,7 @@ def collate(
     return data_frame
 
 
-def plot_graph(output_file, data_dict, plot_title):
+def plot_graph(output_file: str, data_dict: dict, plot_title: str) -> None:
     """Plot the data into a graph
 
     Args:
@@ -300,7 +301,8 @@ def plot_graph(output_file, data_dict, plot_title):
     """
     if DEBUG:
         print("*** plotting ***")
-    for parameter in data_dict:
+    for parameter_name in data_dict:
+        parameter = str(parameter_name)
         if DEBUG:
             print(parameter)
         data_frame = data_dict[parameter]
@@ -320,9 +322,9 @@ def plot_graph(output_file, data_dict, plot_title):
             plt.setp(l, alpha=ahpla, linewidth=1, linestyle=" ")
         ax1.set_ylabel(parameter)
         if parameter == "temperature_ac":
-            ax1.set_ylim([12, 28])
+            ax1.set_ylim((12.0, 28.0))
         if parameter == "voltage":
-            ax1.set_ylim([2.2, 3.3])
+            ax1.set_ylim((2.2, 3.3))
         ax1.legend(loc="lower left", ncol=8, framealpha=0.2)
         ax1.set_xlabel("Datetime")
         ax1.grid(which="major", axis="y", color="k", linestyle="--", linewidth=0.5)
@@ -335,7 +337,7 @@ def plot_graph(output_file, data_dict, plot_title):
         )
 
 
-def main():
+def main() -> None:
     """
     This is the main loop
     """
