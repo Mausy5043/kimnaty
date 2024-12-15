@@ -266,7 +266,7 @@ def do_work_ac(dev_list: list) -> list:
     return data_list
 
 
-def get_ac_data(airco) -> tuple[bool, dict]:  # type: ignore[no-untyped-def]
+def get_ac_data(airco) -> tuple[bool, dict]:
     """Fetch data from an AC device.
 
     Args:
