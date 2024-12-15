@@ -18,9 +18,9 @@ from sh import CommandNotFound
 _MYHOME = os.environ["HOME"]
 _DATABASE_FILENAME = "kimnaty.v2.sqlite3"
 _DATABASE: str = f"/srv/rmt/_databases/kimnaty/{_DATABASE_FILENAME}"
-_HERE = os.path.realpath(__file__).split("/")
+__HERE: list[str] = os.path.realpath(__file__).split("/")
 # example: HERE = ['', 'home', 'pi', 'kimnaty', 'bin', 'constants.py']
-_HERE = "/".join(_HERE[0:-2])
+_HERE: str = "/".join(__HERE[0:-2])
 _OPTION_OVERRIDE_FILE = f"{_MYHOME}/.config/kimnaty.json"
 _WEBSITE = "/run/kimnaty/site/img"
 
