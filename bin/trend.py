@@ -286,17 +286,6 @@ def collate(
     return data_frame
 
 
-def remove_nans(frame, col_name, default):
-    """remove NANs from a series"""
-    for idx, tmpr in enumerate(frame[col_name]):
-        if np.isnan(tmpr):
-            if idx == 0:
-                frame.at[idx, col_name] = default
-            else:
-                frame.at[idx, col_name] = frame.at[idx - 1, col_name]
-    return frame
-
-
 def plot_graph(output_file, data_dict, plot_title):
     """Plot the data into a graph
 
