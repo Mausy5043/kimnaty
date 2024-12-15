@@ -9,7 +9,7 @@ import sys
 import time
 
 import pandas as pd
-import sh
+import sh  # type: ignore[import-untyped]
 from pandas.errors import DatabaseError
 from sh import CommandNotFound
 

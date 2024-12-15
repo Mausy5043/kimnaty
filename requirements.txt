@@ -2,11 +2,11 @@
 
 gracefulkiller==0.4.7
 matplotlib==3.9.3
-mausy5043-common==1.8.2
+mausy5043-common==1.10.1
 numpy==2.2.0
 pandas==2.2.3
 pyarrow==18.1.0
-pylywsdxx==2.2.2
+pylywsdxx==2.4.3
 # pyserial==3.5
 requests==2.32.3
 sh==2.1.0

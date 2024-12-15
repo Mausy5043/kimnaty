@@ -9,11 +9,11 @@ description = "monitoring room temperature/humidity"
 dependencies = [
     "gracefulkiller==0.4.7",
     "matplotlib==3.9.3",
-    "mausy5043-common==1.8.2",
+    "mausy5043-common==1.10.1",
     "numpy==2.2.0",
     "pandas==2.2.3",
     "pyarrow==18.1.0",
-    "pylywsdxx==2.2.2",
+    "pylywsdxx==2.4.3",
     "python-dateutil==2.9.0.post0",
     "pytz==2024.2",
     "requests==2.32.3",
@@ -65,7 +65,7 @@ ignore = [
     ]
 
 [tool.mypy]
-ignore_errors = true
+# ignore_errors = true
 # ; strict = false
 # warn_return_any = true
 # warn_unused_configs = true
