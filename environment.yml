@@ -23,12 +23,13 @@ dependencies:
   # Not on conda channels:
   - pip:
       - gracefulkiller==0.4.7
-      - mausy5043-common==1.8.2
+      - mausy5043-common==1.10.1
       # This won't install on anything other than Linux:
-      - pylywsdxx==2.2.2
+      - pylywsdxx==2.4.3
 
   # dev deps
   - jupyterlab
+  - pandas-stubs
   - pipdeptree
   - pre-commit
   - scipy
