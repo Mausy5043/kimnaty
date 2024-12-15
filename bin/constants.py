@@ -198,7 +198,7 @@ def get_pypkg_version(package) -> str:
     # pip list | grep bluepy3
     args = ["list"]
     try:
-        _exit_code = sh.pip(args).split("\n")  # type: ignore
+        _exit_code = sh.pip(args).split("\n")
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         _exit_code = [""]
@@ -214,7 +214,7 @@ def get_btctl_version():
     # bluetoothctl version
     args = ["version"]
     try:
-        _exit_code = sh.bluetoothctl(args).strip("\n").strip("'").split()  # type: ignore
+        _exit_code = sh.bluetoothctl(args).strip("\n").strip("'").split()
     except CommandNotFound as e:
         print(f"Error executing command: {e}")
         return "not installed"
