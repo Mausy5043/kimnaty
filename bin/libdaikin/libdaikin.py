@@ -313,27 +313,27 @@ class Daikin:
         """
         return int(self._get_control()["f_dir"])
 
-    @power.setter
+    @power.setter  # type: ignore
     def power(self, value):
         self._control_set("pow", value)
 
-    @target_temperature.setter
+    @target_temperature.setter  # type: ignore
     def target_temperature(self, value):
         self._control_set("stemp", value)
 
-    @target_humidity.setter
+    @target_humidity.setter  # type: ignore
     def target_humidity(self, value):
         self._control_set("shum", value)
 
-    @mode.setter
+    @mode.setter  # type: ignore
     def mode(self, value):
         self._control_set("mode", value)
 
-    @fan_rate.setter
+    @fan_rate.setter  # type: ignore
     def fan_rate(self, value):
         self._control_set("f_rate", value)
 
-    @fan_direction.setter
+    @fan_direction.setter  # type: ignore
     def fan_direction(self, value):
         self._control_set("f_dir", value)
 
