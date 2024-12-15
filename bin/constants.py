@@ -7,6 +7,7 @@ import sqlite3 as s3
 import subprocess  # nosec B404
 import sys
 import time
+from typing import Any
 
 import pandas as pd
 import sh  # type: ignore[import-untyped]
@@ -76,15 +77,15 @@ TREND = {
     "option_outside": OPTION_OVERRIDE.get('trend', {}).get('outside', False),
 }
 
-DEVICES = [
-    {"mac": "A4:C1:38:59:9A:9B", "room_id": "0.1", "name": "woonkamer", "device": None},
-    # {"mac": "A4:C1:38:99:AC:4D", "room_id": "0.5", "name": "keuken", "device": None},
-    {"mac": "A4:C1:38:6F:E7:CA", "room_id": "1.1", "name": "slaapkamer 1", "device": None},
-    {"mac": "A4:C1:38:50:D7:2D", "room_id": "1.2", "name": "slaapkamer 2", "device": None},
-    {"mac": "A4:C1:38:91:D9:47", "room_id": "1.3", "name": "slaapkamer 3", "device": None},
-    {"mac": "A4:C1:38:A5:71:D0", "room_id": "1.4", "name": "badkamer", "device": None},
-    {"mac": "A4:C1:38:76:59:43", "room_id": "2.1", "name": "zolder", "device": None},
-    {"mac": "A4:C1:38:58:23:E1", "room_id": "2.2", "name": "slaapkamer 4", "device": None},
+DEVICES: list[dict[str, str]] = [
+    {"mac": "A4:C1:38:59:9A:9B", "room_id": "0.1", "name": "woonkamer"},
+    # {"mac": "A4:C1:38:99:AC:4D", "room_id": "0.5", "name": "keuken"},
+    {"mac": "A4:C1:38:6F:E7:CA", "room_id": "1.1", "name": "slaapkamer 1"},
+    {"mac": "A4:C1:38:50:D7:2D", "room_id": "1.2", "name": "slaapkamer 2"},
+    {"mac": "A4:C1:38:91:D9:47", "room_id": "1.3", "name": "slaapkamer 3"},
+    {"mac": "A4:C1:38:A5:71:D0", "room_id": "1.4", "name": "badkamer"},
+    {"mac": "A4:C1:38:76:59:43", "room_id": "2.1", "name": "zolder"},
+    {"mac": "A4:C1:38:58:23:E1", "room_id": "2.2", "name": "slaapkamer 4"},
 ]
 
 # - sample_time = time to get one reading from a device
@@ -114,7 +115,7 @@ KIMNATY = {
     "aggregate": "raw",
 }
 
-AIRCO = [
+AIRCO: list[dict[str, Any]] = [
     {"name": "airco0", "ip": "192.168.2.30", "device": None},
     {"name": "airco1", "ip": "192.168.2.31", "device": None},
 ]

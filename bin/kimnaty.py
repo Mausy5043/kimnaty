@@ -60,17 +60,17 @@ def main() -> None:  # noqa: C901
 
     # create an object for the database table for BT devices
     sql_db_rht = m3.SqlDatabase(
-        database=constants.KIMNATY["database"],
-        table=constants.KIMNATY["sql_table"],
-        insert=constants.KIMNATY["sql_command"],
+        database=constants.KIMNATY["database"],  # type: ignore
+        table=constants.KIMNATY["sql_table"],  # type: ignore
+        insert=constants.KIMNATY["sql_command"],  # type: ignore
         debug=DEBUG,
     )
 
     # create an object for the database table for AC devices
     sql_db_ac = m3.SqlDatabase(
-        database=constants.AC["database"],
-        table=constants.AC["sql_table"],
-        insert=constants.AC["sql_command"],
+        database=constants.AC["database"],  # type: ignore
+        table=constants.AC["sql_table"],  # type: ignore
+        insert=constants.AC["sql_command"],  # type: ignore
         debug=DEBUG,
     )
 
