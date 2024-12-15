@@ -54,7 +54,7 @@ sql_health = m3.SqlDatabase(
 )
 
 
-def main():  # noqa: C901
+def main() -> None:  # noqa: C901
     """Execute main loop."""
     killer = gk.GracefulKiller()
 
@@ -155,7 +155,7 @@ def main():  # noqa: C901
         sql_db_ac.insert(method="replace")
 
 
-def record_qos(dev_qos: int, room_id: str):
+def record_qos(dev_qos: int, room_id: str) -> None:
     """Scan the devices to get current readings.
 
     Args:
@@ -174,7 +174,7 @@ def record_qos(dev_qos: int, room_id: str):
     log_health_score(room_id, dev_qos)
 
 
-def log_health_score(room_id, state):
+def log_health_score(room_id, state) -> None:
     """Store the state of a device in the database."""
     old_state = constants.get_health(room_id)
     if DEBUG:
@@ -182,7 +182,7 @@ def log_health_score(room_id, state):
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
-def get_rht_data(dev_dict):
+def get_rht_data(dev_dict) -> tuple[int, dict]:
     """Process data from a device.
         {
         "mac": mac,             # MAC address provided by the client
@@ -238,7 +238,7 @@ def get_rht_data(dev_dict):
     }
 
 
-def do_work_ac(dev_list):
+def do_work_ac(dev_list) -> list:
     """Scan the devices to get current readings.
     Args:
         dev_list: list of device objects
@@ -266,7 +266,7 @@ def do_work_ac(dev_list):
     return data_list
 
 
-def get_ac_data(airco):
+def get_ac_data(airco) -> tuple[bool, dict]:
     """Fetch data from an AC device.
 
     Args:
@@ -328,7 +328,7 @@ def get_ac_data(airco):
     }
 
 
-def set_led(dev, colour):
+def set_led(dev, colour) -> None:
     mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
