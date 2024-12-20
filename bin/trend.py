@@ -318,8 +318,8 @@ def plot_graph(output_file: str, data_dict: dict, plot_title: str) -> None:
         plt.rc("font", size=fig_fontsize)
         ax1 = data_frame.plot(kind="line", marker=".", figsize=(fig_x, fig_y))
         # linewidth and alpha need to be set separately
-        for i, l in enumerate(ax1.lines):  # pylint: disable=W0612
-            plt.setp(l, alpha=ahpla, linewidth=1, linestyle=" ")
+        for _, _l in enumerate(ax1.lines):  # pylint: disable=W0612
+            plt.setp(_l, alpha=ahpla, linewidth=1, linestyle=" ")
         ax1.set_ylabel(parameter)
         if parameter == "temperature_ac":
             ax1.set_ylim((12.0, 28.0))
