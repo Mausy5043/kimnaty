@@ -11,6 +11,7 @@ Store data from the devices in an sqlite3 database.
 """
 
 import argparse
+import contextlib
 import datetime as dt
 import os
 import shutil
@@ -333,10 +334,8 @@ def set_led(dev: str, colour: str) -> None:
 
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/{dev}.png'
-    try:
+    with contextlib.suppress(FileNotFoundError):
         shutil.copy(f"{in_dirfile}", out_dirfile)
-    except FileNotFoundError:
-        pass
 
 
 def traceprint(trace: str) -> str:
