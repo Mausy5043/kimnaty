@@ -54,7 +54,7 @@ BAT_HEALTH = {}
 OPTION_OVERRIDE = {}
 
 if os.path.isfile(_OPTION_OVERRIDE_FILE):
-    with open(_OPTION_OVERRIDE_FILE, "r", encoding="utf-8") as j:
+    with open(_OPTION_OVERRIDE_FILE, encoding="utf-8") as j:
         # order of overrides:
         # 1. hardcoded default
         # 2. OPTION_OVERRIDE setting

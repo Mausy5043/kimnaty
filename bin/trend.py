@@ -12,7 +12,6 @@ import sqlite3 as s3
 import sys
 import warnings
 from datetime import datetime as dt
-from typing import Union
 
 import constants
 import matplotlib.pyplot as plt
@@ -262,7 +261,7 @@ def fetch_data_rht(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict
 
 
 def collate(
-    prev_df: Union[pd.DataFrame, None],
+    prev_df: pd.DataFrame | None,
     data_frame: pd.DataFrame,
     columns_to_drop: list,
     column_to_rename: str,

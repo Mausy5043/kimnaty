@@ -118,7 +118,7 @@ class Daikin:
         response = requests.get(f"http://{self._host}{path}", timeout=3)
         response.raise_for_status()
         logging.debug(response.text)
-        if not len(response.text) > 0 or not response.text[0:4] == "ret=":
+        if not len(response.text) > 0 or response.text[0:4] != "ret=":
             return None
         self.data_timestamp = time.time()
         fields = {}
