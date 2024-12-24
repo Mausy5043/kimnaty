@@ -14,7 +14,7 @@ dependencies:
 
   # imported deps
   - matplotlib=3.10.0
-  - numpy=2.2.0
+  - numpy=2.2.1
   - pandas=2.2.3
   - pyarrow=18.1.0
   - requests=2.32.3
