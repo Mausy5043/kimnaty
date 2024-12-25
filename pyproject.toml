@@ -7,17 +7,17 @@ name = "kimnaty"
 version = "0.0.0"   # rolling release has no version
 description = "monitoring room temperature/humidity"
 dependencies = [
-    "gracefulkiller==0.4.7",
-    "matplotlib==3.10.0",
+    "gracefulkiller~=0.4",
+    "matplotlib~=3.10",
     "mausy5043-common==1.10.1",
-    "numpy==2.2.1",
-    "pandas==2.2.3",
-    "pyarrow==18.1.0",
+    "numpy~=2.2",
+    "pandas~=2.2",
+    "pyarrow~=18.1",
     "pylywsdxx==2.4.3",
-    "python-dateutil==2.9.0.post0",
+    "python-dateutil~=2.9",
     "pytz==2024.2",
-    "requests==2.32.3",
-    "sh==2.1.0",
+    "requests~=2.32",
+    "sh~=2.1",
     ]
 license = {file = "LICENSE"}
 authors = [

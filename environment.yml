@@ -13,16 +13,16 @@ dependencies:
   - pip
 
   # imported deps
-  - matplotlib=3.10.0
-  - numpy=2.2.1
-  - pandas=2.2.3
-  - pyarrow=18.1.0
-  - requests=2.32.3
-  - sh=2.1.0
+  - matplotlib=3.10
+  - numpy=2.2
+  - pandas=2.2
+  - pyarrow=18.1
+  - requests=2.32
+  - sh=2.1
 
   # Not on conda channels:
   - pip:
-      - gracefulkiller==0.4.7
+      - gracefulkiller~=0.4
       - mausy5043-common==1.10.1
       # This won't install on anything other than Linux:
       - pylywsdxx==2.4.3
