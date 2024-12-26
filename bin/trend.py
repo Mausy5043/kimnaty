@@ -115,7 +115,7 @@ def fetch_data_ac(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
         while not success and retries > 0:
             try:
                 with s3.connect(DATABASE) as con:
-                    df: pd.DataFrame = pd.read_sql_query(
+                    df = pd.read_sql_query(
                         s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
                     )
                     success = True
@@ -225,7 +225,7 @@ def fetch_data_rht(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict
         while not success and retries > 0:
             try:
                 with s3.connect(DATABASE) as con:
-                    df: pd.DataFrame = pd.read_sql_query(
+                    df = pd.read_sql_query(
                         s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
                     )
                     success = True
