@@ -8,8 +8,10 @@
 
 import argparse
 import json
+import random
 import sqlite3 as s3
 import sys
+import time
 import warnings
 from datetime import datetime as dt
 
@@ -92,6 +94,7 @@ def fetch_data_ac(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
+    df = pd.DataFrame()
     df_cmp = pd.DataFrame()
     df_t = pd.DataFrame()
     if DEBUG:
@@ -106,10 +109,24 @@ def fetch_data_ac(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict:
         s3_query = f"SELECT * FROM {TABLE_AC} WHERE {where_condition}"  # nosec B608
         if DEBUG:
             print(s3_query)
-        with s3.connect(DATABASE) as con:
-            df: pd.DataFrame = pd.read_sql_query(
-                s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
-            )
+        # Get the data
+        success = False
+        retries = 5
+        while not success and retries > 0:
+            try:
+                with s3.connect(DATABASE) as con:
+                    df: pd.DataFrame = pd.read_sql_query(
+                        s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
+                    )
+                    success = True
+            except (s3.OperationalError, pd.errors.DatabaseError) as exc:
+                if DEBUG:
+                    print("Database may be locked. Waiting...")
+                retries -= 1
+                time.sleep(random.randint(30, 60))  # nosec bandit B311
+                if retries == 0:
+                    raise TimeoutError("Database seems locked.") from exc
+
         for c in df.columns:
             if c not in ["sample_time"]:
                 df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -186,6 +203,7 @@ def fetch_data_rht(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict
     :param aggregation:         (int) number of minutes to aggregate per datapoint
     :return:
     """
+    df = pd.DataFrame()
     if DEBUG:
         print("*** fetching RHT ***")
     df_t = pd.DataFrame()
@@ -201,10 +219,24 @@ def fetch_data_rht(hours_to_fetch: int = 48, aggregation: str = "10min") -> dict
         s3_query = f"SELECT * FROM {TABLE_RHT} WHERE {where_condition}"  # nosec B608
         if DEBUG:
             print(s3_query)
-        with s3.connect(DATABASE) as con:
-            df: pd.DataFrame = pd.read_sql_query(
-                s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
-            )
+        # Get the data
+        success = False
+        retries = 5
+        while not success and retries > 0:
+            try:
+                with s3.connect(DATABASE) as con:
+                    df: pd.DataFrame = pd.read_sql_query(
+                        s3_query, con, parse_dates=["sample_time"], index_col="sample_epoch"
+                    )
+                    success = True
+            except (s3.OperationalError, pd.errors.DatabaseError) as exc:
+                if DEBUG:
+                    print("Database may be locked. Waiting...")
+                retries -= 1
+                time.sleep(random.randint(30, 60))  # nosec bandit B311
+                if retries == 0:
+                    raise TimeoutError("Database seems locked.") from exc
+
         # conserve memory; we dont need the room_id repeated in every row.
         df.drop("room_id", axis=1, inplace=True, errors="ignore")
         for c in df.columns:
