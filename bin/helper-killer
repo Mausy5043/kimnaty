@@ -6,7 +6,7 @@ while true; do
     sleep 30
     for PID in $(pgrep "bluepy3-helper"); do
         RUNTIMESEC=$(ps -o etimes= -p "$PID")
-        if [[ ! -z "${RUNTIMESEC// }" ]]; then
+        if [[ -n "${RUNTIMESEC// }" ]]; then
             if [ "$RUNTIMESEC" -gt 30 ]; then
                 echo "** ** bluepy3-helper has been running for ${RUNTIMESEC} seconds; killing ${PID}"
                 kill -9 "${PID}"
