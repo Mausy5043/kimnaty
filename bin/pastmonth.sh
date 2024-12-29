@@ -42,9 +42,9 @@ if [ "${MAINTENANCE}" == "-" ]; then
     execute_sql "${db_full_path}" "REINDEX;"
 
     echo -n "${db_full_path} integrity check:   "
-    chk_result=$(sqlite3 "${db_full_path}" "PRAGMA integrity_check;")
+    chk_result=$(execute_sql "${db_full_path}" "PRAGMA integrity_check;")
     echo " ${chk_result}"
-    if [ "${chk_result}" == "ok" ]; then
+    if [ "${chk_result}" == "0" ]; then
         echo "${db_full_path} copying to backup... "
         # copy to backup
         if command -v rclone &> /dev/null; then
