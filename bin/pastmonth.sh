@@ -43,8 +43,8 @@ if [ "${MAINTENANCE}" == "-" ]; then
 
     echo -n "${db_full_path} integrity check:   "
     chk_result=$(execute_sql "${db_full_path}" "PRAGMA integrity_check;")
-    echo " ${chk_result}"
-    if [ "${chk_result}" == "0" ]; then
+    echo " >${chk_result}<"
+    if [ "${chk_result}" == 0 ]; then
         echo "${db_full_path} copying to backup... "
         # copy to backup
         if command -v rclone &> /dev/null; then
@@ -61,6 +61,8 @@ if [ "${MAINTENANCE}" == "-" ]; then
                 "DELETE FROM data WHERE sample_epoch < ${PURGE_EPOCH};"
         execute_sql "${db_full_path}" \
                 "DELETE FROM aircon WHERE sample_epoch < ${PURGE_EPOCH};"
+    else
+        echo "Database integrity check failed. Skipping backup and vacuuming." >&2
     fi
     # sync the database into the cloud
     if command -v rclone &> /dev/null; then
