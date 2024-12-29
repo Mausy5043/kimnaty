@@ -45,7 +45,6 @@ if [ "${MAINTENANCE}" == "-" ]; then
 
     echo -n "${db_full_path} integrity check:   "
     execute_sql "${db_full_path}" "PRAGMA integrity_check;"
-    echo " > ${flag_sql_succes} <"
     if [ "${flag_sql_succes=1}" == 0 ]; then
         echo "${db_full_path} copying to backup... "
         # copy to backup
