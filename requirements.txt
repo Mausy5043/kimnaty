@@ -6,6 +6,6 @@ mausy5043-common==1.10.1
 numpy~=2.2
 pandas~=2.2
 pyarrow~=18.1
-pylywsdxx~=2.6.1
+pylywsdxx~=2.6.2
 requests~=2.32
 sh~=2.1
