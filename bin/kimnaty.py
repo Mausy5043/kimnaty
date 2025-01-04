@@ -13,6 +13,8 @@ Store data from the devices in an sqlite3 database.
 import argparse
 import contextlib
 import datetime as dt
+import logging
+import logging.handlers
 import os
 import shutil
 import sys
@@ -23,10 +25,22 @@ import traceback
 import constants
 import GracefulKiller as gk  # type: ignore[import-untyped]
 import libdaikin
-import mausy5043_common.funfile as mf
 import mausy5043_common.libsqlite3 as m3
 import numpy as np
 import pylywsdxx as pyly  # noqa  # type: ignore[import-untyped]
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(module)s.%(funcName)s [%(levelname)s] - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.handlers.SysLogHandler(
+            address="/dev/log",
+            facility=logging.handlers.SysLogHandler.LOG_DAEMON,
+        )
+    ],
+)
+LOGGER: logging.Logger = logging.getLogger(__name__)
 
 # fmt: off
 parser = argparse.ArgumentParser(description="Execute the telemetry daemon.")
@@ -107,21 +121,17 @@ def main() -> None:  # noqa: C901
                     if dev_qos > 0:
                         sql_db_rht.queue(dev_data)
                     else:
-                        mf.syslog_trace(
-                            f"!!! No data for room {dev_data['room_id']}", syslog.LOG_ALERT, DEBUG
-                        )
+                        LOGGER.warning(f"!!! No data for room {dev_data['room_id']}")
                     record_qos(dev_qos, dev_data["room_id"])
                 # store the data in the DB
                 try:
                     sql_db_rht.insert(method="replace")
                     sql_health.insert(method="replace", index="room_id")
                 except Exception as her:  # pylint: disable=W0703
-                    mf.syslog_trace(
-                        f"*** While trying to insert data into the database  {type(her).__name__} {her} ",  # noqa: E501
-                        syslog.LOG_CRIT,
-                        DEBUG,
+                    LOGGER.critical(
+                        f"*** While trying to insert data into the database  {type(her).__name__} {her} "
                     )
-                    mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
+                    LOGGER.error(traceprint(traceback.format_exc()))
                     raise  # may be changed to pass if errors can be corrected.
                 next_sample[0] = cycle_time[0] + start_time - (start_time % cycle_time[0])
 
@@ -140,12 +150,10 @@ def main() -> None:  # noqa: C901
                 try:
                     sql_db_ac.insert(method="replace")
                 except Exception as her:  # pylint: disable=W0703
-                    mf.syslog_trace(
-                        f"*** While trying to insert data into the database {type(her).__name__} {her} ",  # noqa: E501
-                        syslog.LOG_CRIT,
-                        DEBUG,
+                    LOGGER.critical(
+                        f"*** While trying to insert data into the database {type(her).__name__} {her} "
                     )
-                    mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_ALERT, DEBUG)
+                    LOGGER.error(traceprint(traceback.format_exc()))
                     raise  # may be changed to pass if errors can be corrected.
                 next_sample[1] = cycle_time[1] + start_time - (start_time % cycle_time[1])
 
@@ -297,21 +305,16 @@ def get_ac_data(airco) -> tuple[bool, dict]:
         ac_t_tgt = ac_t_in
         success = True
     except Exception as her:  # pylint: disable=W0703
-        mf.syslog_trace(
-            f"*** While talking to {airco['name']} {type(her).__name__} {her}",
-            syslog.LOG_CRIT,
-            DEBUG,
-        )
+        LOGGER.critical(f"*** While talking to {airco['name']} {type(her).__name__} {her}")
+        LOGGER.debug(traceprint(traceback.format_exc()))
 
-        mf.syslog_trace(traceprint(traceback.format_exc()), syslog.LOG_DEBUG, DEBUG)
-    if DEBUG:
-        print(f"+----------------Room {airco['name']} Data----")
-        print(f"| T(airco)  : Inside      {ac_t_in:.2f} degC state = {ac_pwr}")
-        print(f"|             Target >>>> {ac_t_tgt:.2f} degC  mode = {ac_mode}")
-        print(f"|             Outside     {ac_t_out:.2f} degC")
-        print(f"| compressor: {ac_cmp:.0f} ")
-        print("+---------------------------------------------")
-        print(f"{time.time() - t0:.2f} seconds\n")
+    LOGGER.debug(f"+----------------Room {airco['name']} Data----")
+    LOGGER.debug(f"| T(airco)  : Inside      {ac_t_in:.2f} degC state = {ac_pwr}")
+    LOGGER.debug(f"|             Target >>>> {ac_t_tgt:.2f} degC  mode = {ac_mode}")
+    LOGGER.debug(f"|             Outside     {ac_t_out:.2f} degC")
+    LOGGER.debug(f"| compressor: {ac_cmp:.0f} ")
+    LOGGER.debug("+---------------------------------------------")
+    LOGGER.debug(f"{time.time() - t0:.2f} seconds\n")
 
     out_date = dt.datetime.now()  # time.strftime('%Y-%m-%dT%H:%M:%S')
     out_epoch = int(out_date.timestamp())
@@ -330,8 +333,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
 
 
 def set_led(dev: str, colour: str) -> None:
-    mf.syslog_trace(f"room {dev} is {colour}", False, DEBUG)
-
+    LOGGER.debug(f"room {dev} is {colour}")
     in_dirfile = f"{APPROOT}/www/{colour}.png"
     out_dirfile = f'{constants.TREND["website"]}/{dev}.png'
     with contextlib.suppress(FileNotFoundError):
@@ -353,23 +355,29 @@ def traceprint(trace: str) -> str:
 
 if __name__ == "__main__":
     # initialise logging
-    syslog.openlog(ident=f'{MYAPP}.{MYID.split(".")[0]}', facility=syslog.LOG_LOCAL0)
+    syslog.openlog(
+        ident=f'{MYAPP}.{MYID.split(".")[0]}',
+        facility=syslog.LOG_LOCAL0,
+    )
+
     # set-up LEDs
     for _device in constants.DEVICES:
         set_led(_device["room_id"], "orange")
+
     if OPTION.debughw:
         DEBUG_HW = True
         OPTION.debug = True
 
-    mf.syslog_trace(f"Using Python {sys.version}", syslog.LOG_ERR, OPTION.debug)
-
     if OPTION.debug:
         DEBUG = True
-        mf.syslog_trace("Debug-mode started.", syslog.LOG_DEBUG, DEBUG)
+        print(OPTION)
+        if len(LOGGER.handlers) == 0:
+            LOGGER.addHandler(logging.StreamHandler(sys.stdout))
+        LOGGER.level = logging.DEBUG
+        LOGGER.debug("Debug-mode started.")
         print("Use <Ctrl>+C to stop.")
-        main()
 
-    if OPTION.start:
-        main()
+    # OPTION.start only executes this next line, we don't need to test for it.
+    main()
 
-    print("And it's goodnight from him")
+    LOGGER.info("And it's goodnight from him")
