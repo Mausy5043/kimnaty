@@ -33,4 +33,3 @@ dependencies:
   - pipdeptree
   - pre-commit
   - scipy
-  - ruff
