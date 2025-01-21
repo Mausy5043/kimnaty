@@ -13,7 +13,7 @@ dependencies = [
     "numpy~=2.2",
     "pandas~=2.2",
     "pyarrow~=19.0",
-    "pylywsdxx~=2.6.3",
+    "pylywsdxx~=2.6",
     "python-dateutil~=2.9",
     "pytz==2024.2",
     "requests~=2.32",
