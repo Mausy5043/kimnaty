@@ -16,7 +16,8 @@ dependencies:
   - matplotlib=3.10
   - numpy=2.2
   - pandas=2.2
-  - pyarrow=19.0
+  # already delivered by mausy5043-common:
+  # - pyarrow=19.0
   - requests=2.32
   - sh=2.2
 
