@@ -8,6 +8,7 @@ After=multi-user.target
 Type=simple
 User=pi
 EnvironmentFile=/home/pi/.pyenvpaths
+WorkingDirectory=/home/pi/kimnaty
 ExecStartPre=/home/pi/kimnaty/kimnaty --boot
 ExecStart=/home/pi/kimnaty/bin/kimnaty.py --start
 RestartSec=360s

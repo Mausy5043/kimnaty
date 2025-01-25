@@ -190,7 +190,7 @@ install_kimnaty() {
 
     # install Python3 stuff
     pyenv virtualenv 3.13 kimnaty
-    # pyenv local kimnaty
+    pyenv local kimnaty
     python3 -m pip install --upgrade pip setuptools wheel
     python3 -m pip install --upgrade -r requirements.txt
     echo

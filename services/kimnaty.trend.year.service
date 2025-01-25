@@ -8,4 +8,5 @@ Wants=kimnaty.trend.year.timer
 Type=oneshot
 User=pi
 EnvironmentFile=/home/pi/.pyenvpaths
+WorkingDirectory=/home/pi/kimnaty
 ExecStart=/home/pi/kimnaty/bin/pastyear.sh -
