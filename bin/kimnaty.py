@@ -71,6 +71,7 @@ sql_health = m3.SqlDatabase(
 
 def main() -> None:  # noqa: C901
     """Execute main loop."""
+    LOGGER.info(f"Running on Python {sys.version}")
     killer = gk.GracefulKiller()
 
     # create an object for the database table for BT devices
