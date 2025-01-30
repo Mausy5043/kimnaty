@@ -3,9 +3,9 @@
 gracefulkiller~=0.4
 matplotlib~=3.10
 mausy5043-common==1.12.1
-numpy~=2.2
-pandas~=2.2
 # already delivered by mausy5043-common:
+# numpy~=2.2
+# pandas~=2.2
 # pyarrow~=19.0
 pylywsdxx~=2.6
 requests~=2.32
