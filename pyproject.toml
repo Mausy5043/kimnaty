@@ -16,7 +16,7 @@ dependencies = [
     # "pyarrow~=19.0",
     "pylywsdxx~=2.6",
     "python-dateutil~=2.9",
-    "pytz==2024.2",
+    "pytz==2025.1",
     "requests~=2.32",
     "sh~=2.2",
     ]
