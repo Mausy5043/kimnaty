@@ -14,6 +14,7 @@ CREATE TABLE data (
 
 CREATE INDEX idx_data_time ON data(sample_time);
 CREATE INDEX idx_data_epoch ON data(sample_epoch);
+CREATE INDEX idx_data_room ON data(room_id);
 
 
 -- TABLE rooms is used to link room_id with human-readable room names
@@ -59,3 +60,4 @@ CREATE TABLE aircon (
 
 CREATE INDEX idx_ac_time ON aircon(sample_time);
 CREATE INDEX idx_ac_epoch ON aircon(sample_epoch);
+CREATE INDEX idx_ac_room ON aircon(room_id);
