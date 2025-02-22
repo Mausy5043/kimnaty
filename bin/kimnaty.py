@@ -282,8 +282,8 @@ def get_ac_data(airco) -> tuple[bool, dict]:
         (bool)  to indicate success or failure to read a device's data
         (dict)  device's data; keys match fieldnames in the database
     """
-    ac_pwr = ac_mode = ac_cmp = None
-    ac_t_in = ac_t_tgt = ac_t_out = None
+    ac_pwr = ac_mode = ac_cmp = 0
+    ac_t_in = ac_t_tgt = ac_t_out = 18.0
     success = False
     t0 = time.time()
     try:
@@ -304,6 +304,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
     except Exception as her:  # pylint: disable=W0703
         LOGGER.critical(f"*** While talking to {airco['name']} {type(her).__name__} {her}")
         LOGGER.debug(traceprint(traceback.format_exc()))
+        pass
 
     LOGGER.debug(f"+----------------Room {airco['name']} Data----")
     LOGGER.debug(f"| T(airco)  : Inside      {ac_t_in:.2f} degC state = {ac_pwr}")
