@@ -109,12 +109,10 @@ def main() -> None:  # noqa: C901
             # get RH/T data
             if time.time() > next_sample[0]:
                 start_time = time.time()
-                if DEBUG:
-                    print("Updating sensor data...")
+                LOGGER.debug("Updating sensor data...")
                 pylyman.update_all()
                 # fmt: off
-                if DEBUG:
-                    print(f">>> {time.time() - start_time:.1f} s to update {len(list_of_devices)} sensors")
+                LOGGER.debug(f">>> {time.time() - start_time:.1f} s to update {len(list_of_devices)} sensors")
                 # fmt: on
                 # get the data from the devices
                 for device in list_of_devices:
@@ -145,8 +143,7 @@ def main() -> None:  # noqa: C901
                 if ac_results:
                     for element in ac_results:
                         sql_db_ac.queue(element)
-                if DEBUG:
-                    print(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
+                LOGGER.debug(f" >>> Time to get AC results: {time.time() - start_time:.2f}")
                 # store the data in the DB
                 try:
                     sql_db_ac.insert(method="replace")
@@ -266,8 +263,7 @@ def do_work_ac(dev_list: list) -> list:
             retry_list.append(airco)
 
     if retry_list:
-        if DEBUG:
-            print("Retrying failed connections in 13s...")
+        LOGGER.info("Retrying failed connections in 13s...")
         time.sleep(13.0)
         for airco in retry_list:
             succes, data = get_ac_data(airco)
