@@ -96,11 +96,9 @@ def main() -> None:  # noqa: C901
         list_of_devices = constants.DEVICES
         for bt_dev in list_of_devices:
             pylyman.subscribe_to(mac=bt_dev["mac"], dev_id=bt_dev["room_id"])
-            if DEBUG:
-                print(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
+            LOGGER.debug(f"subcribed to {bt_dev['mac']} as {bt_dev['room_id']}")
         list_of_aircos = constants.AIRCO
-        if DEBUG:
-            print(list_of_aircos)
+        LOGGER.debug(f"{list_of_aircos}")
         for airco in list_of_aircos:
             airco["device"] = libdaikin.Daikin(airco["ip"])  # type: ignore[no-untyped-call]
 
@@ -184,8 +182,7 @@ def record_qos(dev_qos: int, room_id: str) -> None:
 def log_health_score(room_id: str, state: int) -> None:
     """Store the state of a device in the database."""
     old_state = constants.get_health(room_id)
-    if DEBUG:
-        print(f"         previous state = {old_state}; new state = {state}")
+    LOGGER.debug(f"         previous state = {old_state}; new state = {state}")
     sql_health.queue({"health": state, "room_id": room_id, "name": constants.ROOMS[room_id]})
 
 
@@ -210,8 +207,7 @@ def get_rht_data(dev_dict: dict) -> tuple[int, dict]:
         (int)   to indicate the QoS of the device
         (dict)  device's data; keys match fieldnames in the database
     """
-    if DEBUG:
-        print(dev_dict)
+    LOGGER.debug(f"{dev_dict}")
 
     qos: int = dev_dict["quality"]
     if qos == 0:
@@ -226,14 +222,13 @@ def get_rht_data(dev_dict: dict) -> tuple[int, dict]:
     out_date = dev_dict["datetime"].strftime(constants.DT_FORMAT)
     out_epoch = dev_dict["epoch"]
 
-    if DEBUG:
-        print("")
-        print(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['dev_id']})")
-        print(f"+------------------------------------------ {out_date} --")
-        print(f"| Temperature       : {temperature}°C")
-        print(f"| Humidity          : {humidity}%")
-        print(f"| Battery           : {battery}% ({voltage}V)")
-        print("+------------------------------------")
+    LOGGER.debug("")
+    LOGGER.debug(f"Rewrapping data from {dev_dict['mac']} ({dev_dict['dev_id']})")
+    LOGGER.debug(f"+------------------------------------------ {out_date} --")
+    LOGGER.debug(f"| Temperature       : {temperature}°C")
+    LOGGER.debug(f"| Humidity          : {humidity}%")
+    LOGGER.debug(f"| Battery           : {battery}% ({voltage}V)")
+    LOGGER.debug("+------------------------------------")
 
     return qos, {
         "sample_time": out_date,
@@ -287,8 +282,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
     success = False
     t0 = time.time()
     try:
-        if DEBUG:
-            print(f"Fetching data from {airco['name']}")
+        LOGGER.debug(f"Fetching data from {airco['name']}")
         ac_pwr = int(airco["device"].power)
         ac_mode = int(airco["device"].mode)
         ac_cmp = float(airco["device"].compressor_frequency)
