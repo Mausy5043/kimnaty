@@ -303,7 +303,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
         success = True
     except Exception as her:  # pylint: disable=W0703
         LOGGER.critical(f"*** While talking to {airco['name']} {type(her).__name__} {her}")
-        LOGGER.debug(traceprint(traceback.format_exc()))
+        LOGGER.info(traceprint(traceback.format_exc()))
         pass
 
     LOGGER.debug(f"+----------------Room {airco['name']} Data----")
