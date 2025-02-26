@@ -69,6 +69,31 @@ import urllib.parse
 import requests
 
 
+class DaikinException(Exception):
+    """Base class for all pylywsdxx exceptions."""
+
+    def __init__(self, message: str):
+        self.message: str = message
+
+    def __str__(self) -> str:
+        msg: str = f"(libdaikin) {self.message}"
+        return msg
+
+
+class DaikinTimeout(DaikinException):
+    """Class for timeout errors from upstream."""
+
+    def __init__(self, message: str):
+        DaikinException.__init__(self, message)
+
+
+class DaikinConnectError(DaikinException):
+    """Class for connection errors from upstream."""
+
+    def __init__(self, message: str):
+        DaikinException.__init__(self, message)
+
+
 class Daikin:
     """Class to get information from Daikin Wireless LAN Connecting Adapter"""
 
@@ -115,7 +140,12 @@ class Daikin:
         Returns:
             dict: returned data converted to a dict
         """
-        response = requests.get(f"http://{self._host}{path}", timeout=6)
+        try:
+            response = requests.get(f"http://{self._host}{path}", timeout=6)
+        except requests.exceptions.Timeout as her:
+            raise DaikinTimeout(f"Timeout getting {self._host}{path}") from her
+        except requests.exceptions.ConnectionError as her:
+            raise DaikinConnectError(f"Connection error getting {self._host}{path}") from her
         response.raise_for_status()
         logging.debug(response.text)
         if not len(response.text) > 0 or response.text[0:4] != "ret=":
