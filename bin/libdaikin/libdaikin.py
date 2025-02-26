@@ -119,7 +119,7 @@ class Daikin:
         response.raise_for_status()
         logging.debug(response.text)
         if not len(response.text) > 0 or response.text[0:4] != "ret=":
-            return None
+            return {}
         self.data_timestamp = time.time()
         fields = {}
         for group in response.text.split(","):
