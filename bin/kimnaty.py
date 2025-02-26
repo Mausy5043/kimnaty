@@ -295,6 +295,10 @@ def get_ac_data(airco) -> tuple[bool, dict]:
         # When switched to drying mode the temperature target becomes 'M'
         ac_t_tgt = ac_t_in
         success = True
+    except libdaikin.DaikinException as her:
+        LOGGER.critical(f"!!! {her}")
+        LOGGER.info(traceprint(traceback.format_exc()))
+        pass
     except Exception as her:  # pylint: disable=W0703
         LOGGER.critical(f"*** While talking to {airco['name']} {type(her).__name__} {her}")
         LOGGER.info(traceprint(traceback.format_exc()))
