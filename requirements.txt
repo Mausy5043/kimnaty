@@ -6,7 +6,7 @@ mausy5043-common==2.1.1
 # already delivered by mausy5043-common, so no version here:
 numpy
 pandas
-pylywsdxx~=2.6
+pylywsdxx~=2.8
 python-dateutil~=2.9
 pytz==2025.1
 requests~=2.32

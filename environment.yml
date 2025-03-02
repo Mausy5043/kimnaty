@@ -26,7 +26,7 @@ dependencies:
       - gracefulkiller~=0.4
       - mausy5043-common==2.1.1
       # This won't install on anything other than Linux:
-      - pylywsdxx~=2.6
+      - pylywsdxx~=2.8
 
   # dev deps
   - jupyterlab
