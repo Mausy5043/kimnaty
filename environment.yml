@@ -14,9 +14,9 @@ dependencies:
 
   # imported deps
   - matplotlib=3.10
-  # already delivered by mausy5043-common:
-  # - numpy=2.2
-  # - pandas=2.2
+  # already delivered by mausy5043-common, so no version here:
+  - numpy
+  - pandas
   # - pyarrow=19.0
   - requests=2.32
   - sh=2.2
