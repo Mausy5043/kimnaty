@@ -285,7 +285,7 @@ def get_ac_data(airco) -> tuple[bool, dict]:
         LOGGER.debug(f"Fetching data from {airco['name']}")
         ac_pwr = int(airco["device"].power)
         ac_mode = int(airco["device"].mode)
-        ac_cmp = float(airco["device"].compressor_frequency)
+        ac_cmp = int(airco["device"].compressor_frequency)
         ac_t_in = float(airco["device"].inside_temperature)
         ac_t_out = float(airco["device"].outside_temperature)
         ac_t_tgt = float(airco["device"].target_temperature)
