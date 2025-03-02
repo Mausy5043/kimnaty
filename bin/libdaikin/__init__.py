@@ -1,3 +1,3 @@
-from .libdaikin import Daikin
+from .libdaikin import Daikin, DaikinConnectError, DaikinException, DaikinTimeout
 
-__all__ = ["Daikin"]
+__all__ = ["Daikin", "DaikinException", "DaikinTimeout", "DaikinConnectError"]
