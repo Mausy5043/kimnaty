@@ -48,12 +48,12 @@ if [ "${MAINTENANCE}" == "-" ]; then
     if [ "${flag_sql_succes=1}" == 0 ]; then
         echo "${db_full_path} copying to backup... "
         # copy to backup
-        if command -v rclone &> /dev/null; then
-            # shellcheck disable=SC2154
-            rclone copyto -v \
-                    "${database_local_root}/${app_name}/${database_filename}" \
-                    "${database_remote_root}/backup/${database_filename}"
-        fi
+#        if command -v rclone &> /dev/null; then
+#            # shellcheck disable=SC2154
+#            rclone copyto -v --protondrive-replace-existing-draft \
+#                    "${database_local_root}/${app_name}/${database_filename}" \
+#                    "${database_remote_root}/backup/${database_filename}"
+#        fi
 
         # Keep upto 10 years of data
         echo "${db_full_path} vacuuming... "
@@ -65,14 +65,15 @@ if [ "${MAINTENANCE}" == "-" ]; then
     else
         echo "Database integrity check failed. Skipping backup and vacuuming." >&2
     fi
-    # sync the database into the cloud
-    if command -v rclone &> /dev/null; then
-        echo "${db_full_path} syncing... "
-        # shellcheck disable=SC2154
-        rclone copyto -v \
-                "${database_local_root}/${app_name}/${database_filename}" \
-                "${database_remote_root}/${app_name}/${database_filename}"
-    fi
+fi
+
+# sync the database into the cloud
+if command -v rclone &> /dev/null; then
+    echo "${db_full_path} syncing... "
+    # shellcheck disable=SC2154
+    rclone copyto -v --protondrive-replace-existing-draft=true \
+            "${database_local_root}/${app_name}/${database_filename}" \
+            "${database_remote_root}/${app_name}/${database_filename}"
 fi
 
 ./trend.py --days 0
