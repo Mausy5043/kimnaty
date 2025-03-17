@@ -9,7 +9,7 @@ channels:
   - defaults
 
 dependencies:
-  - python=3.12
+  - python=3.13
   - pip
 
   # imported deps
@@ -24,7 +24,7 @@ dependencies:
   # Not on conda channels:
   - pip:
       - gracefulkiller~=0.4
-      - mausy5043-common==2.1.1
+      - mausy5043-common==2.2.3
       # This won't install on anything other than Linux:
       - pylywsdxx~=2.8
 

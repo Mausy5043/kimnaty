@@ -189,7 +189,7 @@ install_kimnaty() {
     echo
 
     # install Python3 stuff
-    pyenv virtualenv 3.12 "${app_name}"
+    pyenv virtualenv 3.13 "${app_name}"
     pyenv local "${app_name}"
     python3 -m pip install --upgrade pip setuptools wheel
     python3 -m pip install --upgrade -r requirements.txt

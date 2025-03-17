@@ -9,7 +9,7 @@ description = "monitoring room temperature/humidity"
 dependencies = [
     "gracefulkiller~=0.4",
     "matplotlib~=3.10",
-    "mausy5043-common==2.1.1",
+    "mausy5043-common==2.2.3",
     # already delivered by mausy5043-common, so no version here:
     "numpy",
     "pandas",
