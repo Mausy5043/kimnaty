@@ -15,7 +15,7 @@ dependencies = [
     "pandas",
     "pylywsdxx~=2.8",
     "python-dateutil~=2.9",
-    "pytz==2025.1",
+    "pytz==2025.2",
     "requests~=2.32",
     "sh~=2.2",
     ]
