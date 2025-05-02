@@ -24,7 +24,7 @@ dependencies:
   # Not on conda channels:
   - pip:
       - gracefulkiller~=0.4
-      - mausy5043-common==2.2.3
+      - mausy5043-common==2.4.3
       # This won't install on anything other than Linux:
       - pylywsdxx~=2.8
 
