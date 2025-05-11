@@ -1,3 +1,4 @@
+![StaticBadge](https://img.shields.io/badge/support-ON_HOLD-orange)
 
 [![License](https://img.shields.io/github/license/mausy5043/kimnaty)](LICENSE)
 ![Static Badge](https://img.shields.io/badge/release-rolling-lightgreen)
