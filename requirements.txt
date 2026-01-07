@@ -2,7 +2,7 @@
 
 gracefulkiller~=0.4
 matplotlib~=3.10
-mausy5043-common==2.6.1
+mausy5043-common>=2.6.1
 # already delivered by mausy5043-common, so no version here:
 numpy
 pandas
